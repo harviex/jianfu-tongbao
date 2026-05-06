@@ -43,58 +43,62 @@ NOTICES_FILE = DATA_DIR / "notices.json"
 STATS_FILE = DATA_DIR / "stats.json"
 
 def fetch_page(url):
-    """Fetch a page using Firecrawl for better content extraction"""
-    try:
-        import subprocess
-        api_key = os.environ.get('FIRECRAWL_API_KEY', 'fc-***')
-        result = subprocess.run([
-            'curl', '-s', '-m', '15',
-            '-X', 'POST', 'https://api.firecrawl.dev/v1/scrape',
-            '-H', f'Authorization: Bearer {api_key}',
-            '-H', 'Content-Type: application/json',
-            '-d', json.dumps({"url": url, "formats": ["markdown"]})
-        ], capture_output=True, text=True, timeout=20)
-        
-        data = json.loads(result.stdout)
-        if data.get('success'):
-            return data['data'].get('markdown', ''), data['data'].get('metadata', {})
-    except Exception as e:
-        print(f"  Firecrawl failed, fallback to curl: {e}")
-    
-    # Fallback to direct curl
+    """Fetch a page using direct HTTP request with fallback"""
+    # Try direct request first
     try:
         import urllib.request
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        req = urllib.request.Request(url, headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        })
         with urllib.request.urlopen(req, timeout=15) as resp:
-            return resp.read().decode('utf-8', errors='replace'), {}
+            content = resp.read().decode('utf-8', errors='replace')
+            print(f"  ✓ Direct fetch success: {len(content)} chars")
+            return content, {}
     except Exception as e:
-        print(f"  Fetch error: {e}")
-        return '', {}
+        print(f"  Direct fetch failed: {e}")
+    
+    # Fallback to Firecrawl if available
+    try:
+        import subprocess
+        api_key = os.environ.get('FIRECRAWL_API_KEY')
+        if api_key:
+            print(f"  Trying Firecrawl...")
+            result = subprocess.run([
+                'curl', '-s', '-m', '15',
+                '-X', 'POST', 'https://api.firecrawl.dev/v1/scrape',
+                '-H', f'Authorization: Bearer {api_key}',
+                '-H', 'Content-Type: application/json',
+                '-d', json.dumps({"url": url, "formats": ["markdown"]})
+            ], capture_output=True, text=True, timeout=20)
+            
+            data = json.loads(result.stdout)
+            if data.get('success'):
+                print(f"  ✓ Firecrawl success")
+                return data['data'].get('markdown', ''), data['data'].get('metadata', {})
+    except Exception as e:
+        print(f"  Firecrawl failed: {e}")
+    
+    return '', {}
 
 
 def parse_list_page(html):
     """Extract article links from the list page"""
     articles = []
-    # Pattern: links with target keyword in title
-    pattern = r'<a[^>]+href="([^"]+)"[^>]*>([^<]*' + re.escape(KEYWORD[:10]) + r'[^<]*)</a>'
+    # Pattern: links with target keyword in title - support both single and double quotes
+    # Match href='...' or href="..."
+    pattern = r'<a[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>([^<]*' + re.escape(KEYWORD[:10]) + r'[^<]*)</a>'
     for match in re.finditer(pattern, html, re.DOTALL):
         url, title = match.group(1), match.group(2).strip()
         # Clean title
         title = re.sub(r'<[^>]+>', '', title).strip()
-        if KEYWORD in title and url:
+        # Filter: must contain KEYWORD and should not be about "主题教育" (different topic)
+        if KEYWORD in title and '主题教育' not in title and url:
             if not url.startswith('http'):
-                url = 'http://zzxszy.people.cn' + url
-            articles.append({'url': url, 'title': title})
-    
-    # Also try markdown format from Firecrawl
-    if not articles:
-        md_pattern = r'\[([^\]]*' + re.escape(KEYWORD[:15]) + r'[^\\]]*)\]\(([^)]+)\)'
-        for match in re.finditer(md_pattern, html, re.DOTALL):
-            title, url = match.group(1).strip(), match.group(2).strip()
-            if KEYWORD in title:
-                if not url.startswith('http'):
+                if url.startswith('/'):
                     url = 'http://zzxszy.people.cn' + url
-                articles.append({'url': url, 'title': title})
+                else:
+                    url = 'http://zzxszy.people.cn/' + url
+            articles.append({'url': url, 'title': title})
     
     # Deduplicate by URL
     seen = set()
@@ -182,8 +186,8 @@ def load_existing_data():
 
 def save_data(notices):
     """Save notices to JSON file and generate stats"""
-    # Sort by date (newest first)
-    notices.sort(key=lambda x: x.get('publish_date', '0000-00-00'), reverse=True)
+    # Sort by date (newest first), handle None values
+    notices.sort(key=lambda x: x.get('publish_date') or '0000-00-00', reverse=True)
     
     # Save notices
     with open(NOTICES_FILE, 'w', encoding='utf-8') as f:
