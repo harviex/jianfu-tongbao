@@ -31,14 +31,13 @@ jobs:
       env:
         FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
       run: |
-        cd tongbao
         python scraper_static.py
         
     - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add tongbao/public/data/
+        git add data/
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
