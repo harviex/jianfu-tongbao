@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理平台 - 情况反映</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f7fa; color: #333; }
+.header { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; padding: 20px 0; }
+.header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+.header h1 { font-size: 22px; }
+.back-link { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px; }
+.back-link:hover { color: white; }
+
+.container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+
+/* Stats */
+.stats-row { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.stat-card { background: white; border-radius: 10px; padding: 16px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex: 1; min-width: 120px; text-align: center; }
+.stat-card .num { font-size: 28px; font-weight: 700; color: #e74c3c; }
+.stat-card .label { font-size: 13px; color: #888; margin-top: 4px; }
+
+/* Filters */
+.filters { background: white; border-radius: 10px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.filters select, .filters input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+.filters button { padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+.filters button:hover { background: #2980b9; }
+
+/* Table */
+.table-wrap { background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { background: #f8f9fa; padding: 12px 14px; text-align: left; font-weight: 500; color: #555; border-bottom: 2px solid #eee; position: sticky; top: 0; }
+td { padding: 12px 14px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+tr:hover { background: #fafafa; }
+.content-preview { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status-badge { padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+.status-待审核 { background: #fff3e0; color: #e65100; }
+.status-已审核 { background: #e8f5e9; color: #2e7d32; }
+.status-已处理 { background: #e3f2fd; color: #1565c0; }
+.status-不采纳 { background: #ffebee; color: #c62828; }
+
+.actions { display: flex; gap: 6px; }
+.actions button { padding: 4px 10px; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+.actions .btn-edit:hover { background: #e3f2fd; border-color: #3498db; }
+.actions .btn-del:hover { background: #ffebee; border-color: #e74c3c; color: #e74c3c; }
+.actions .btn-status { position: relative; }
+.actions .btn-status:hover { background: #e8f5e9; border-color: #2e7d32; }
+
+/* Modal */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: white; border-radius: 12px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; padding: 30px; }
+.modal h2 { font-size: 18px; margin-bottom: 16px; }
+.modal .form-group { margin-bottom: 14px; }
+.modal label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: #555; }
+.modal select, .modal input, .modal textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: inherit; }
+.modal textarea { min-height: 120px; resize: vertical; }
+.modal .btns { display: flex; gap: 10px; margin-top: 20px; }
+.modal .btns button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; }
+.btn-save { background: #27ae60; color: white; }
+.btn-cancel { background: #eee; color: #555; }
+
+.empty { text-align: center; padding: 40px; color: #aaa; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>🔧 情况反映管理平台</h1>
+    <div>
+      <a href="/report.html" class="back-link">📝 反映入口</a> &nbsp;|&nbsp;
+      <a href="/" class="back-link">📋 通报数据库</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="stats-row" id="statsRow"></div>
+  <div class="filters">
+    <select id="filterStatus">
+      <option value="">全部状态</option>
+      <option value="待审核">待审核</option>
+      <option value="已审核">已审核</option>
+      <option value="已处理">已处理</option>
+      <option value="不采纳">不采纳</option>
+    </select>
+    <select id="filterCity">
+      <option value="">全部市</option>
+    </select>
+    <input type="text" id="filterKeyword" placeholder="关键词搜索..." />
+    <button onclick="loadReports()">🔍 筛选</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>市</th>
+          <th>县/区</th>
+          <th>反映单位</th>
+          <th>情况内容</th>
+          <th>状态</th>
+          <th>提交时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="8" class="empty">加载中...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h2>编辑反映</h2>
+    <input type="hidden" id="editId" />
+    <div class="form-group">
+      <label>状态</label>
+      <select id="editStatus">
+        <option value="待审核">待审核</option>
+        <option value="已审核">已审核</option>
+        <option value="已处理">已处理</option>
+        <option value="不采纳">不采纳</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>市</label>
+      <input type="text" id="editCity" />
+    </div>
+    <div class="form-group">
+      <label>县/区</label>
+      <input type="text" id="editDistrict" />
+    </div>
+    <div class="form-group">
+      <label>反映单位</label>
+      <input type="text" id="editUnit" />
+    </div>
+    <div class="form-group">
+      <label>情况内容</label>
+      <textarea id="editContent"></textarea>
+    </div>
+    <div class="form-group">
+      <label>管理员备注</label>
+      <textarea id="editNote" placeholder="审核意见或备注..."></textarea>
+    </div>
+    <div class="btns">
+      <button class="btn-cancel" onclick="closeEdit()">取消</button>
+      <button class="btn-save" onclick="saveEdit()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const FUJIAN_CITIES = ['福州市','厦门市','漳州市','泉州市','三明市','莆田市','南平市','龙岩市','宁德市','平潭综合实验区'];
+
+// Populate city filter
+const cityFilter = document.getElementById('filterCity');
+FUJIAN_CITIES.forEach(c => {
+  const opt = document.createElement('option');
+  opt.value = c; opt.textContent = c;
+  cityFilter.appendChild(opt);
+});
+
+async function loadReports() {
+  const params = new URLSearchParams();
+  const status = document.getElementById('filterStatus').value;
+  const city = document.getElementById('filterCity').value;
+  const keyword = document.getElementById('filterKeyword').value.trim();
+  if (status) params.set('status', status);
+  if (city) params.set('city', city);
+  if (keyword) params.set('keyword', keyword);
+
+  const res = await fetch('/api/reports?' + params.toString());
+  const data = await res.json();
+
+  // Stats
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="num">${data.total}</div><div class="label">总反映数</div></div>
+    <div class="stat-card"><div class="num">${data.stats.待审核||0}</div><div class="label">待审核</div></div>
+    <div class="stat-card"><div class="num">${data.stats.已审核||0}</div><div class="label">已审核</div></div>
+    <div class="stat-card"><div class="num">${data.stats.已处理||0}</div><div class="label">已处理</div></div>
+    <div class="stat-card"><div class="num">${data.stats.不采纳||0}</div><div class="label">不采纳</div></div>
+  `;
+
+  const tbody = document.getElementById('tableBody');
+  if (!data.data.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">暂无数据</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.data.map(r => `
+    <tr>
+      <td>${r.id}</td>
+      <td>${esc(r.city)}</td>
+      <td>${esc(r.district)}</td>
+      <td>${esc(r.unit)}</td>
+      <td class="content-preview" title="${esc(r.content)}">${esc(r.content)}</td>
+      <td><span class="status-badge status-${r.status}">${r.status}</span></td>
+      <td>${new Date(r.created_at).toLocaleString('zh-CN')}</td>
+      <td class="actions">
+        <button class="btn-edit" onclick="openEdit(${r.id})">编辑</button>
+        <button class="btn-del" onclick="delReport(${r.id})">删除</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function openEdit(id) {
+  const res = await fetch('/api/reports/' + id);
+  const r = await res.json();
+  document.getElementById('editId').value = r.id;
+  document.getElementById('editStatus').value = r.status;
+  document.getElementById('editCity').value = r.city;
+  document.getElementById('editDistrict').value = r.district;
+  document.getElementById('editUnit').value = r.unit;
+  document.getElementById('editContent').value = r.content;
+  document.getElementById('editNote').value = r.admin_note || '';
+  document.getElementById('editModal').classList.add('show');
+}
+
+function closeEdit() {
+  document.getElementById('editModal').classList.remove('show');
+}
+
+async function saveEdit() {
+  const id = document.getElementById('editId').value;
+  const body = {
+    status: document.getElementById('editStatus').value,
+    city: document.getElementById('editCity').value,
+    district: document.getElementById('editDistrict').value,
+    unit: document.getElementById('editUnit').value,
+    content: document.getElementById('editContent').value,
+    admin_note: document.getElementById('editNote').value
+  };
+  
+  const res = await fetch('/api/reports/' + id, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  
+  if (res.ok) {
+    closeEdit();
+    loadReports();
+  } else {
+    alert('保存失败');
+  }
+}
+
+async function delReport(id) {
+  if (!confirm('确定删除这条反映？此操作不可恢复。')) return;
+  const res = await fetch('/api/reports/' + id, { method: 'DELETE' });
+  if (res.ok) loadReports();
+  else alert('删除失败');
+}
+
+function esc(s) { return s ? s.replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+
+// Keyboard
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEdit(); });
+
+loadReports();
+</script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>整治形式主义为基层减负公开通报典型问题数据库</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f7fa; color: #333; }
+
+/* Header */
+.header { background: linear-gradient(135deg, #c0392b, #e74c3c); color: white; padding: 24px 0; }
+.header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.header h1 { font-size: 24px; margin-bottom: 12px; }
+.stats-bar { display: flex; gap: 24px; flex-wrap: wrap; font-size: 14px; opacity: 0.9; }
+.stats-bar .stat { background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; }
+
+/* Search & Filter */
+.controls { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+.search-box { display: flex; gap: 10px; margin-bottom: 16px; }
+.search-box input { flex: 1; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; transition: border-color 0.2s; }
+.search-box input:focus { border-color: #e74c3c; }
+.search-box button { padding: 12px 24px; background: #e74c3c; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+.search-box button:hover { background: #c0392b; }
+
+/* Filter panels */
+.filters { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.filter-group { background: white; border-radius: 8px; padding: 12px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.filter-group h3 { font-size: 13px; color: #888; margin-bottom: 8px; }
+.filter-group label { display: inline-block; margin: 2px 6px 2px 0; font-size: 14px; cursor: pointer; }
+.filter-group input[type="checkbox"] { margin-right: 4px; accent-color: #e74c3c; }
+
+/* Results */
+.results { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
+.results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.results-header h2 { font-size: 18px; color: #555; }
+.results-count { color: #888; font-size: 14px; }
+
+/* Notice card */
+.notice-card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: box-shadow 0.2s; cursor: pointer; }
+.notice-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.notice-card h3 { font-size: 17px; color: #2c3e50; margin-bottom: 8px; line-height: 1.5; }
+.notice-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; font-size: 13px; color: #888; }
+.notice-meta .date { color: #e74c3c; font-weight: 500; }
+.notice-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.tag { padding: 3px 10px; border-radius: 12px; font-size: 12px; }
+.tag-level { background: #e8f5e9; color: #2e7d32; }
+.tag-problem { background: #fff3e0; color: #e65100; }
+.tag-province { background: #e3f2fd; color: #1565c0; }
+.notice-preview { font-size: 14px; color: #666; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.notice-link { display: inline-block; margin-top: 8px; font-size: 13px; color: #3498db; text-decoration: none; }
+.notice-link:hover { text-decoration: underline; }
+
+/* Pagination */
+.pagination { display: flex; justify-content: center; gap: 8px; margin: 24px 0; }
+.pagination button { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; }
+.pagination button.active { background: #e74c3c; color: white; border-color: #e74c3c; }
+.pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Detail modal */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: white; border-radius: 12px; max-width: 800px; max-height: 80vh; overflow-y: auto; padding: 30px; margin: 20px; }
+.modal h2 { font-size: 20px; margin-bottom: 16px; line-height: 1.5; }
+.modal .meta { color: #888; font-size: 14px; margin-bottom: 16px; }
+.modal .content { font-size: 15px; line-height: 1.8; white-space: pre-wrap; }
+.modal .close-btn { position: sticky; top: 0; float: right; background: #eee; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+
+.loading { text-align: center; padding: 40px; color: #888; }
+.empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 16px; }
+.update-time { text-align: center; padding: 10px; color: #999; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>📋 整治形式主义为基层减负公开通报典型问题数据库</h1>
+    <div class="stats-bar" id="statsBar">
+      <span class="stat">加载中...</span>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="输入关键词搜索通报..." />
+    <button onclick="doSearch()">🔍 搜索</button>
+  </div>
+  <div class="filters" id="filtersArea">
+    <div class="filter-group">
+      <h3>一级分类</h3>
+      <div id="levelFilters"></div>
+    </div>
+    <div class="filter-group">
+      <h3>问题类型</h3>
+      <div id="tagFilters"></div>
+    </div>
+    <div class="filter-group">
+      <h3>涉及省份</h3>
+      <div id="provinceFilters"></div>
+    </div>
+  </div>
+</div>
+
+<div class="results">
+  <div class="results-header">
+    <h2 id="resultsTitle">全部通报</h2>
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+  <div id="noticeList"><div class="loading">加载中...</div></div>
+  <div class="pagination" id="pagination"></div>
+  <div class="update-time" id="updateTime"></div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">✕</button>
+    <h2 id="modalTitle"></h2>
+    <div class="meta" id="modalMeta"></div>
+    <div id="modalTags"></div>
+    <div class="content" id="modalContent"></div>
+    <a id="modalLink" href="#" target="_blank" class="notice-link" style="margin-top:16px;display:block">📄 查看原文</a>
+  </div>
+</div>
+
+<script>
+const DATA_BASE = 'data';
+let allNotices = [];
+let stats = {};
+let currentPage = 1;
+const PAGE_SIZE = 20;
+let filteredNotices = [];
+
+// ========== Init ==========
+async function init() {
+  await loadStats();
+  await loadNotices();
+  document.getElementById('searchInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSearch();
+  });
+}
+
+async function loadStats() {
+  try {
+    const res = await fetch(`${DATA_BASE}/stats.json?t=${Date.now()}`);
+    stats = await res.json();
+    
+    // Stats bar
+    document.getElementById('statsBar').innerHTML = `
+      <span class="stat">📊 共 ${stats.total} 条通报</span>
+      <span class="stat">🏛️ ${stats.provinces.length} 个省份涉及</span>
+      <span class="stat">📅 更新: ${stats.last_updated || '未知'}</span>
+    `;
+    
+    // Level filters
+    document.getElementById('levelFilters').innerHTML = stats.byLevel.map(l =>
+      `<label><input type="checkbox" value="${l.level_1}" onchange="applyFilters()"> ${l.level_1} (${l.count})</label>`
+    ).join('');
+    
+    // Tag filters
+    document.getElementById('tagFilters').innerHTML = stats.tags.map(t =>
+      `<label><input type="checkbox" value="${t.tag}" onchange="applyFilters()"> ${t.tag} (${t.count})</label>`
+    ).join('');
+    
+    // Province filters
+    document.getElementById('provinceFilters').innerHTML = stats.provinces.map(p =>
+      `<label><input type="checkbox" value="${p.province}" onchange="applyFilters()"> ${p.province} (${p.count})</label>`
+    ).join('');
+    
+    // Update time
+    if (stats.last_updated) {
+      document.getElementById('updateTime').textContent = `数据最后更新: ${stats.last_updated}`;
+    }
+  } catch (err) {
+    console.error('Failed to load stats:', err);
+  }
+}
+
+async function loadNotices() {
+  try {
+    const res = await fetch(`${DATA_BASE}/notices.json?t=${Date.now()}`);
+    allNotices = await res.json();
+    filteredNotices = allNotices;
+    applyFilters();
+  } catch (err) {
+    document.getElementById('noticeList').innerHTML = '<div class="empty">加载数据失败，请刷新页面重试</div>';
+    console.error('Failed to load notices:', err);
+  }
+}
+
+function applyFilters() {
+  const params = getFilterParams();
+  const search = params.search?.toLowerCase() || '';
+  const levels = params.level_1 || [];
+  const tags = params.tag || [];
+  const provinces = params.province || [];
+  
+  filteredNotices = allNotices.filter(n => {
+    // Search filter
+    if (search && !n.title.toLowerCase().includes(search) && 
+        !(n.content || '').toLowerCase().includes(search)) {
+      return false;
+    }
+    
+    // Level filter
+    if (levels.length && !levels.includes(n.level_1)) {
+      return false;
+    }
+    
+    // Tag filter
+    if (tags.length && (!n.tags || !tags.some(t => n.tags.includes(t)))) {
+      return false;
+    }
+    
+    // Province filter
+    if (provinces.length && (!n.provinces || !provinces.some(p => n.provinces.includes(p)))) {
+      return false;
+    }
+    
+    return true;
+  });
+  
+  currentPage = 1;
+  renderNotices();
+  renderPagination();
+  
+  // Update title
+  const labels = [];
+  if (levels.length) labels.push(levels.join(', '));
+  if (tags.length) labels.push(tags.join(', '));
+  if (provinces.length) labels.push(provinces.join(', '));
+  if (search) labels.push(`"${search}"`);
+  document.getElementById('resultsTitle').textContent = labels.length ? `筛选: ${labels.join(' / ')}` : '全部通报';
+  document.getElementById('resultsCount').textContent = `共 ${filteredNotices.length} 条`;
+}
+
+function renderNotices() {
+  const el = document.getElementById('noticeList');
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
+  const pageData = filteredNotices.slice(start, end);
+  
+  if (!pageData.length) {
+    el.innerHTML = '<div class="empty">暂无匹配的通报</div>';
+    return;
+  }
+  
+  el.innerHTML = pageData.map(n => `
+    <div class="notice-card" onclick="showDetail(${n.id})">
+      <h3>${esc(n.title)}</h3>
+      <div class="notice-meta">
+        <span class="date">📅 ${n.publish_date || '未知日期'}</span>
+        <span>📁 ${n.level_1 || '-'}</span>
+        ${n.case_count ? `<span>📌 ${n.case_count} 起案例</span>` : ''}
+      </div>
+      <div class="notice-tags">
+        <span class="tag tag-level">${n.level_1 || '-'}</span>
+        ${(n.tags || []).map(t => `<span class="tag tag-problem">${t}</span>`).join('')}
+        ${(n.provinces || []).map(p => `<span class="tag tag-province">${p}</span>`).join('')}
+      </div>
+      <div class="notice-preview">${esc(n.content_preview || '')}</div>
+      <a class="notice-link" href="${n.source_url}" target="_blank" onclick="event.stopPropagation()">📄 原文链接</a>
+    </div>
+  `).join('');
+}
+
+function renderPagination() {
+  const pages = Math.ceil(filteredNotices.length / PAGE_SIZE);
+  const el = document.getElementById('pagination');
+  if (pages <= 1) { el.innerHTML = ''; return; }
+  
+  let html = `<button ${currentPage<=1?'disabled':''} onclick="goPage(${currentPage-1})">‹ 上一页</button>`;
+  for (let i = Math.max(1, currentPage-2); i <= Math.min(pages, currentPage+2); i++) {
+    html += `<button class="${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  html += `<button ${currentPage>=pages?'disabled':''} onclick="goPage(${currentPage+1})">下一页 ›</button>`;
+  el.innerHTML = html;
+}
+
+function goPage(p) {
+  currentPage = p;
+  renderNotices();
+  renderPagination();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function getFilterParams() {
+  const params = {};
+  
+  const search = document.getElementById('searchInput').value.trim();
+  if (search) params.search = search;
+  
+  const levels = getChecked('levelFilters');
+  if (levels.length) params.level_1 = levels;
+  
+  const tags = getChecked('tagFilters');
+  if (tags.length) params.tag = tags;
+  
+  const provs = getChecked('provinceFilters');
+  if (provs.length) params.province = provs;
+  
+  return params;
+}
+
+function getChecked(containerId) {
+  return [...document.getElementById(containerId).querySelectorAll('input:checked')].map(cb => cb.value);
+}
+
+function doSearch() {
+  applyFilters();
+}
+
+function showDetail(id) {
+  const n = allNotices.find(item => item.id === id);
+  if (!n) return;
+  
+  document.getElementById('modalTitle').textContent = n.title;
+  document.getElementById('modalMeta').innerHTML = `
+    发布日期: ${n.publish_date || '未知'} &nbsp;|&nbsp; 
+    分类: ${n.level_1} &nbsp;|&nbsp; 
+    来源: ${n.source_site || '-'}
+  `;
+  document.getElementById('modalTags').innerHTML = `
+    <div class="notice-tags" style="margin:12px 0">
+      ${(n.tags||[]).map(t => `<span class="tag tag-problem">${t}</span>`).join('')}
+      ${(n.provinces||[]).map(p => `<span class="tag tag-province">${p}</span>`).join('')}
+    </div>`;
+  document.getElementById('modalContent').textContent = n.content || '暂无正文';
+  document.getElementById('modalLink').href = n.source_url;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+function esc(s) { return s ? s.replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+init();
+</script>
+</body>
+</html>
