@@ -5,59 +5,257 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>情况反映 - 整治形式主义为基层减负</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f7fa; color: #333; }
-.header { background: linear-gradient(135deg, #c0392b, #e74c3c); color: white; padding: 20px 0; }
-.header-inner { max-width: 800px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; gap: 16px; }
-.header h1 { font-size: 22px; }
-.back-link { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px; }
-.back-link:hover { color: white; }
-
-.form-container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
-.form-card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-.form-card h2 { font-size: 20px; color: #c0392b; margin-bottom: 6px; }
-.form-card .subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
-
-.form-group { margin-bottom: 20px; }
-.form-group label { display: block; font-size: 15px; font-weight: 500; margin-bottom: 8px; color: #444; }
-.form-group label .required { color: #e74c3c; margin-left: 2px; }
-.form-group select, .form-group input, .form-group textarea {
-  width: 100%; padding: 12px 14px; border: 2px solid #e0e0e0; border-radius: 8px;
-  font-size: 15px; outline: none; transition: border-color 0.2s; font-family: inherit;
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  line-height: 1.6;
+  min-height: 100vh;
 }
-.form-group select:focus, .form-group input:focus, .form-group textarea:focus { border-color: #e74c3c; }
-.form-group textarea { min-height: 160px; resize: vertical; }
-.form-group .hint { font-size: 12px; color: #999; margin-top: 4px; }
 
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+/* Header */
+.gov-header {
+  background: linear-gradient(180deg, #c41e3a 0%, #a01830 100%);
+  position: relative;
+  overflow: hidden;
+}
+.gov-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.gov-header-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+.gov-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+.gov-topbar a { color: rgba(255,255,255,0.8); text-decoration: none; }
+.gov-topbar a:hover { color: #fff; }
+.gov-title-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+}
+.gov-emblem {
+  width: 52px;
+  height: 52px;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.gov-title-text h1 { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+.gov-title-text p { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+
+/* Nav */
+.gov-nav {
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.gov-nav-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 0;
+}
+.gov-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 20px;
+  font-size: 14px;
+  color: #555;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+.gov-nav a:hover, .gov-nav a.active {
+  color: #c41e3a;
+  border-bottom-color: #c41e3a;
+  background: rgba(196,30,58,0.03);
+}
+
+/* Form */
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+}
+.form-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.form-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #f0f0f0;
+}
+.form-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #c41e3a;
+  margin-bottom: 8px;
+}
+.form-header p {
+  font-size: 14px;
+  color: #888;
+}
+.form-header .badge {
+  display: inline-block;
+  background: #fff0f0;
+  color: #c41e3a;
+  border: 1px solid #ffcdd2;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+.form-group { margin-bottom: 22px; }
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+.form-group label .required { color: #c41e3a; margin-left: 2px; }
+.form-group label .hint { font-weight: 400; color: #999; font-size: 12px; margin-left: 8px; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  background: #fafafa;
+}
+.form-control:focus {
+  border-color: #c41e3a;
+  background: #fff;
+}
+textarea.form-control { min-height: 160px; resize: vertical; line-height: 1.6; }
+select.form-control { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+.form-hint {
+  font-size: 12px;
+  color: #999;
+  margin-top: 6px;
+}
 
 .submit-btn {
-  width: 100%; padding: 14px; background: #e74c3c; color: white; border: none;
-  border-radius: 8px; font-size: 16px; font-weight: 500; cursor: pointer; transition: background 0.2s;
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #c41e3a, #a01830);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
 }
-.submit-btn:hover { background: #c0392b; }
-.submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+.submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(196,30,58,0.3); }
+.submit-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
 
-.msg { padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 15px; display: none; }
-.msg.success { background: #e8f5e9; color: #2e7d32; display: block; }
-.msg.error { background: #ffebee; color: #c62828; display: block; }
+/* Message */
+.msg {
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.msg.show { display: flex; }
+.msg.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.msg.error { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
 
-.footer { text-align: center; padding: 30px; color: #aaa; font-size: 13px; }
+/* Footer */
+.gov-footer {
+  background: #1a1a2e;
+  color: rgba(255,255,255,0.6);
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+}
+.gov-footer a { color: rgba(255,255,255,0.8); text-decoration: none; }
+
+@media (max-width: 768px) {
+  .form-card { padding: 24px; }
+  .form-row { grid-template-columns: 1fr; }
+  .gov-title-area { flex-direction: column; text-align: center; }
+}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-inner">
-    <a href="/" class="back-link">← 返回数据库</a>
-    <h1>📝 增加基层负担有关情况反映</h1>
+<div class="gov-header">
+  <div class="gov-header-inner">
+    <div class="gov-topbar">
+      <span>整治形式主义为基层减负信息公开平台</span>
+      <span><a href="index.html">← 返回数据库</a></span>
+    </div>
+    <div class="gov-title-area">
+      <div class="gov-emblem">📝</div>
+      <div class="gov-title-text">
+        <h1>增加基层负担有关情况反映</h1>
+        <p>请如实填写反映增加基层负担的有关情况，我们将认真核实处理</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="gov-nav">
+  <div class="gov-nav-inner">
+    <a href="index.html">📋 通报数据库</a>
+    <a href="report.html" class="active">📝 情况反映</a>
   </div>
 </div>
 
 <div class="form-container">
   <div class="form-card">
-    <h2>福建省整治形式主义为基层减负情况反映</h2>
-    <p class="subtitle">请如实填写反映增加基层负担的有关情况，我们将认真核实处理。</p>
+    <div class="form-header">
+      <h2>情况反映表</h2>
+      <p>本渠道受理增加基层负担有关问题的反映</p>
+      <div class="badge">🔒 信息保密 · 专人处理</div>
+    </div>
 
     <div id="msgBox" class="msg"></div>
 
@@ -65,13 +263,13 @@ body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
       <div class="form-row">
         <div class="form-group">
           <label>所在市 <span class="required">*</span></label>
-          <select id="city" required>
+          <select class="form-control" id="city" required>
             <option value="">-- 请选择 --</option>
           </select>
         </div>
         <div class="form-group">
           <label>所在县（市、区） <span class="required">*</span></label>
-          <select id="district" required disabled>
+          <select class="form-control" id="district" required disabled>
             <option value="">-- 请先选择市 --</option>
           </select>
         </div>
@@ -79,13 +277,18 @@ body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
 
       <div class="form-group">
         <label>反映单位 <span class="required">*</span></label>
-        <input type="text" id="unit" placeholder="请填写单位全称" required />
+        <input type="text" class="form-control" id="unit" placeholder="请填写单位全称" required />
       </div>
 
       <div class="form-group">
         <label>有关情况 <span class="required">*</span></label>
-        <textarea id="content" placeholder="请详细描述增加基层负担的有关情况，包括时间、事项、具体表现等。" required></textarea>
-        <div class="hint">请尽量提供具体的时间、地点、事项，以便核实处理。</div>
+        <textarea class="form-control" id="content" placeholder="请详细描述增加基层负担的有关情况，包括时间、事项、具体表现等。&#10;&#10;示例：&#10;时间：2025年X月&#10;事项：XXX&#10;具体表现：XXX" required></textarea>
+        <div class="form-hint">请尽量提供具体的时间、地点、事项，以便核实处理。反映内容将严格保密。</div>
+      </div>
+
+      <div class="form-group">
+        <label>联系方式 <span class="hint">（选填，便于核实反馈）</span></label>
+        <input type="text" class="form-control" id="contact" placeholder="手机号或邮箱（选填）" />
       </div>
 
       <button type="submit" class="submit-btn" id="submitBtn">提交反映</button>
@@ -93,8 +296,10 @@ body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   </div>
 </div>
 
-<div class="footer">
-  <a href="/admin.html" style="color:#aaa;">管理平台入口</a>
+<div class="gov-footer">
+  <a href="index.html">通报数据库</a> · <a href="report.html">情况反映</a>
+  <br><br>
+  <span style="opacity: 0.5;">数据来源：人民网 · 各省纪委监委网站</span>
 </div>
 
 <script>
@@ -115,7 +320,6 @@ const FUJIAN = {
 const citySelect = document.getElementById('city');
 const districtSelect = document.getElementById('district');
 
-// Populate cities
 Object.keys(FUJIAN).forEach(city => {
   const opt = document.createElement('option');
   opt.value = city;
@@ -144,17 +348,17 @@ document.getElementById('reportForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = document.getElementById('submitBtn');
   const msgBox = document.getElementById('msgBox');
-  
+
   btn.disabled = true;
   btn.textContent = '提交中...';
   msgBox.className = 'msg';
-  msgBox.style.display = 'none';
 
   const data = {
     city: citySelect.value,
     district: districtSelect.value,
     unit: document.getElementById('unit').value.trim(),
-    content: document.getElementById('content').value.trim()
+    content: document.getElementById('content').value.trim(),
+    contact: document.getElementById('contact').value.trim()
   };
 
   try {
@@ -164,22 +368,22 @@ document.getElementById('reportForm').addEventListener('submit', async (e) => {
       body: JSON.stringify(data)
     });
     const result = await res.json();
-    
+
     if (res.ok) {
-      msgBox.className = 'msg success';
-      msgBox.textContent = '✅ 反映已提交成功！感谢您的参与。';
+      msgBox.className = 'msg success show';
+      msgBox.innerHTML = '✅ <span>反映已提交成功！感谢您的参与，我们将认真核实处理。</span>';
       document.getElementById('reportForm').reset();
       districtSelect.disabled = true;
       districtSelect.innerHTML = '<option value="">-- 请先选择市 --</option>';
     } else {
-      msgBox.className = 'msg error';
-      msgBox.textContent = '❌ 提交失败：' + (result.error || '未知错误');
+      msgBox.className = 'msg error show';
+      msgBox.innerHTML = '❌ <span>提交失败：' + (result.error || '未知错误') + '</span>';
     }
   } catch(err) {
-    msgBox.className = 'msg error';
-    msgBox.textContent = '❌ 网络错误：' + err.message;
+    msgBox.className = 'msg error show';
+    msgBox.innerHTML = '❌ <span>网络错误：' + err.message + '</span>';
   }
-  
+
   btn.disabled = false;
   btn.textContent = '提交反映';
 });

@@ -5,123 +5,628 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>整治形式主义为基层减负公开通报典型问题数据库</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f7fa; color: #333; }
+/* ========== Reset & Base ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 
-/* Header */
-.header { background: linear-gradient(135deg, #c0392b, #e74c3c); color: white; padding: 24px 0; }
-.header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-.header h1 { font-size: 24px; margin-bottom: 12px; }
-.stats-bar { display: flex; gap: 24px; flex-wrap: wrap; font-size: 14px; opacity: 0.9; }
-.stats-bar .stat { background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; }
+/* ========== Government Header ========== */
+.gov-header {
+  background: linear-gradient(180deg, #c41e3a 0%, #a01830 100%);
+  position: relative;
+  overflow: hidden;
+}
+.gov-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.gov-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+/* Top bar */
+.gov-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+.gov-topbar a { color: rgba(255,255,255,0.8); text-decoration: none; }
+.gov-topbar a:hover { color: #fff; }
+/* Main header area */
+.gov-title-area {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 0 24px;
+}
+.gov-emblem {
+  width: 64px;
+  height: 64px;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.gov-title-text h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1.3;
+}
+.gov-title-text p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+  margin-top: 6px;
+}
+/* Stats strip */
+.gov-stats {
+  display: flex;
+  gap: 0;
+  padding-bottom: 20px;
+}
+.gov-stat {
+  flex: 1;
+  text-align: center;
+  padding: 16px 12px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+.gov-stat:last-child { border-right: none; }
+.gov-stat-num {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  display: block;
+  line-height: 1.1;
+}
+.gov-stat-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  margin-top: 4px;
+  display: block;
+}
 
-/* Search & Filter */
-.controls { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
-.search-box { display: flex; gap: 10px; margin-bottom: 16px; }
-.search-box input { flex: 1; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; transition: border-color 0.2s; }
-.search-box input:focus { border-color: #e74c3c; }
-.search-box button { padding: 12px 24px; background: #e74c3c; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
-.search-box button:hover { background: #c0392b; }
+/* ========== Nav Bar ========== */
+.gov-nav {
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.gov-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.gov-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 20px;
+  font-size: 14px;
+  color: #555;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+.gov-nav a:hover, .gov-nav a.active {
+  color: #c41e3a;
+  border-bottom-color: #c41e3a;
+  background: rgba(196,30,58,0.03);
+}
 
-/* Filter panels */
-.filters { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
-.filter-group { background: white; border-radius: 8px; padding: 12px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-.filter-group h3 { font-size: 13px; color: #888; margin-bottom: 8px; }
-.filter-group label { display: inline-block; margin: 2px 6px 2px 0; font-size: 14px; cursor: pointer; }
-.filter-group input[type="checkbox"] { margin-right: 4px; accent-color: #e74c3c; }
+/* ========== Main Content ========== */
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 24px 60px;
+}
 
-/* Results */
-.results { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
-.results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.results-header h2 { font-size: 18px; color: #555; }
-.results-count { color: #888; font-size: 14px; }
+/* ========== Search Section ========== */
+.search-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.search-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.search-input-wrap {
+  flex: 1;
+  position: relative;
+}
+.search-input-wrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #999;
+}
+.search-input {
+  width: 100%;
+  padding: 13px 16px 13px 42px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.search-input:focus { border-color: #c41e3a; }
+.search-btn {
+  padding: 13px 28px;
+  background: #c41e3a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.search-btn:hover { background: #a01830; }
 
-/* Notice card */
-.notice-card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: box-shadow 0.2s; cursor: pointer; }
-.notice-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.notice-card h3 { font-size: 17px; color: #2c3e50; margin-bottom: 8px; line-height: 1.5; }
-.notice-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; font-size: 13px; color: #888; }
-.notice-meta .date { color: #e74c3c; font-weight: 500; }
-.notice-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-.tag { padding: 3px 10px; border-radius: 12px; font-size: 12px; }
-.tag-level { background: #e8f5e9; color: #2e7d32; }
-.tag-problem { background: #fff3e0; color: #e65100; }
-.tag-province { background: #e3f2fd; color: #1565c0; }
-.notice-preview { font-size: 14px; color: #666; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.notice-link { display: inline-block; margin-top: 8px; font-size: 13px; color: #3498db; text-decoration: none; }
-.notice-link:hover { text-decoration: underline; }
+/* Filter chips */
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.filter-label {
+  font-size: 13px;
+  color: #888;
+  margin-right: 4px;
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #555;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+.filter-chip:hover { border-color: #c41e3a; color: #c41e3a; }
+.filter-chip.active {
+  background: #c41e3a;
+  border-color: #c41e3a;
+  color: #fff;
+}
+.filter-chip .count {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-left: 2px;
+}
 
-/* Pagination */
-.pagination { display: flex; justify-content: center; gap: 8px; margin: 24px 0; }
-.pagination button { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; }
-.pagination button.active { background: #e74c3c; color: white; border-color: #e74c3c; }
-.pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+/* ========== Results Section ========== */
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.results-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+.results-count {
+  font-size: 14px;
+  color: #888;
+}
 
-/* Detail modal */
-.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
+/* Notice cards */
+.notice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.notice-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.notice-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #c41e3a, #e85a7a);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.notice-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+  border-color: #c41e3a;
+}
+.notice-card:hover::before { opacity: 1; }
+.notice-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.notice-card-meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #888;
+}
+.notice-card-meta .date { color: #c41e3a; font-weight: 500; }
+.notice-card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.tag-level { background: #fff0f0; color: #c41e3a; border: 1px solid #ffcdd2; }
+.tag-problem { background: #fff8e1; color: #e65100; border: 1px solid #ffe0b2; }
+.tag-province { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.notice-card-preview {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.notice-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+.notice-card-link {
+  font-size: 13px;
+  color: #1976d2;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.notice-card-link:hover { text-decoration: underline; }
+.notice-card-count {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ========== Pagination ========== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 32px 0;
+}
+.pagination button {
+  min-width: 38px;
+  height: 38px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pagination button:hover { border-color: #c41e3a; color: #c41e3a; }
+.pagination button.active {
+  background: #c41e3a;
+  border-color: #c41e3a;
+  color: #fff;
+}
+.pagination button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ========== Detail Modal ========== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  overflow-y: auto;
+  backdrop-filter: blur(2px);
+}
 .modal-overlay.show { display: flex; }
-.modal { background: white; border-radius: 12px; max-width: 800px; max-height: 80vh; overflow-y: auto; padding: 30px; margin: 20px; }
-.modal h2 { font-size: 20px; margin-bottom: 16px; line-height: 1.5; }
-.modal .meta { color: #888; font-size: 14px; margin-bottom: 16px; }
-.modal .content { font-size: 15px; line-height: 1.8; white-space: pre-wrap; }
-.modal .close-btn { position: sticky; top: 0; float: right; background: #eee; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 36px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  margin: auto;
+}
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: #eee; color: #333; }
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  padding-right: 40px;
+}
+.modal-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
+}
+.modal-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.modal-content {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #333;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.modal-content p { margin-bottom: 12px; }
+.modal-source {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+.modal-source a {
+  color: #1976d2;
+  text-decoration: none;
+  font-size: 14px;
+}
+.modal-source a:hover { text-decoration: underline; }
 
-.loading { text-align: center; padding: 40px; color: #888; }
+/* ========== Footer ========== */
+.gov-footer {
+  background: #1a1a2e;
+  color: rgba(255,255,255,0.6);
+  padding: 32px 24px;
+  text-align: center;
+  font-size: 13px;
+}
+.gov-footer a { color: rgba(255,255,255,0.8); text-decoration: none; }
+.gov-footer a:hover { color: #fff; }
+.gov-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.update-time { color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 8px; }
+
+/* ========== Loading & Empty ========== */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 15px;
+}
+.loading::after {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #c41e3a;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.8s linear infinite;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 .empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 16px; }
-.update-time { text-align: center; padding: 10px; color: #999; font-size: 12px; }
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .gov-title-area { flex-direction: column; text-align: center; padding: 20px 0; }
+  .gov-title-text h1 { font-size: 20px; }
+  .gov-stats { flex-wrap: wrap; }
+  .gov-stat { flex: 0 0 50%; border-right: none; padding: 12px; }
+  .gov-stat-num { font-size: 24px; }
+  .notice-grid { grid-template-columns: 1fr; }
+  .search-row { flex-direction: column; }
+  .modal { padding: 24px; }
+  .gov-nav-inner { overflow-x: auto; }
+  .gov-nav a { padding: 12px 14px; white-space: nowrap; }
+}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-inner">
-    <h1>📋 整治形式主义为基层减负公开通报典型问题数据库</h1>
-    <div class="stats-bar" id="statsBar">
-      <span class="stat">加载中...</span>
+<!-- Government Header -->
+<div class="gov-header">
+  <div class="gov-header-inner">
+    <div class="gov-topbar">
+      <span>整治形式主义为基层减负信息公开平台</span>
+      <span><a href="report.html">📝 情况反映</a></span>
+    </div>
+    <div class="gov-title-area">
+      <div class="gov-emblem">⚖️</div>
+      <div class="gov-title-text">
+        <h1>整治形式主义为基层减负<br>公开通报典型问题数据库</h1>
+        <p>中央及各省级层面整治形式主义为基层减负专项工作机制办公室通报</p>
+      </div>
+    </div>
+    <div class="gov-stats" id="govStats">
+      <div class="gov-stat">
+        <span class="gov-stat-num" id="statTotal">-</span>
+        <span class="gov-stat-label">通报总数</span>
+      </div>
+      <div class="gov-stat">
+        <span class="gov-stat-num" id="statProvinces">-</span>
+        <span class="gov-stat-label">涉及省份</span>
+      </div>
+      <div class="gov-stat">
+        <span class="gov-stat-num" id="statTypes">-</span>
+        <span class="gov-stat-label">问题类型</span>
+      </div>
+      <div class="gov-stat">
+        <span class="gov-stat-num" id="statUpdated">-</span>
+        <span class="gov-stat-label">最后更新</span>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="controls">
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="输入关键词搜索通报..." />
-    <button onclick="doSearch()">🔍 搜索</button>
-  </div>
-  <div class="filters" id="filtersArea">
-    <div class="filter-group">
-      <h3>一级分类</h3>
-      <div id="levelFilters"></div>
-    </div>
-    <div class="filter-group">
-      <h3>问题类型</h3>
-      <div id="tagFilters"></div>
-    </div>
-    <div class="filter-group">
-      <h3>涉及省份</h3>
-      <div id="provinceFilters"></div>
-    </div>
+<!-- Navigation -->
+<div class="gov-nav">
+  <div class="gov-nav-inner">
+    <a href="index.html" class="active">📋 通报数据库</a>
+    <a href="report.html">📝 情况反映</a>
   </div>
 </div>
 
-<div class="results">
+<!-- Main Content -->
+<div class="main-content">
+
+  <!-- Search -->
+  <div class="search-section">
+    <div class="search-row">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="搜索通报标题、内容关键词..." />
+      </div>
+      <button class="search-btn" onclick="doSearch()">🔍 搜索</button>
+    </div>
+    <div class="filter-row" id="filterChips">
+      <span class="filter-label">快速筛选：</span>
+      <div id="chipContainer"></div>
+    </div>
+  </div>
+
+  <!-- Results -->
   <div class="results-header">
-    <h2 id="resultsTitle">全部通报</h2>
-    <span class="results-count" id="resultsCount"></span>
+    <div class="results-title" id="resultsTitle">全部通报</div>
+    <div class="results-count" id="resultsCount"></div>
   </div>
-  <div id="noticeList"><div class="loading">加载中...</div></div>
+  <div class="notice-grid" id="noticeGrid">
+    <div class="loading">加载中</div>
+  </div>
   <div class="pagination" id="pagination"></div>
+
+</div>
+
+<!-- Footer -->
+<div class="gov-footer">
+  <div class="gov-footer-links">
+    <a href="index.html">通报数据库</a>
+    <a href="report.html">情况反映</a>
+    <a href="https://github.com/harviex/jianfu-tongbao" target="_blank">GitHub 仓库</a>
+  </div>
+  <div>数据来源：人民网 · 各省纪委监委网站</div>
   <div class="update-time" id="updateTime"></div>
 </div>
 
 <!-- Detail Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
-    <button class="close-btn" onclick="closeModal()">✕</button>
-    <h2 id="modalTitle"></h2>
-    <div class="meta" id="modalMeta"></div>
-    <div id="modalTags"></div>
-    <div class="content" id="modalContent"></div>
-    <a id="modalLink" href="#" target="_blank" class="notice-link" style="margin-top:16px;display:block">📄 查看原文</a>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-meta" id="modalMeta"></div>
+    <div class="modal-tags" id="modalTags"></div>
+    <div class="modal-content" id="modalContent"></div>
+    <div class="modal-source">
+      <a id="modalLink" href="#" target="_blank">📄 查看原文 →</a>
+    </div>
   </div>
 </div>
 
@@ -130,152 +635,155 @@ const DATA_BASE = 'data';
 let allNotices = [];
 let stats = {};
 let currentPage = 1;
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 12;
 let filteredNotices = [];
+let activeFilters = { level: [], tags: [], provinces: [] };
 
 // ========== Init ==========
 async function init() {
-  await loadStats();
-  await loadNotices();
+  try {
+    const [statsRes, noticesRes] = await Promise.all([
+      fetch(`${DATA_BASE}/stats.json?t=${Date.now()}`),
+      fetch(`${DATA_BASE}/notices.json?t=${Date.now()}`)
+    ]);
+    stats = await statsRes.json();
+    allNotices = await noticesRes.json();
+    filteredNotices = allNotices;
+
+    renderStats();
+    renderChips();
+    renderNotices();
+    renderPagination();
+
+    if (stats.last_updated) {
+      document.getElementById('updateTime').textContent = `数据最后更新：${stats.last_updated}`;
+    }
+  } catch (err) {
+    console.error('Load error:', err);
+    document.getElementById('noticeGrid').innerHTML = '<div class="empty">数据加载失败，请刷新页面重试</div>';
+  }
   document.getElementById('searchInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') doSearch();
   });
 }
 
-async function loadStats() {
-  try {
-    const res = await fetch(`${DATA_BASE}/stats.json?t=${Date.now()}`);
-    stats = await res.json();
-    
-    // Stats bar
-    document.getElementById('statsBar').innerHTML = `
-      <span class="stat">📊 共 ${stats.total} 条通报</span>
-      <span class="stat">🏛️ ${stats.provinces.length} 个省份涉及</span>
-      <span class="stat">📅 更新: ${stats.last_updated || '未知'}</span>
-    `;
-    
-    // Level filters
-    document.getElementById('levelFilters').innerHTML = stats.byLevel.map(l =>
-      `<label><input type="checkbox" value="${l.level_1}" onchange="applyFilters()"> ${l.level_1} (${l.count})</label>`
-    ).join('');
-    
-    // Tag filters
-    document.getElementById('tagFilters').innerHTML = stats.tags.map(t =>
-      `<label><input type="checkbox" value="${t.tag}" onchange="applyFilters()"> ${t.tag} (${t.count})</label>`
-    ).join('');
-    
-    // Province filters
-    document.getElementById('provinceFilters').innerHTML = stats.provinces.map(p =>
-      `<label><input type="checkbox" value="${p.province}" onchange="applyFilters()"> ${p.province} (${p.count})</label>`
-    ).join('');
-    
-    // Update time
-    if (stats.last_updated) {
-      document.getElementById('updateTime').textContent = `数据最后更新: ${stats.last_updated}`;
-    }
-  } catch (err) {
-    console.error('Failed to load stats:', err);
-  }
+function renderStats() {
+  document.getElementById('statTotal').textContent = stats.total || 0;
+  document.getElementById('statProvinces').textContent = (stats.provinces || []).length;
+  document.getElementById('statTypes').textContent = (stats.tags || []).length;
+  document.getElementById('statUpdated').textContent = (stats.last_updated || '').split(' ')[0] || '-';
 }
 
-async function loadNotices() {
-  try {
-    const res = await fetch(`${DATA_BASE}/notices.json?t=${Date.now()}`);
-    allNotices = await res.json();
-    filteredNotices = allNotices;
-    applyFilters();
-  } catch (err) {
-    document.getElementById('noticeList').innerHTML = '<div class="empty">加载数据失败，请刷新页面重试</div>';
-    console.error('Failed to load notices:', err);
+function renderChips() {
+  const container = document.getElementById('chipContainer');
+  const chips = [];
+
+  // Level chips
+  (stats.byLevel || []).forEach(l => {
+    chips.push(`<div class="filter-chip" data-type="level" data-value="${l.level_1}" onclick="toggleChip(this)">${l.level_1} <span class="count">(${l.count})</span></div>`);
+  });
+
+  // Tag chips (top 6)
+  (stats.tags || []).slice(0, 6).forEach(t => {
+    chips.push(`<div class="filter-chip" data-type="tags" data-value="${t.tag}" onclick="toggleChip(this)">${t.tag} <span class="count">(${t.count})</span></div>`);
+  });
+
+  // Province chips (top 8)
+  (stats.provinces || []).slice(0, 8).forEach(p => {
+    chips.push(`<div class="filter-chip" data-type="provinces" data-value="${p.province}" onclick="toggleChip(this)">${p.province} <span class="count">(${p.count})</span></div>`);
+  });
+
+  container.innerHTML = chips.join('');
+}
+
+function toggleChip(el) {
+  el.classList.toggle('active');
+  const type = el.dataset.type;
+  const value = el.dataset.value;
+
+  if (type === 'level') {
+    activeFilters.level = getActiveValues('level');
+  } else if (type === 'tags') {
+    activeFilters.tags = getActiveValues('tags');
+  } else if (type === 'provinces') {
+    activeFilters.provinces = getActiveValues('provinces');
   }
+  applyFilters();
+}
+
+function getActiveValues(type) {
+  return [...document.querySelectorAll(`.filter-chip[data-type="${type}"].active`)].map(el => el.dataset.value);
 }
 
 function applyFilters() {
-  const params = getFilterParams();
-  const search = params.search?.toLowerCase() || '';
-  const levels = params.level_1 || [];
-  const tags = params.tag || [];
-  const provinces = params.province || [];
-  
+  const search = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+
   filteredNotices = allNotices.filter(n => {
-    // Search filter
-    if (search && !n.title.toLowerCase().includes(search) && 
-        !(n.content || '').toLowerCase().includes(search)) {
-      return false;
-    }
-    
-    // Level filter
-    if (levels.length && !levels.includes(n.level_1)) {
-      return false;
-    }
-    
-    // Tag filter
-    if (tags.length && (!n.tags || !tags.some(t => n.tags.includes(t)))) {
-      return false;
-    }
-    
-    // Province filter
-    if (provinces.length && (!n.provinces || !provinces.some(p => n.provinces.includes(p)))) {
-      return false;
-    }
-    
+    if (search && !n.title.toLowerCase().includes(search) && !(n.content || '').toLowerCase().includes(search)) return false;
+    if (activeFilters.level.length && !activeFilters.level.includes(n.level_1)) return false;
+    if (activeFilters.tags.length && (!n.tags || !activeFilters.tags.some(t => n.tags.includes(t)))) return false;
+    if (activeFilters.provinces.length && (!n.provinces || !activeFilters.provinces.some(p => n.provinces.includes(p)))) return false;
     return true;
   });
-  
+
   currentPage = 1;
   renderNotices();
   renderPagination();
-  
-  // Update title
-  const labels = [];
-  if (levels.length) labels.push(levels.join(', '));
-  if (tags.length) labels.push(tags.join(', '));
-  if (provinces.length) labels.push(provinces.join(', '));
+
+  const labels = [...activeFilters.level, ...activeFilters.tags, ...activeFilters.provinces];
   if (search) labels.push(`"${search}"`);
-  document.getElementById('resultsTitle').textContent = labels.length ? `筛选: ${labels.join(' / ')}` : '全部通报';
+  document.getElementById('resultsTitle').textContent = labels.length ? `筛选：${labels.join(' / ')}` : '全部通报';
   document.getElementById('resultsCount').textContent = `共 ${filteredNotices.length} 条`;
 }
 
+function doSearch() { applyFilters(); }
+
 function renderNotices() {
-  const el = document.getElementById('noticeList');
+  const el = document.getElementById('noticeGrid');
   const start = (currentPage - 1) * PAGE_SIZE;
-  const end = start + PAGE_SIZE;
-  const pageData = filteredNotices.slice(start, end);
-  
+  const pageData = filteredNotices.slice(start, start + PAGE_SIZE);
+
   if (!pageData.length) {
     el.innerHTML = '<div class="empty">暂无匹配的通报</div>';
     return;
   }
-  
-  el.innerHTML = pageData.map(n => `
-    <div class="notice-card" onclick="showDetail(${n.id})">
-      <h3>${esc(n.title)}</h3>
-      <div class="notice-meta">
-        <span class="date">📅 ${n.publish_date || '未知日期'}</span>
-        <span>📁 ${n.level_1 || '-'}</span>
-        ${n.case_count ? `<span>📌 ${n.case_count} 起案例</span>` : ''}
+
+  el.innerHTML = pageData.map(n => {
+    const tags = (n.tags || []).map(t => `<span class="tag tag-problem">${esc(t)}</span>`).join('');
+    const provinces = (n.provinces || []).map(p => `<span class="tag tag-province">${esc(p)}</span>`).join('');
+    const preview = (n.content_preview || n.content || '').replace(/<[^>]+>/g, '').substring(0, 120);
+    return `
+      <div class="notice-card" onclick="showDetail(${n.id})">
+        <div class="notice-card-title">${esc(n.title)}</div>
+        <div class="notice-card-meta">
+          <span class="date">📅 ${n.publish_date || '未知日期'}</span>
+          <span>📁 ${esc(n.level_1 || '-')}</span>
+          ${n.case_count ? `<span>📌 ${n.case_count} 起</span>` : ''}
+        </div>
+        <div class="notice-card-tags">
+          <span class="tag tag-level">${esc(n.level_1 || '-')}</span>
+          ${tags}
+          ${provinces}
+        </div>
+        <div class="notice-card-preview">${esc(preview)}...</div>
+        <div class="notice-card-footer">
+          <a class="notice-card-link" href="${n.source_url}" target="_blank" onclick="event.stopPropagation()">📄 原文链接</a>
+        </div>
       </div>
-      <div class="notice-tags">
-        <span class="tag tag-level">${n.level_1 || '-'}</span>
-        ${(n.tags || []).map(t => `<span class="tag tag-problem">${t}</span>`).join('')}
-        ${(n.provinces || []).map(p => `<span class="tag tag-province">${p}</span>`).join('')}
-      </div>
-      <div class="notice-preview">${esc(n.content_preview || '')}</div>
-      <a class="notice-link" href="${n.source_url}" target="_blank" onclick="event.stopPropagation()">📄 原文链接</a>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function renderPagination() {
   const pages = Math.ceil(filteredNotices.length / PAGE_SIZE);
   const el = document.getElementById('pagination');
   if (pages <= 1) { el.innerHTML = ''; return; }
-  
-  let html = `<button ${currentPage<=1?'disabled':''} onclick="goPage(${currentPage-1})">‹ 上一页</button>`;
+
+  let html = `<button ${currentPage<=1?'disabled':''} onclick="goPage(${currentPage-1})">‹</button>`;
   for (let i = Math.max(1, currentPage-2); i <= Math.min(pages, currentPage+2); i++) {
     html += `<button class="${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
   }
-  html += `<button ${currentPage>=pages?'disabled':''} onclick="goPage(${currentPage+1})">下一页 ›</button>`;
+  html += `<button ${currentPage>=pages?'disabled':''} onclick="goPage(${currentPage+1})">›</button>`;
   el.innerHTML = html;
 }
 
@@ -283,60 +791,43 @@ function goPage(p) {
   currentPage = p;
   renderNotices();
   renderPagination();
-  window.scrollTo({top: 0, behavior: 'smooth'});
-}
-
-function getFilterParams() {
-  const params = {};
-  
-  const search = document.getElementById('searchInput').value.trim();
-  if (search) params.search = search;
-  
-  const levels = getChecked('levelFilters');
-  if (levels.length) params.level_1 = levels;
-  
-  const tags = getChecked('tagFilters');
-  if (tags.length) params.tag = tags;
-  
-  const provs = getChecked('provinceFilters');
-  if (provs.length) params.province = provs;
-  
-  return params;
-}
-
-function getChecked(containerId) {
-  return [...document.getElementById(containerId).querySelectorAll('input:checked')].map(cb => cb.value);
-}
-
-function doSearch() {
-  applyFilters();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function showDetail(id) {
   const n = allNotices.find(item => item.id === id);
   if (!n) return;
-  
+
   document.getElementById('modalTitle').textContent = n.title;
   document.getElementById('modalMeta').innerHTML = `
-    发布日期: ${n.publish_date || '未知'} &nbsp;|&nbsp; 
-    分类: ${n.level_1} &nbsp;|&nbsp; 
-    来源: ${n.source_site || '-'}
+    <span>📅 ${n.publish_date || '未知日期'}</span>
+    <span>📁 ${esc(n.level_1 || '-')}</span>
+    <span>🏛️ ${esc(n.source_site || '-')}</span>
+    ${n.case_count ? `<span>📌 ${n.case_count} 起案例</span>` : ''}
   `;
   document.getElementById('modalTags').innerHTML = `
-    <div class="notice-tags" style="margin:12px 0">
-      ${(n.tags||[]).map(t => `<span class="tag tag-problem">${t}</span>`).join('')}
-      ${(n.provinces||[]).map(p => `<span class="tag tag-province">${p}</span>`).join('')}
-    </div>`;
-  document.getElementById('modalContent').textContent = n.content || '暂无正文';
+    ${(n.tags||[]).map(t => `<span class="tag tag-problem">${esc(t)}</span>`).join('')}
+    ${(n.provinces||[]).map(p => `<span class="tag tag-province">${esc(p)}</span>`).join('')}
+  `;
+  // Strip HTML tags for clean text display
+  const cleanContent = (n.content || '暂无正文').replace(/<[^>]+>/g, '').replace(/\s+/g, '\n').trim();
+  document.getElementById('modalContent').textContent = cleanContent;
   document.getElementById('modalLink').href = n.source_url;
   document.getElementById('modalOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('show');
+  document.body.style.overflow = '';
 }
 
-function esc(s) { return s ? s.replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 init();
