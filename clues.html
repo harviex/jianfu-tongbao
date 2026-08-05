@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>减负线索库 - 整治形式主义为基层减负</title>
+<style>
+/* ========== Reset & Base ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========== Government Header ========== */
+.gov-header {
+  background: linear-gradient(180deg, #c41e3a 0%, #a01830 100%);
+  position: relative;
+  overflow: hidden;
+}
+.gov-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.gov-header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+.gov-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+.gov-topbar a { color: rgba(255,255,255,0.8); text-decoration: none; }
+.gov-topbar a:hover { color: #fff; }
+.gov-title-area {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 0 24px;
+}
+.gov-emblem {
+  width: 64px;
+  height: 64px;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.gov-title-text h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1.3;
+}
+.gov-title-text p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+  margin-top: 6px;
+}
+.gov-stats {
+  display: flex;
+  gap: 0;
+  padding-bottom: 20px;
+}
+.gov-stat {
+  flex: 1;
+  text-align: center;
+  padding: 16px 12px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+.gov-stat:last-child { border-right: none; }
+.gov-stat-num {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  display: block;
+  line-height: 1.1;
+}
+.gov-stat-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  margin-top: 4px;
+  display: block;
+}
+
+/* ========== Nav Bar ========== */
+.gov-nav {
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.gov-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.gov-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 20px;
+  font-size: 14px;
+  color: #555;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+.gov-nav a:hover, .gov-nav a.active {
+  color: #c41e3a;
+  border-bottom-color: #c41e3a;
+  background: rgba(196,30,58,0.03);
+}
+
+/* ========== Main Content ========== */
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 24px 60px;
+}
+
+/* ========== Section Card ========== */
+.section-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+.section-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fff;
+  color: #555;
+}
+.btn:hover { border-color: #c41e3a; color: #c41e3a; }
+.btn-primary {
+  background: #c41e3a;
+  border-color: #c41e3a;
+  color: #fff;
+}
+.btn-primary:hover { background: #a01830; border-color: #a01830; color: #fff; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* ========== Standard Table (认定标准) ========== */
+.standard-table-wrap {
+  overflow-x: auto;
+  padding: 16px 24px;
+}
+.standard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 900px;
+}
+.standard-table th {
+  background: #f8f9fa;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #eee;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.standard-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+}
+.standard-table tr:hover { background: #fafafa; }
+.standard-table .cell-edit { outline: none; min-width: 120px; }
+.standard-table .cell-edit:focus { background: #fff8e1; }
+.standard-table .tag-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  margin: 2px 4px 2px 0;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+.standard-table .tag-chip.warning { background: #fff8e1; color: #e65100; border-color: #ffe0b2; }
+.standard-table .tag-chip.danger { background: #ffebee; color: #c62828; border-color: #ffcdd2; }
+.standard-table .tag-chip.info { background: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
+
+/* ========== Clues Table (线索数据) ========== */
+.clues-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
+.search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #999; }
+.search-input {
+  width: 100%;
+  padding: 10px 14px 10px 36px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: #c41e3a; }
+.filter-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-select {
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+.filter-select:focus { border-color: #c41e3a; }
+.clues-table-wrap { overflow-x: auto; }
+.clues-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 1200px;
+}
+.clues-table th {
+  background: #f8f9fa;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #eee;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.clues-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+}
+.clues-table tr:hover { background: #fafafa; }
+.clues-table .content-preview {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.clues-table .content-full {
+  display: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 8px;
+  background: #fafafa;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.clues-table .expand-btn {
+  background: none;
+  border: none;
+  color: #1976d2;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+  margin-left: 4px;
+}
+.clues-table .tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  margin: 1px 3px 1px 0;
+}
+.clues-table .tag-category { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.clues-table .tag-subcategory { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+.clues-table .tag-typical { background: #fff0f0; color: #c41e3a; border: 1px solid #ffcdd2; }
+.clues-table .tag-root { background: #f3e5f5; color: #7b1fa2; border: 1px solid #e1bee7; }
+.clues-table .confidence {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+.clues-table .confidence-bar {
+  width: 60px;
+  height: 6px;
+  background: #eee;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.clues-table .confidence-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+.clues-table .confidence-high { background: #4caf50; }
+.clues-table .confidence-medium { background: #ff9800; }
+.clues-table .confidence-low { background: #f44336; }
+.clues-table .evidence-cell { max-width: 200px; font-size: 12px; line-height: 1.5; }
+.clues-table .analysis-cell { max-width: 250px; font-size: 12px; line-height: 1.5; }
+.clues-table .actions { display: flex; gap: 6px; }
+.clues-table .action-btn {
+  padding: 4px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.2s;
+}
+.clues-table .action-btn:hover { background: #f5f5f5; }
+.clues-table .action-btn.edit:hover { border-color: #1976d2; color: #1976d2; }
+.clues-table .action-btn.delete:hover { border-color: #c62828; color: #c62828; background: #ffebee; }
+
+/* ========== Modal (详情/编辑) ========== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  overflow-y: auto;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  margin: auto;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
+}
+.modal-title { font-size: 20px; font-weight: 700; color: #1a1a2e; }
+.modal-close {
+  width: 36px; height: 36px;
+  border: none; background: #f5f5f5;
+  border-radius: 50%; font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: #666; transition: all 0.2s;
+}
+.modal-close:hover { background: #eee; color: #333; }
+.modal-body { font-size: 14px; line-height: 1.8; color: #333; }
+.modal-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; margin-bottom: 16px; align-items: start; }
+.modal-label { font-weight: 600; color: #555; font-size: 13px; }
+.modal-value { color: #333; word-break: break-word; }
+.modal-value pre { white-space: pre-wrap; font-family: inherit; font-size: 13px; background: #fafafa; padding: 12px; border-radius: 8px; max-height: 300px; overflow-y: auto; }
+.modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid #eee; }
+
+/* ========== Toast ========== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  z-index: 2000;
+  transform: translateX(400px);
+  opacity: 0;
+  transition: all 0.3s;
+}
+.toast.show { transform: translateX(0); opacity: 1; }
+.toast.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.toast.error { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+.toast.info { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+
+/* ========== Empty & Loading ========== */
+.empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 16px; }
+.loading { text-align: center; padding: 40px 20px; color: #999; font-size: 15px; }
+.loading::after {
+  content: ''; display: inline-block; width: 20px; height: 20px;
+  border: 2px solid #c41e3a; border-radius: 50%; border-top-color: transparent;
+  animation: spin 0.8s linear infinite; margin-left: 8px; vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ========== Pagination ========== */
+.pagination { display: flex; justify-content: center; gap: 6px; padding: 20px; }
+.pagination button {
+  min-width: 36px; height: 36px;
+  border: 1px solid #ddd; border-radius: 8px;
+  background: #fff; cursor: pointer; font-size: 13px; color: #555;
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+}
+.pagination button:hover { border-color: #c41e3a; color: #c41e3a; }
+.pagination button.active { background: #c41e3a; border-color: #c41e3a; color: #fff; }
+.pagination button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ========== Footer ========== */
+.gov-footer {
+  background: #1a1a2e;
+  color: rgba(255,255,255,0.6);
+  padding: 32px 24px;
+  text-align: center;
+  font-size: 13px;
+}
+.gov-footer a { color: rgba(255,255,255,0.8); text-decoration: none; }
+.gov-footer a:hover { color: #fff; }
+.gov-footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
+.update-time { color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 8px; }
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .gov-title-area { flex-direction: column; text-align: center; padding: 20px 0; }
+  .gov-title-text h1 { font-size: 20px; }
+  .gov-stats { flex-wrap: wrap; }
+  .gov-stat { flex: 0 0 50%; border-right: none; padding: 12px; }
+  .gov-stat-num { font-size: 24px; }
+  .clues-toolbar { flex-direction: column; align-items: stretch; }
+  .search-wrap { min-width: 0; }
+  .filter-group { justify-content: center; }
+  .modal { padding: 20px; margin: 10px; }
+  .modal-row { grid-template-columns: 1fr; gap: 4px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Government Header -->
+<div class="gov-header">
+  <div class="gov-header-inner">
+    <div class="gov-topbar">
+      <span>整治形式主义为基层减负信息公开平台</span>
+      <span><a href="index.html">📋 通报数据库</a> · <a href="report.html">📝 情况反映</a></span>
+    </div>
+    <div class="gov-title-area">
+      <div class="gov-emblem">📌</div>
+      <div class="gov-title-text">
+        <h1>整治形式主义为基层减负<br>线索研判库</h1>
+        <p>从群众诉求中发现、提炼、定性形式主义与基层增负问题线索</p>
+      </div>
+    </div>
+    <div class="gov-stats" id="govStats">
+      <div class="gov-stat">
+        <span class="gov-stat-num" id="statTotal">-</span>
+        <span class="gov-stat-label">线索总数</span>
+      </div>
+      <div class="gov-stat">
+        <span class="gov-stat-num" id="statCategories">-</span>
+        <span class="gov-stat-label">覆盖分类</span>
+      </div>
+      <div class="gov-stat">
+        <span class="gov-stat-num" id="statTypical">-</span>
+        <span class="gov-stat-label">典型案例</span>
+      </div>
+      <div class="gov-stat">
+        <span class="gov-stat-num" id="statHighConf">-</span>
+        <span class="gov-stat-label">高置信度</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div class="gov-nav">
+  <div class="gov-nav-inner">
+    <a href="index.html">📋 通报数据库</a>
+    <a href="report.html">📝 情况反映</a>
+    <a href="clues.html" class="active">📌 线索库</a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+  <!-- Section 1: 认定标准表格 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-title">📋 认定标准对照表 <span id="standardVersion" style="font-size:12px;font-weight:400;color:#999;margin-left:8px;"></span></div>
+      <div class="section-actions">
+        <button class="btn btn-primary" onclick="addStandardRow()">+ 新增行</button>
+        <button class="btn" onclick="saveStandards()">💾 保存标准</button>
+        <button class="btn" onclick="exportStandards()">📤 导出标准</button>
+        <button class="btn" id="importStandardsBtn">📥 导入标准</button>
+        <input type="file" id="importStandardsFile" accept=".json" style="display:none" onchange="importStandards(event)">
+      </div>
+    </div>
+    <div class="standard-table-wrap">
+      <table class="standard-table" id="standardTable">
+        <thead>
+          <tr>
+            <th style="width:40px;">序号</th>
+            <th style="width:140px;">一级分类</th>
+            <th style="width:200px;">二级细分</th>
+            <th style="width:160px;">判定依据(条款)</th>
+            <th style="width:220px;">关键词/特征</th>
+            <th style="width:200px;">典型案例链接</th>
+            <th style="width:60px;">启用</th>
+            <th style="width:60px;">操作</th>
+          </tr>
+        </thead>
+        <tbody id="standardBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 2: 线索数据表格 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-title">🔍 线索数据表格</div>
+      <div class="section-actions">
+        <span id="cluesCount" style="font-size:13px;color:#888;align-self:center;">共 0 条</span>
+      </div>
+    </div>
+    <div class="clues-toolbar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" class="search-input" id="cluesSearch" placeholder="搜索诉求内容、编号、被诉单位、标签..." />
+      </div>
+      <div class="filter-group">
+        <select class="filter-select" id="filterCategory">
+          <option value="">全部分类</option>
+        </select>
+        <select class="filter-select" id="filterSubcategory">
+          <option value="">全部细分</option>
+        </select>
+        <select class="filter-select" id="filterTypical">
+          <option value="">全部</option>
+          <option value="true">典型案例</option>
+          <option value="false">非典型</option>
+        </select>
+        <select class="filter-select" id="filterRootCause">
+          <option value="">全部根因</option>
+        </select>
+        <select class="filter-select" id="filterConfidence">
+          <option value="">全部置信度</option>
+          <option value="high">高 (≥0.8)</option>
+          <option value="medium">中 (0.5-0.8)</option>
+          <option value="low">低 (<0.5)</option>
+        </select>
+        <button class="btn btn-primary" onclick="applyCluesFilters()">🔍 筛选</button>
+        <button class="btn" onclick="resetCluesFilters()">↺ 重置</button>
+        <button class="btn btn-primary" onclick="exportClues()">📤 导出当前</button>
+      </div>
+    </div>
+    <div class="clues-table-wrap">
+      <table class="clues-table" id="cluesTable">
+        <thead>
+          <tr>
+            <th style="width:50px;">序号</th>
+            <th style="width:100px;">分类</th>
+            <th style="width:130px;">细分</th>
+            <th style="width:120px;">诉求编号</th>
+            <th style="width:220px;">诉求内容</th>
+            <th style="width:100px;">诉求时间</th>
+            <th style="width:130px;">被诉单位</th>
+            <th style="width:90px;">地市/县区</th>
+            <th style="width:70px;">置信度</th>
+            <th style="width:50px;">典型</th>
+            <th style="width:200px;">取证建议</th>
+            <th style="width:250px;">定性分析</th>
+            <th style="width:110px;">根因</th>
+            <th style="width:150px;">标签</th>
+            <th style="width:80px;">操作</th>
+          </tr>
+        </thead>
+        <tbody id="cluesBody">
+          <tr><td colspan="15" class="loading">加载中...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination" id="cluesPagination"></div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="gov-footer">
+  <div class="gov-footer-links">
+    <a href="index.html">通报数据库</a> · <a href="report.html">情况反映</a> · <a href="clues.html">线索库</a> · <a href="https://github.com/harviex/jianfu-tongbao" target="_blank">GitHub 仓库</a>
+  </div>
+  <div>数据来源：福建12345平台 · 中央及各省纪委监委通报</div>
+  <div class="update-time" id="updateTime"></div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detailModal" onclick="if(event.target===this)closeDetailModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="detailTitle">线索详情</div>
+      <button class="modal-close" onclick="closeDetailModal()">✕</button>
+    </div>
+    <div class="modal-body" id="detailContent"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeDetailModal()">关闭</button>
+      <button class="btn btn-primary" onclick="editCurrentClue()">✏️ 编辑</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editModal" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">编辑线索</div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+      <div class="modal-row">
+        <div class="modal-label">一级分类</div>
+        <div class="modal-value">
+          <select id="editCategory" class="filter-select" style="width:100%"></select>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">二级细分</div>
+        <div class="modal-value">
+          <select id="editSubcategory" class="filter-select" style="width:100%"></select>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">诉求编号</div>
+        <div class="modal-value"><input type="text" id="editTaskNum" class="filter-select" style="width:100%"></div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">诉求内容</div>
+        <div class="modal-value"><textarea id="editContent" class="filter-select" style="width:100%;min-height:100px;font-family:inherit"></textarea></div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">诉求时间</div>
+        <div class="modal-value"><input type="datetime-local" id="editTime" class="filter-select" style="width:100%"></div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">被诉单位</div>
+        <div class="modal-value"><input type="text" id="editUnit" class="filter-select" style="width:100%"></div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">地市/县区</div>
+        <div class="modal-value">
+          <input type="text" id="editCity" class="filter-select" placeholder="地市" style="width:48%">
+          <input type="text" id="editDistrict" class="filter-select" placeholder="县区" style="width:48%">
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">取证建议</div>
+        <div class="modal-value"><textarea id="editEvidence" class="filter-select" style="width:100%;min-height:60px;font-family:inherit"></textarea></div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">定性分析</div>
+        <div class="modal-value"><textarea id="editAnalysis" class="filter-select" style="width:100%;min-height:120px;font-family:inherit"></textarea></div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">根因</div>
+        <div class="modal-value">
+          <select id="editRootCause" class="filter-select" style="width:100%">
+            <option value="">-- 请选择 --</option>
+            <option value="政绩观偏差">政绩观偏差</option>
+            <option value="制度缺失">制度缺失</option>
+            <option value="监管缺位">监管缺位</option>
+            <option value="考核异化">考核异化</option>
+            <option value="技术手段滥用">技术手段滥用</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">是否典型</div>
+        <div class="modal-value">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="editTypical"> 是
+          </label>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">标签</div>
+        <div class="modal-value"><input type="text" id="editTags" class="filter-select" style="width:100%" placeholder="逗号分隔，如：数据造假,统计造假,指令报数,漳州"></div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-label">置信度</div>
+        <div class="modal-value"><input type="number" id="editConfidence" class="filter-select" style="width:100%" step="0.01" min="0" max="1" placeholder="0-1，AI自动生成"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeEditModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveEditClue()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== 数据与状态 ==========
+let standards = [];
+let allClues = [];
+let filteredClues = [];
+let currentCluesPage = 1;
+const CLUES_PAGE_SIZE = 15;
+let currentEditId = null;
+
+// ========== 认定标准默认数据 ==========
+const DEFAULT_STANDARDS = [
+  { seq: 1, category: "数据造假", subcategory: "统计造假-指令报数/代填代报", basis: "《规定》第3条、第8条", keywords: "指令报数、代填代报、只考不核、装信封下指标、虚假审批文件", caseLink: "中央通报2026.07.15第1起(漳州/南平统计造假)", enabled: true },
+  { seq: 2, category: "数据造假", subcategory: "虚报产值/投资/指标", basis: "《规定》第3条、第8条", keywords: "虚报工业产值、虚报固投、虚报招商引资、经营主体充数", caseLink: "中央通报2026.01.19第1起(海城买榜单)、2025.10.30第1起(耒阳虚报产值)", enabled: true },
+  { seq: 3, category: "数据造假", subcategory: "虚假整改/迎检突击", basis: "《规定》第8条", keywords: "检查前突击、拍照留痕不解决、边改边犯、不惩反奖", caseLink: "中央通报2026.07.15第1起(漳州整改不力)", enabled: true },
+  { seq: 4, category: "指尖形式主义", subcategory: "政务APP泛滥/未整合", basis: "《规定》第12条", keywords: "多头建设、僵尸应用、填表报数下延到县级、数据不共享", caseLink: "中央通报2025.08.21、2026.01.16会议提及", enabled: true },
+  { seq: 5, category: "指尖形式主义", subcategory: "强制打卡/积分排名/在线时长", basis: "《规定》第13条", keywords: "打卡签到、积分排名、在线时长、强制上传照片视频轨迹", caseLink: "中央通报2025.08.21第1起(长春教育局)、2024.02.03第1起(松滋洈水镇)", enabled: true },
+  { seq: 6, category: "指尖形式主义", subcategory: "推广使用强制化/考核异化", basis: "《规定》第14条", keywords: "考核安装率/登录率、点赞转发学习时长为考评依据、强制下载", caseLink: "中央通报2024.04.08第3起(齐齐哈尔点赞)、2024.02.03第2起(定远医保局积分)", enabled: true },
+  { seq: 7, category: "权责不清/甩锅", subcategory: "清单外事项下放/签责任状转嫁", basis: "《规定》第15条、第16条", keywords: "清单外下放、签责任状、分解指标、考核验收转嫁、属地管理甩锅", caseLink: "中央通报2025.08.07第1起(恭城文旅)、2026.07.15提及", enabled: true },
+  { seq: 8, category: "权责不清/甩锅", subcategory: "证明事项滥设", basis: "《规定》第17条", keywords: "要求村社区出具无法核实证明、金融机构要求证明、万能证明", caseLink: "中央通报2025.08.07、2026.01.16会议提及", enabled: true },
+  { seq: 9, category: "权责不清/甩锅", subcategory: "工作机制/挂牌过多", basis: "《规定》第17条", keywords: "随意设立领导小组/工作站/协会、挂牌超标、配备力量", caseLink: "中央通报2025.08.07、2026.01.16会议提及", enabled: true },
+  { seq: 10, category: "创建示范/达标", subcategory: "种类数量过多/未批准/运动式", basis: "《规定》第19条、第20条", keywords: "运动式/作秀式/一阵风、创建结果排名、不顾资源禀赋、氛围营造过度", caseLink: "中央通报2024.08.21第1起(长春依法治校)、2025.10.30第2起(中信协典型案例)", enabled: true },
+  { seq: 11, category: "创建示范/达标", subcategory: "变相收费/摊派费用", basis: "《规定》第20条", keywords: "收取费用、拉赞助、摊派会费/广告费、社会组织违规收费", caseLink: "中央通报2024.08.21第2起(扬中河豚节)", enabled: true },
+  { seq: 12, category: "创建示范/达标", subcategory: "基层搞达标活动", basis: "《规定》第21条", keywords: "以乡镇/村社区/学校为对象的达标活动、期满不取消", caseLink: "中央通报2025.08.07、2026.01.16会议提及", enabled: true },
+  { seq: 13, category: "盲目决策/形象工程", subcategory: "不顾实际上项目/盲目举债", basis: "《规定》第3条、第8条", keywords: "盲目举债、挖山造田、有轨电车、农旅项目烂尾、闲置浪费", caseLink: "中央通报2024.04.08第3起(天水有轨电车)、2025.02.20第1起(德江陶缘)", enabled: true },
+  { seq: 14, category: "盲目决策/形象工程", subcategory: "违规评比/论坛/节庆/规避审批", basis: "《规定》第7条、第20条", keywords: "社会组织违规收费、政府摊派费用、规避审批办节、以会代收", caseLink: "中央通报2024.08.21第2起(扬中河豚节)、2024.11.11第2起(成都金牛区)", enabled: true },
+  { seq: 15, category: "盲目决策/形象工程", subcategory: "超标准建设装修/豪华办公", basis: "《规定》第3条、第8条", keywords: "办公楼豪华装修、高档材料、景观工程浪费、楼顶亮化", caseLink: "中央通报2024.11.11第1起(清徐县政府楼)、第2起(成都金牛区对外交流中心)", enabled: true },
+  { seq: 16, category: "精简文件", subcategory: "文件数量超标/规避管理", basis: "《规定》第1条", keywords: "临时性文件多、红头变白头、多文合一、计划管理失效", caseLink: "中央通报2025.08.07、2026.01.16会议提及", enabled: true },
+  { seq: 17, category: "精简文件", subcategory: "文件质量低/照搬转发", basis: "《规定》第2条", keywords: "简单转发上级文件、不结合实际、阐述背景意义过多", caseLink: "中央通报2025.08.07、2026.01.16会议提及", enabled: true },
+  { seq: 18, category: "精简文件", subcategory: "评估审查缺失", basis: "《规定》第3条", keywords: "未做减负一致性评估、文件中违规设定考核/责任状", caseLink: "中央通报2025.08.07、2026.01.16会议提及", enabled: true },
+  { seq: 19, category: "精简会议", subcategory: "会议数量过多/层层召开", basis: "《规定》第4条、第5条", keywords: "文山会海、年底扎堆、未批准直达基层、层层开会", caseLink: "中央通报2024.08.21第3起(国家管网800余次会议)", enabled: true },
+  { seq: 20, category: "精简会议", subcategory: "规模规格失控/层层陪会", basis: "《规定》第5条", keywords: "层层陪会、不合理要求主要负责同志参会、规格虚高", caseLink: "中央通报2024.08.21第3起(国家管网陪会多)", enabled: true },
+  { seq: 21, category: "精简会议", subcategory: "会议质量低/形式大于内容", basis: "《规定》第6条", keywords: "讲长话、空话套话、表态发言多、会议兜圈子、夜猫子会", caseLink: "中央通报2024.08.21第3起、2026.01.16会议提及", enabled: true },
+  { seq: 22, category: "督查检查考核", subcategory: "计划备案不规范/以调研名行考核实", basis: "《规定》第7条", keywords: "打包报计划、执行搞拆分、以调研名行考核实、调研结果问责", caseLink: "中央通报2025.08.07、2026.01.16会议提及", enabled: true },
+  { seq: 23, category: "督查检查考核", subcategory: "考核指标繁杂/千分制/双千分制", basis: "《规定》第8条", keywords: "千分制、双千分制、三千分制、指标过细碎片化、月度/季度排名", caseLink: "中央通报2024.02.20第2起(费县千分制)、2025.08.07提及", enabled: true },
+  { seq: 24, category: "督查检查考核", subcategory: "总量失控/多头重复/排名通报变相考核", basis: "《规定》第8条、第9条", keywords: "向同一地方反复安排、县乡村考核未合并、排名通报变相考核", caseLink: "中央通报2024.04.08第1起(运城/晋城经营主体倍增)", enabled: true },
+  { seq: 25, category: "借调干部", subcategory: "违规向县以下借调/变相借调", basis: "《规定》第10条", keywords: "以专班/跟班学习/交流锻炼名义变相借调县以下干部", caseLink: "中央通报2024.08.21第1起(南关区长期借调教师)", enabled: true },
+  { seq: 26, category: "借调干部", subcategory: "向市以上借调超量/超时/未备案", basis: "《规定》第11条", keywords: "未审批备案、超过6+6个月、借调比例过高", caseLink: "中央通报2024.08.21第1起(南关区借调占比60%+)", enabled: true },
+];
+
+// ========== 线索样本数据 ==========
+const SAMPLE_CLUES = [
+  {
+    id: 1, seq_no: 1,
+    clue_category: "数据造假", clue_subcategory: "统计造假-指令报数/代填代报",
+    task_num: "XM260804001", title: "反映某县统计局指令企业虚报工业产值",
+    content: "群众反映：龙海区统计局向辖区规上工业企业下发“指导数”，要求企业按指定数值上报工业总产值，不达标不让报送。企业反映实际生产情况与上报数据严重不符，半停产企业被要求报送产值不能低于上年同期。多名企业财务人员表示被统计局代填代报数据。",
+    publish_time: "2026-08-04 09:15:00",
+    complained_unit: "漳州市龙海区统计局",
+    region_city: "漳州市", region_district: "龙海区",
+    evidence_suggestion: "调取该区2025-2026年规上工业企业统计台账与上报数据对比，核查是否存在“指令报数/代填代报”痕迹；调阅统计局下发的“指导数”文件或微信聊天记录。",
+    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》第3条、第8条\n【问题类型】数据造假-统计造假-指令报数/代填代报\n【核心机制】统计部门“只考不核”，下达指令性指标，以排名通报倒逼企业造假；企业为应付检查配合虚报\n【危害后果】基层虚报工业产值数亿元，统计数据严重失真，财政资源错配，政绩观异化\n【典型性】符合中央通报“统计造假”典型特征(2026.07.15漳州/南平案例)，建议纳入典型案例库",
+    root_cause: "政绩观偏差",
+    is_typical: true,
+    tags: ["数据造假","统计造假","指令报数","代填代报","漳州","龙海"],
+    confidence: 0.95,
+    created_at: "2026-08-04 10:00:00",
+    updated_at: "2026-08-04 10:00:00"
+  },
+  {
+    id: 2, seq_no: 2,
+    clue_category: "指尖形式主义", clue_subcategory: "强制打卡/积分排名/在线时长",
+    task_num: "XM260804002", title: "基层干部反映某政务APP强制打卡签到、积分排名",
+    content: "某县乡镇干部反映：上级要求全员使用“某政务APP”，设置每日打卡签到、学习时长积分、在线时长统计功能。每月通报积分排名，排名靠后被约谈、扣绩效。干部每天花费大量时间刷时长、凑积分，实际工作时间被严重挤占。APP还强制要求上传工作照片、视频、轨迹，不上传扣分。",
+    publish_time: "2026-08-03 14:20:00",
+    complained_unit: "某市政务服务管理局",
+    region_city: "泉州市", region_district: "惠安县",
+    evidence_suggestion: "登录该政务APP后台，截图保存“打卡签到/积分排名/在线时长/强制上传照片视频”功能配置页面；导出近3个月积分排名通报文件、约谈记录。",
+    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》第13条、第14条\n【问题类型】指尖形式主义-强制打卡/积分排名/在线时长\n【核心机制】以数字化考核代替实绩考核，将“指尖数据”作为工作实绩唯一标尺，倒逼基层刷数据\n【危害后果】基层干部大量时间消耗在“指尖留痕”上，实际服务群众时间压缩，引发基层强烈反感\n【典型性】符合中央通报“指尖上的形式主义”典型特征(2025.08.21长春、2024.02.03松滋/定远案例)，建议纳入典型案例库",
+    root_cause: "技术手段滥用",
+    is_typical: true,
+    tags: ["指尖形式主义","强制打卡","积分排名","在线时长","泉州","惠安"],
+    confidence: 0.92,
+    created_at: "2026-08-03 15:00:00",
+    updated_at: "2026-08-03 15:00:00"
+  },
+  {
+    id: 3, seq_no: 3,
+    clue_category: "权责不清/甩锅", clue_subcategory: "清单外事项下放/签责任状转嫁",
+    task_num: "XM260804003", title: "街道反映区级部门清单外下放工作任务、签责任状",
+    content: "某街道反映：区城管局、区环保局、区应急局等多个部门未经街道党工委同意，直接向社区下发“网格化管理”任务清单，要求社区网格员负责违建巡查、河道巡查、安全隐患排查等执法类工作。部门还要求街道、社区签订“责任状”、“承诺书”，一旦出问题由基层兜底。社区无执法权、无装备、无经费，只能干瞪眼。",
+    publish_time: "2026-08-02 11:30:00",
+    complained_unit: "某区城管局、环保局、应急局",
+    region_city: "厦门市", region_district: "思明区",
+    evidence_suggestion: "收集区级部门下发给街道/社区的清单外任务文件、指标分解表、签署的“责任状/承诺书”；访谈街道、社区负责人制作笔录。",
+    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》第15条、第16条\n【问题类型】权责不清/甩锅-清单外事项下放/签责任状转嫁\n【核心机制】职能部门利用“属地管理”名义，将法定执法职责下放给无权无资源的基层，通过责任状实现“权责分离、甩锅兜底”\n【危害后果】基层承担超权限、超能力、超资源的工作，形成“小马拉大车”，基层治理效能受损\n【典型性】符合中央通报“权责不清/甩锅”典型特征(2025.08.07恭城文旅、2026.01.16会议提及)，建议纳入典型案例库",
+    root_cause: "制度缺失",
+    is_typical: true,
+    tags: ["权责不清","甩锅","清单外下放","责任状","属地管理","厦门","思明"],
+    confidence: 0.89,
+    created_at: "2026-08-02 12:00:00",
+    updated_at: "2026-08-02 12:00:00"
+  },
+  {
+    id: 4, seq_no: 4,
+    clue_category: "盲目决策/形象工程", clue_subcategory: "不顾实际上项目/盲目举债",
+    task_num: "XM260804004", title: "群众举报某县盲目建设“农旅融合”项目烂尾、资金浪费",
+    content: "群众反映：某县引入社会资本建设“农旅融合综合体”，计划投资3亿元，分三期建设。一期投入1.2亿元建设广场、景观湖、仿古建筑群。因缺水、交通不便、缺乏产业支撑，项目建成后长期闲置，无游客、无收益。县政府为配合项目违规占用基本农田500余亩，挖湖造景破坏生态。社会资本方资金链断裂，二三期烂尾，财政投入打水漂。",
+    publish_time: "2026-08-01 16:45:00",
+    complained_unit: "某县发改局、自然资源局、农业农村局",
+    region_city: "三明市", region_district: "永安市",
+    evidence_suggestion: "现场核查该项目实际建设进度、运营状况、游客流量、收益数据；对比立项可行性报告、环评报告、用地审批文件；调取财政投入凭证、合同协议。",
+    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》第3条、第8条\n【问题类型】盲目决策/形象工程-不顾实际上项目/盲目举债\n【核心机制】政绩观偏差，不顾资源禀赋、市场规律，盲目上马“面子工程”，违规占用耕地、挖湖造景\n【危害后果】财政资金浪费1亿+，基本农田遭破坏，生态环境受损，烂尾项目成“闹心工程”\n【典型性】符合中央通报“盲目决策/形象工程”典型特征(2024.04.08天水有轨电车、2025.02.20德江陶缘案例)，建议纳入典型案例库",
+    root_cause: "政绩观偏差",
+    is_typical: true,
+    tags: ["盲目决策","形象工程","农旅项目","烂尾","违规占地","三明","永安"],
+    confidence: 0.91,
+    created_at: "2026-08-01 17:00:00",
+    updated_at: "2026-08-01 17:00:00"
+  },
+  {
+    id: 5, seq_no: 5,
+    clue_category: "创建示范/达标", clue_subcategory: "变相收费/摊派费用",
+    task_num: "XM260804005", title: "某市通过社会组织举办论坛活动摊派费用至基层",
+    content: "某市行业协会（社会组织）主办“全市基层治理创新论坛”，实际由市委政法委主导。论坛以“会费”、“赞助费”、“展位费”名义向各区县政法委、街道、社区、国企摊派费用共200余万元。各基层单位为完成摊派指标，挤占公用经费，甚至要求社区自筹。论坛内容多为包装材料，缺乏实质性经验交流。",
+    publish_time: "2026-07-31 10:00:00",
+    complained_unit: "某市行业协会、市委政法委",
+    region_city: "福州市", region_district: "鼓楼区",
+    evidence_suggestion: "获取该社会组织收费文件、银行流水、摊派对象名单、发票记录；收集市委政法委主导论坛的会议纪要、通知文件。",
+    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》第20条\n【问题类型】创建示范/达标-变相收费/摊派费用\n【核心机制】政府部门规避审批，以社会组织名义举办论坛，实为政府主导，通过“会费/赞助费”变相向基层摊派\n【危害后果】基层公用经费被挤占，社区自筹加重负担，论坛内容空泛无实效\n【典型性】符合中央通报“违规评比/论坛/节庆/变相收费”典型特征(2024.08.21扬中河豚节、2024.11.11相关案例)，建议纳入典型案例库",
+    root_cause: "监管缺位",
+    is_typical: true,
+    tags: ["创建示范","变相收费","摊派费用","社会组织","论坛","福州","鼓楼"],
+    confidence: 0.88,
+    created_at: "2026-07-31 10:30:00",
+    updated_at: "2026-07-31 10:30:00"
+  },
+  {
+    id: 6, seq_no: 6,
+    clue_category: "督查检查考核", clue_subcategory: "考核指标繁杂/千分制/双千分制",
+    task_num: "XM260804006", title: "某县对乡镇实行“双千分制”考核、月度排名通报",
+    content: "某县对乡镇、县直部门实行“党建+经济社会发展”双千分制综合考核，指标细化至300+项。实行月度排名、季度通报、年度兑现。乡镇主要负责人反映：为应付考核，大量精力用于准备台账、凑资料、迎检查，实际工作推进受阻。考核指标多为“留痕型”，如会议记录规范性、台账整理美观度、上墙制度完整性等。",
+    publish_time: "2026-07-30 09:00:00",
+    complained_unit: "某县委组织部、县考核办",
+    region_city: "南平市", region_district: "建瓯市",
+    evidence_suggestion: "获取该县考核方案、指标体系明细表、月度/季度排名通报文件、年度考核兑现文件；访谈乡镇负责人了解迎检准备实际耗时。",
+    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》第8条\n【问题类型】督查检查考核-考核指标繁杂/千分制/双千分制\n【核心机制】以极细指标、高频排名、重奖重罚倒逼基层“重留痕、轻实效”，形成“千分制”考核泛滥\n【危害后果】基层陷入“为考核而工作”怪圈，台账资料堆积如山，服务群众时间被挤占\n【典型性】符合中央通报“考核指标繁杂/千分制”典型特征(2024.02.20费县双千分制/三千分制案例)，建议纳入典型案例库",
+    root_cause: "考核异化",
+    is_typical: true,
+    tags: ["督查检查考核","双千分制","千分制","月度排名","高频考核","南平","建瓯"],
+    confidence: 0.93,
+    created_at: "2026-07-30 09:30:00",
+    updated_at: "2026-07-30 09:30:00"
+  },
+  {
+    id: 7, seq_no: 7,
+    clue_category: "精简会议", clue_subcategory: "会议数量过多/层层召开",
+    task_num: "XM260804007", title: "某国企集团要求下属单位参加会议过多、层层陪会",
+    content: "某国企集团总部2025年要求下属二三级单位参加会议600余次，平均每个工作日2.5次。总部部门会议未统筹，多头召开、时间冲突。下属单位主要负责人被要求全程陪会，中层干部分头陪会。会议多为“传达贯彻型”、“部署推进型”，内容高度重复。基层干部反映：“不是在开会，就是在开会的路上，真正干活的时间不足20%”。",
+    publish_time: "2026-07-29 15:00:00",
+    complained_unit: "某国企集团总部各部门",
+    region_city: "龙岩市", region_district: "新罗区",
+    evidence_suggestion: "统计集团总部2025年下发的会议通知、会议纪要、参会人员名单；对比各部门会议时间安排，统计重叠/冲突次数；访谈下属单位负责人。",
+    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》第4条、第5条、第6条\n【问题类型】精简会议-会议数量过多/层层召开/陪会多\n【核心机制】总部部门缺乏统筹，多头召开、层层传导、层层陪会，以“开会代落实”、以“会议显态度”\n【危害后果】基层干部大量时间消耗在陪会、准备会议材料上，核心业务推进受阻\n【典型性】符合中央通报“精简会议”典型特征(2024.08.21国家管网800余次会议案例)，建议纳入典型案例库",
+    root_cause: "政绩观偏差",
+    is_typical: false,
+    tags: ["精简会议","会议过多","层层陪会","国企","龙岩","新罗"],
+    confidence: 0.85,
+    created_at: "2026-07-29 15:30:00",
+    updated_at: "2026-07-29 15:30:00"
+  },
+  {
+    id: 8, seq_no: 8,
+    clue_category: "指尖形式主义", clue_subcategory: "推广使用强制化/考核异化",
+    task_num: "XM260804008", title: "某县考核“学习强国”积分排名、通报约谈",
+    content: "某县医保局、税务局等单位将“学习强国”日积分纳入绩效考核，要求人均日积分不低于30分。内部工作群每周通报积分排名前后十名，排名靠后人员被约谈、扣分。党员干部被迫刷时长、刷分数，引发强烈抵触。部分干部反映：“学习变成了任务，积分成了政绩，真正学进去的反而少了”。",
+    publish_time: "2026-07-28 11:00:00",
+    complained_unit: "某县医保局、税务局",
+    region_city: "莆田市", region_district: "秀屿区",
+    evidence_suggestion: "获取相关单位“学习强国”考核方案、积分排名通报截图、约谈记录；访谈被约谈人员。",
+    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》第14条\n【问题类型】指尖形式主义-推广使用强制化/考核异化\n【核心机制】将学习平台积分量化为考核指标，以排名通报、约谈施压，异化为“指尖任务”\n【危害后果】学习异化为刷分任务，政治学习效果适得其反，干部产生厌倦情绪\n【典型性】符合中央通报“指尖形式主义-积分排名”典型特征(2024.02.03定远医保局案例)，建议纳入典型案例库",
+    root_cause: "考核异化",
+    is_typical: true,
+    tags: ["指尖形式主义","学习强国","积分排名","约谈","考核异化","莆田","秀屿"],
+    confidence: 0.90,
+    created_at: "2026-07-28 11:30:00",
+    updated_at: "2026-07-28 11:30:00"
+  },
+  {
+    id: 9, seq_no: 9,
+    clue_category: "数据造假", clue_subcategory: "虚报产值/投资/指标",
+    task_num: "XM260804009", title: "某县商务局虚报省外到位资金、招商引资指标",
+    content: "群众举报：某县商务局为完成上级“招商引资考核”指标，指导企业编造虚假合同、虚假到账凭证、虚假项目进度。2025年全县上报“省外到位资金”50亿元，经核实实际到位不足10亿元。多个“亿元大项目”仅为PPT项目，现场无任何建设痕迹。县领导知情默许，甚至协调银行配合走账。",
+    publish_time: "2026-07-27 14:00:00",
+    complained_unit: "某县商务局、县招商办",
+    region_city: "漳州市", region_district: "漳浦县",
+    evidence_suggestion: "核对上报“省外到位资金”台账与银行实际到账流水；现场核查重点招商项目实际建设情况；调取企业合同、发票、验资报告原件。",
+    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》第3条、第8条\n【问题类型】数据造假-虚报产值/投资/指标-招商引资虚报\n【核心机制】上级考核指标“只考不核”，下级为完成指标全链条造假（合同/资金/进度/验收），上下级形成默契\n【危害后果】招商引资数据严重失真，财政决策依据失效，真实项目得不到支持，营商环境受损\n【典型性】符合中央通报“数据造假-虚报招商引资”典型特征(2026.01.19河南舞阳/柘城虚报省外资金案例)，建议纳入典型案例库",
+    root_cause: "考核异化",
+    is_typical: true,
+    tags: ["数据造假","虚报招商引资","虚报到位资金","造假链条","漳州","漳浦"],
+    confidence: 0.94,
+    created_at: "2026-07-27 14:30:00",
+    updated_at: "2026-07-27 14:30:00"
+  },
+  {
+    id: 10, seq_no: 10,
+    clue_category: "权责不清/甩锅", clue_subcategory: "证明事项滥设",
+    task_num: "XM260804010", title: "群众办事被要求社区开具“无违建证明”、“无纠纷证明”等无法核实证明",
+    content: "市民反映：办理房产证、营业执照、贷款等业务时，银行、不动产登记中心、公证处要求社区/村委会出具“无违建证明”、“无邻里纠纷证明”、“家庭成员关系证明”等。社区无执法权、无档案权限、无专业能力核实，只能凭群众自述盖章。一旦出问题，责任全推给社区。部门以“规避风险”为由拒不取消证明事项。",
+    publish_time: "2026-07-26 10:00:00",
+    complained_unit: "某市不动产登记中心、各银行网点、公证处",
+    region_city: "宁德市", region_district: "蕉城区",
+    evidence_suggestion: "收集要求社区开具证明的业务清单、证明文本模板、退回案例；访谈社区干部了解被迫盖章情况；查阅上级是否有清理证明事项文件。",
+    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》第17条\n【问题类型】权责不清/甩锅-证明事项滥设\n【核心机制】职能部门为规避自身审批风险，将核实责任无限下放给无权无能的基层，形成“万能证明”泛滥\n【危害后果】群众多头跑、重复证明，社区背负法律风险，基层信用透支\n【典型性】符合中央通报“证明事项滥设”典型特征(2025.08.07、2026.01.16会议提及)，建议纳入典型案例库",
+    root_cause: "制度缺失",
+    is_typical: false,
+    tags: ["权责不清","证明事项滥设","万能证明","社区盖章","宁德","蕉城"],
+    confidence: 0.87,
+    created_at: "2026-07-26 10:30:00",
+    updated_at: "2026-07-26 10:30:00"
+  }
+];
+
+// ========== 初始化 ==========
+document.addEventListener('DOMContentLoaded', () => {
+  // 加载认定标准
+  const savedStandards = localStorage.getItem('jianfu_standards');
+  if (savedStandards) {
+    try { standards = JSON.parse(savedStandards); } catch { standards = DEFAULT_STANDARDS; }
+  } else {
+    standards = DEFAULT_STANDARDS;
+    localStorage.setItem('jianfu_standards', JSON.stringify(standards));
+  }
+  renderStandards();
+
+  // 加载线索数据
+  const savedClues = localStorage.getItem('jianfu_clues');
+  if (savedClues) {
+    try { allClues = JSON.parse(savedClues); } catch { allClues = SAMPLE_CLUES; }
+  } else {
+    allClues = SAMPLE_CLUES;
+    localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
+  }
+  filteredClues = [...allClues];
+  renderCluesTable();
+  renderCluesStats();
+  populateFilters();
+
+  // 更新时间
+  document.getElementById('updateTime').textContent = `数据最后更新：${new Date().toLocaleDateString('zh-CN')}`;
+});
+
+// ========== 认定标准相关 ==========
+function renderStandards() {
+  const tbody = document.getElementById('standardBody');
+  tbody.innerHTML = standards.map((s, i) => `
+    <tr data-index="${i}">
+      <td>${s.seq}</td>
+      <td><input type="text" class="cell-edit" value="${esc(s.category)}" onchange="updateStandard(${i}, 'category', this.value)"></td>
+      <td><input type="text" class="cell-edit" value="${esc(s.subcategory)}" onchange="updateStandard(${i}, 'subcategory', this.value)"></td>
+      <td><input type="text" class="cell-edit" value="${esc(s.basis)}" onchange="updateStandard(${i}, 'basis', this.value)"></td>
+      <td><input type="text" class="cell-edit" value="${esc(s.keywords)}" onchange="updateStandard(${i}, 'keywords', this.value)"></td>
+      <td><input type="text" class="cell-edit" value="${esc(s.caseLink)}" onchange="updateStandard(${i}, 'caseLink', this.value)"></td>
+      <td style="text-align:center;">
+        <input type="checkbox" ${s.enabled ? 'checked' : ''} onchange="updateStandard(${i}, 'enabled', this.checked)">
+      </td>
+      <td>
+        <button class="action-btn delete" onclick="deleteStandard(${i})" title="删除">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+  document.getElementById('standardVersion').textContent = `v${standards.length}条 · 本地存储`;
+}
+
+function updateStandard(index, field, value) {
+  standards[index][field] = value;
+  // 重新排序
+  standards.sort((a, b) => a.seq - b.seq);
+  standards.forEach((s, i) => s.seq = i + 1);
+  localStorage.setItem('jianfu_standards', JSON.stringify(standards));
+  renderStandards();
+  populateFilters();
+}
+
+function addStandardRow() {
+  const newSeq = standards.length + 1;
+  standards.push({
+    seq: newSeq,
+    category: "", subcategory: "", basis: "", keywords: "", caseLink: "", enabled: true
+  });
+  localStorage.setItem('jianfu_standards', JSON.stringify(standards));
+  renderStandards();
+  populateFilters();
+}
+
+function deleteStandard(index) {
+  if (!confirm('确定删除这条标准？')) return;
+  standards.splice(index, 1);
+  standards.forEach((s, i) => s.seq = i + 1);
+  localStorage.setItem('jianfu_standards', JSON.stringify(standards));
+  renderStandards();
+  populateFilters();
+  showToast('已删除', 'success');
+}
+
+function saveStandards() {
+  localStorage.setItem('jianfu_standards', JSON.stringify(standards));
+  showToast('标准已保存到本地', 'success');
+}
+
+function exportStandards() {
+  const blob = new Blob([JSON.stringify(standards, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `jianfu_standards_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('标准已导出', 'success');
+}
+
+document.getElementById('importStandardsBtn').addEventListener('click', () => {
+  document.getElementById('importStandardsFile').click();
+});
+
+function importStandards(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (Array.isArray(data)) {
+        standards = data.map((s, i) => ({ ...s, seq: i + 1 }));
+        localStorage.setItem('jianfu_standards', JSON.stringify(standards));
+        renderStandards();
+        populateFilters();
+        showToast('标准导入成功', 'success');
+      } else {
+        showToast('文件格式错误：应为数组', 'error');
+      }
+    } catch (err) {
+      showToast('导入失败：' + err.message, 'error');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ========== 线索数据相关 ==========
+function renderCluesTable() {
+  const tbody = document.getElementById('cluesBody');
+  const start = (currentCluesPage - 1) * CLUES_PAGE_SIZE;
+  const pageData = filteredClues.slice(start, start + CLUES_PAGE_SIZE);
+
+  if (!pageData.length) {
+    tbody.innerHTML = '<tr><td colspan="15" class="empty">暂无匹配的线索</td></tr>';
+    renderCluesPagination();
+    return;
+  }
+
+  tbody.innerHTML = pageData.map(clue => {
+    const tags = (clue.tags || []).map(t => `<span class="tag ${getTagClass(t)}">${esc(t)}</span>`).join(' ');
+    const confClass = clue.confidence >= 0.8 ? 'confidence-high' : (clue.confidence >= 0.5 ? 'confidence-medium' : 'confidence-low');
+    const contentPreview = (clue.content || '').substring(0, 80);
+    const contentFull = esc(clue.content || '');
+    const evidenceEsc = esc(clue.evidence_suggestion || '');
+    const analysisEsc = esc(clue.qualitative_analysis || '');
+    const rootEsc = esc(clue.root_cause || '');
+
+    return `
+      <tr data-id="${clue.id}">
+        <td>${clue.seq_no}</td>
+        <td><span class="tag tag-category">${esc(clue.clue_category)}</span></td>
+        <td><span class="tag tag-subcategory">${esc(clue.clue_subcategory)}</span></td>
+        <td>${esc(clue.task_num)}</td>
+        <td>
+          <span class="content-preview" onclick="toggleContent(this)">${esc(contentPreview)}...</span>
+          <button class="expand-btn" onclick="toggleContent(this.previousElementSibling)">展开</button>
+          <div class="content-full">${contentFull}</div>
+        </td>
+        <td>${esc(clue.publish_time)}</td>
+        <td>${esc(clue.complained_unit)}</td>
+        <td>${esc(clue.region_city)}/${esc(clue.region_district)}</td>
+        <td>
+          <div class="confidence">
+            <span class="confidence-bar"><span class="confidence-fill ${confClass}" style="width:${(clue.confidence*100).toFixed(0)}%"></span></span>
+            <span>${(clue.confidence*100).toFixed(0)}%</span>
+          </div>
+        </td>
+        <td style="text-align:center;">${clue.is_typical ? '<span class="tag tag-typical">✓</span>' : '—'}</td>
+        <td class="evidence-cell">${evidenceEsc}</td>
+        <td class="analysis-cell">${analysisEsc}</td>
+        <td><span class="tag tag-root">${rootEsc}</span></td>
+        <td>${tags}</td>
+        <td class="actions">
+          <button class="action-btn edit" onclick="openDetail(${clue.id})">详情</button>
+          <button class="action-btn edit" onclick="openEdit(${clue.id})">编辑</button>
+          <button class="action-btn delete" onclick="deleteClue(${clue.id})">删除</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  renderCluesPagination();
+}
+
+function toggleContent(el) {
+  const full = el.nextElementSibling.nextElementSibling;
+  const btn = el.nextElementSibling;
+  if (full.style.display === 'block') {
+    full.style.display = 'none';
+    btn.textContent = '展开';
+  } else {
+    full.style.display = 'block';
+    btn.textContent = '收起';
+  }
+}
+
+function renderCluesPagination() {
+  const pages = Math.ceil(filteredClues.length / CLUES_PAGE_SIZE);
+  const el = document.getElementById('cluesPagination');
+  if (pages <= 1) { el.innerHTML = ''; return; }
+
+  let html = `<button ${currentCluesPage<=1?'disabled':''} onclick="goCluesPage(${currentCluesPage-1})">‹</button>`;
+  for (let i = Math.max(1, currentCluesPage-2); i <= Math.min(pages, currentCluesPage+2); i++) {
+    html += `<button class="${i===currentCluesPage?'active':''}" onclick="goCluesPage(${i})">${i}</button>`;
+  }
+  html += `<button ${currentCluesPage>=pages?'disabled':''} onclick="goCluesPage(${currentCluesPage+1})">›</button>`;
+  el.innerHTML = html;
+}
+
+function goCluesPage(p) {
+  currentCluesPage = p;
+  renderCluesTable();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderCluesStats() {
+  const total = allClues.length;
+  const categories = new Set(allClues.map(c => c.clue_category)).size;
+  const typical = allClues.filter(c => c.is_typical).length;
+  const highConf = allClues.filter(c => c.confidence >= 0.8).length;
+
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statCategories').textContent = categories;
+  document.getElementById('statTypical').textContent = typical;
+  document.getElementById('statHighConf').textContent = highConf;
+  document.getElementById('cluesCount').textContent = `共 ${filteredClues.length} 条 / 总计 ${total} 条`;
+}
+
+function populateFilters() {
+  // 分类
+  const cats = [...new Set(allClues.map(c => c.clue_category))].sort();
+  const catSel = document.getElementById('filterCategory');
+  catSel.innerHTML = '<option value="">全部分类</option>' + cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+
+  // 细分
+  const subcats = [...new Set(allClues.map(c => c.clue_subcategory))].sort();
+  const subSel = document.getElementById('filterSubcategory');
+  subSel.innerHTML = '<option value="">全部细分</option>' + subcats.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
+
+  // 根因
+  const roots = [...new Set(allClues.map(c => c.root_cause).filter(Boolean))].sort();
+  const rootSel = document.getElementById('filterRootCause');
+  rootSel.innerHTML = '<option value="">全部根因</option>' + roots.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join('');
+
+  // 认定标准下拉（编辑模态框用）
+  const stdCats = [...new Set(standards.filter(s => s.enabled).map(s => s.category))].sort();
+  const editCat = document.getElementById('editCategory');
+  editCat.innerHTML = '<option value="">-- 请选择 --</option>' + stdCats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+}
+
+function applyCluesFilters() {
+  const search = document.getElementById('cluesSearch').value.trim().toLowerCase();
+  const cat = document.getElementById('filterCategory').value;
+  const subcat = document.getElementById('filterSubcategory').value;
+  const typical = document.getElementById('filterTypical').value;
+  const root = document.getElementById('filterRootCause').value;
+  const conf = document.getElementById('filterConfidence').value;
+
+  filteredClues = allClues.filter(c => {
+    if (search && !c.content.toLowerCase().includes(search) && !c.task_num.toLowerCase().includes(search) &&
+        !c.complained_unit.toLowerCase().includes(search) && !(c.tags||[]).some(t => t.toLowerCase().includes(search))) {
+      return false;
+    }
+    if (cat && c.clue_category !== cat) return false;
+    if (subcat && c.clue_subcategory !== subcat) return false;
+    if (typical && c.is_typical !== (typical === 'true')) return false;
+    if (root && c.root_cause !== root) return false;
+    if (conf === 'high' && c.confidence < 0.8) return false;
+    if (conf === 'medium' && (c.confidence < 0.5 || c.confidence >= 0.8)) return false;
+    if (conf === 'low' && c.confidence >= 0.5) return false;
+    return true;
+  });
+
+  currentCluesPage = 1;
+  renderCluesTable();
+  renderCluesStats();
+  showToast(`筛选完成：${filteredClues.length} 条`, 'info');
+}
+
+function resetCluesFilters() {
+  document.getElementById('cluesSearch').value = '';
+  document.getElementById('filterCategory').value = '';
+  document.getElementById('filterSubcategory').value = '';
+  document.getElementById('filterTypical').value = '';
+  document.getElementById('filterRootCause').value = '';
+  document.getElementById('filterConfidence').value = '';
+  filteredClues = [...allClues];
+  currentCluesPage = 1;
+  renderCluesTable();
+  renderCluesStats();
+  showToast('已重置', 'info');
+}
+
+function exportClues() {
+  const exportData = filteredClues.map(c => ({
+    序号: c.seq_no,
+    一级分类: c.clue_category,
+    二级细分: c.clue_subcategory,
+    诉求编号: c.task_num,
+    诉求标题: c.title,
+    诉求内容: c.content,
+    诉求时间: c.publish_time,
+    被诉单位: c.complained_unit,
+    地市: c.region_city,
+    县区: c.region_district,
+    置信度: c.confidence,
+    是否典型: c.is_typical ? '是' : '否',
+    取证建议: c.evidence_suggestion,
+    定性分析: c.qualitative_analysis,
+    根因: c.root_cause,
+    标签: (c.tags||[]).join(';')
+  }));
+  const csv = arrayToCsv(exportData);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `jianfu_clues_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('已导出 CSV', 'success');
+}
+
+function arrayToCsv(arr) {
+  if (!arr.length) return '';
+  const headers = Object.keys(arr[0]);
+  const rows = arr.map(obj => headers.map(h => {
+    const v = obj[h] === null || obj[h] === undefined ? '' : String(obj[h]);
+    return '"' + v.replace(/"/g, '""') + '"';
+  }).join(','));
+  return [headers.join(','), ...rows].join('\n');
+}
+
+// ========== 详情/编辑模态框 ==========
+function openDetail(id) {
+  const clue = allClues.find(c => c.id === id);
+  if (!clue) return;
+  currentEditId = id;
+
+  const tags = (clue.tags || []).map(t => `<span class="tag ${getTagClass(t)}">${esc(t)}</span>`).join(' ');
+  const confClass = clue.confidence >= 0.8 ? 'confidence-high' : (clue.confidence >= 0.5 ? 'confidence-medium' : 'confidence-low');
+
+  document.getElementById('detailTitle').textContent = `线索详情 #${clue.seq_no} - ${esc(clue.task_num)}`;
+  document.getElementById('detailContent').innerHTML = `
+    <div class="modal-row">
+      <div class="modal-label">一级分类</div>
+      <div class="modal-value"><span class="tag tag-category">${esc(clue.clue_category)}</span></div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">二级细分</div>
+      <div class="modal-value"><span class="tag tag-subcategory">${esc(clue.clue_subcategory)}</span></div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">诉求编号</div>
+      <div class="modal-value">${esc(clue.task_num)}</div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">诉求标题</div>
+      <div class="modal-value">${esc(clue.title)}</div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">诉求时间</div>
+      <div class="modal-value">${esc(clue.publish_time)}</div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">被诉单位</div>
+      <div class="modal-value">${esc(clue.complained_unit)}</div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">地市/县区</div>
+      <div class="modal-value">${esc(clue.region_city)}/${esc(clue.region_district)}</div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">置信度</div>
+      <div class="modal-value">
+        <div class="confidence">
+          <span class="confidence-bar"><span class="confidence-fill ${confClass}" style="width:${(clue.confidence*100).toFixed(0)}%"></span></span>
+          <span>${(clue.confidence*100).toFixed(0)}%</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">是否典型</div>
+      <div class="modal-value">${clue.is_typical ? '<span class="tag tag-typical">是</span>' : '否'}</div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">根因</div>
+      <div class="modal-value"><span class="tag tag-root">${esc(clue.root_cause)}</span></div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">标签</div>
+      <div class="modal-value"><div class="modal-tags">${tags}</div></div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">诉求内容</div>
+      <div class="modal-value"><pre>${esc(clue.content)}</pre></div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">取证建议</div>
+      <div class="modal-value"><pre>${esc(clue.evidence_suggestion)}</pre></div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-label">定性分析</div>
+      <div class="modal-value"><pre>${esc(clue.qualitative_analysis)}</pre></div>
+    </div>
+  `;
+  document.getElementById('detailModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetailModal() {
+  document.getElementById('detailModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function openEdit(id) {
+  const clue = allClues.find(c => c.id === id);
+  if (!clue) return;
+  currentEditId = id;
+
+  document.getElementById('editId').value = clue.id;
+  document.getElementById('editCategory').value = clue.clue_category;
+  // 更新细分下拉
+  updateEditSubcategory(clue.clue_category, clue.clue_subcategory);
+  document.getElementById('editTaskNum').value = clue.task_num;
+  document.getElementById('editContent').value = clue.content;
+  document.getElementById('editTime').value = clue.publish_time.replace(' ', 'T');
+  document.getElementById('editUnit').value = clue.complained_unit;
+  document.getElementById('editCity').value = clue.region_city;
+  document.getElementById('editDistrict').value = clue.region_district;
+  document.getElementById('editEvidence').value = clue.evidence_suggestion;
+  document.getElementById('editAnalysis').value = clue.qualitative_analysis;
+  document.getElementById('editRootCause').value = clue.root_cause;
+  document.getElementById('editTypical').checked = clue.is_typical;
+  document.getElementById('editTags').value = (clue.tags || []).join(',');
+  document.getElementById('editConfidence').value = clue.confidence;
+
+  closeDetailModal();
+  document.getElementById('editModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function updateEditSubcategory(category, selected) {
+  const subSel = document.getElementById('editSubcategory');
+  const subs = standards.filter(s => s.enabled && s.category === category).map(s => s.subcategory);
+  subSel.innerHTML = '<option value="">-- 请选择 --</option>' + subs.map(s => `<option value="${esc(s)}" ${s===selected?'selected':''}>${esc(s)}</option>`).join('');
+}
+
+document.getElementById('editCategory').addEventListener('change', (e) => {
+  updateEditSubcategory(e.target.value, '');
+});
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function editCurrentClue() {
+  if (currentEditId) {
+    closeDetailModal();
+    openEdit(currentEditId);
+  }
+}
+
+function saveEditClue() {
+  const id = parseInt(document.getElementById('editId').value);
+  const idx = allClues.findIndex(c => c.id === id);
+  if (idx === -1) return;
+
+  const clue = allClues[idx];
+  clue.clue_category = document.getElementById('editCategory').value;
+  clue.clue_subcategory = document.getElementById('editSubcategory').value;
+  clue.task_num = document.getElementById('editTaskNum').value;
+  clue.content = document.getElementById('editContent').value;
+  clue.publish_time = document.getElementById('editTime').value.replace('T', ' ');
+  clue.complained_unit = document.getElementById('editUnit').value;
+  clue.region_city = document.getElementById('editCity').value;
+  clue.region_district = document.getElementById('editDistrict').value;
+  clue.evidence_suggestion = document.getElementById('editEvidence').value;
+  clue.qualitative_analysis = document.getElementById('editAnalysis').value;
+  clue.root_cause = document.getElementById('editRootCause').value;
+  clue.is_typical = document.getElementById('editTypical').checked;
+  clue.tags = document.getElementById('editTags').value.split(',').map(t => t.trim()).filter(Boolean);
+  clue.confidence = parseFloat(document.getElementById('editConfidence').value) || 0;
+  clue.updated_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
+
+  localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
+  filteredClues = [...allClues];
+  applyCluesFilters();
+  closeEditModal();
+  showToast('线索已更新', 'success');
+}
+
+function deleteClue(id) {
+  if (!confirm('确定删除这条线索？此操作不可恢复。')) return;
+  allClues = allClues.filter(c => c.id !== id);
+  // 重新排序
+  allClues.sort((a, b) => a.seq_no - b.seq_no);
+  allClues.forEach((c, i) => c.seq_no = i + 1);
+  localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
+  filteredClues = [...allClues];
+  applyCluesFilters();
+  renderCluesStats();
+  showToast('已删除', 'success');
+}
+
+// ========== 工具函数 ==========
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function getTagClass(tag) {
+  const danger = ['数据造假','统计造假','虚报','造假','盲目决策','形象工程','烂尾'];
+  const warning = ['指尖形式主义','强制打卡','积分排名','考核异化','千分制','督查检查考核'];
+  const info = ['精简文件','精简会议','借调干部'];
+  if (danger.some(d => tag.includes(d))) return 'tag-danger';
+  if (warning.some(w => tag.includes(w))) return 'tag-warning';
+  if (info.some(i => tag.includes(i))) return 'tag-info';
+  return 'tag-category';
+}
+
+function showToast(msg, type = 'info') {
+  const toast = document.getElementById('toast');
+  toast.className = `toast ${type} show`;
+  toast.textContent = msg;
+  setTimeout(() => { toast.classList.remove('show'); }, 3000);
+}
+
+// ========== 快捷键 ==========
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeDetailModal();
+    closeEditModal();
+  }
+});
+</script>
+</body>
+</html>
