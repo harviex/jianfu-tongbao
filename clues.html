@@ -1249,8 +1249,8 @@ const SAMPLE_REPORTS = [
 ];
 
 // ========== 初始化 ==========
-document.addEventListener('DOMContentLoaded', () => {
-  // 加载认定标准
+document.addEventListener('DOMContentLoaded', async () => {
+  // 1. 加载认定标准
   const savedStandards = localStorage.getItem('jianfu_standards');
   if (savedStandards) {
     try { standards = JSON.parse(savedStandards); } catch { standards = DEFAULT_STANDARDS; }
@@ -1260,13 +1260,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderStandards();
 
-  // 加载线索数据
-  const savedClues = localStorage.getItem('jianfu_clues');
-  if (savedClues) {
-    try { allClues = JSON.parse(savedClues); } catch { allClues = SAMPLE_CLUES; }
-  } else {
-    allClues = SAMPLE_CLUES;
-    localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
+  // 2. 加载线索数据：优先从 data/clues_test.json 获取最新线索
+  try {
+    const resp = await fetch('data/clues_test.json');
+    if (resp.ok) {
+      const remoteClues = await resp.json();
+      if (remoteClues && remoteClues.length > 0) {
+        allClues = remoteClues;
+        localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
+      } else {
+        throw new Error('Remote clues empty');
+      }
+    } else {
+      throw new Error('Fetch failed');
+    }
+  } catch (e) {
+    // 回退到 localStorage 或样本数据
+    const savedClues = localStorage.getItem('jianfu_clues');
+    if (savedClues) {
+      try { allClues = JSON.parse(savedClues); } catch { allClues = SAMPLE_CLUES; }
+    } else {
+      allClues = SAMPLE_CLUES;
+      localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
+    }
   }
   filteredClues = [...allClues];
   // 默认按诉求时间倒序
