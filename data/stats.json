@@ -1,18 +1,22 @@
 {
-  "total": 37,
+  "total": 46,
   "byLevel": [
     {
-      "level_1": "省级",
-      "count": 20
+      "level_1": "中央",
+      "count": 18
     },
     {
-      "level_1": "中央",
-      "count": 17
+      "level_1": "省级",
+      "count": 28
     }
   ],
   "provinces": [
     {
-      "province": "云南",
+      "province": "广东",
+      "count": 6
+    },
+    {
+      "province": "上海",
       "count": 5
     },
     {
@@ -20,15 +24,19 @@
       "count": 5
     },
     {
-      "province": "广东",
-      "count": 4
+      "province": "云南",
+      "count": 5
     },
     {
-      "province": "上海",
+      "province": "湖南",
       "count": 4
     },
     {
       "province": "浙江",
+      "count": 4
+    },
+    {
+      "province": "吉林",
       "count": 3
     },
     {
@@ -36,11 +44,23 @@
       "count": 3
     },
     {
-      "province": "辽宁",
+      "province": "福建",
+      "count": 3
+    },
+    {
+      "province": "贵州",
       "count": 2
     },
     {
-      "province": "湖南",
+      "province": "江苏",
+      "count": 2
+    },
+    {
+      "province": "河北",
+      "count": 2
+    },
+    {
+      "province": "辽宁",
       "count": 2
     },
     {
@@ -49,10 +69,6 @@
     },
     {
       "province": "黑龙江",
-      "count": 2
-    },
-    {
-      "province": "河北",
       "count": 2
     },
     {
@@ -72,11 +88,7 @@
       "count": 2
     },
     {
-      "province": "吉林",
-      "count": 2
-    },
-    {
-      "province": "江苏",
+      "province": "甘肃",
       "count": 2
     },
     {
@@ -84,27 +96,11 @@
       "count": 2
     },
     {
-      "province": "福建",
-      "count": 2
-    },
-    {
-      "province": "甘肃",
-      "count": 2
+      "province": "江西",
+      "count": 1
     },
     {
       "province": "河南",
-      "count": 1
-    },
-    {
-      "province": "贵州",
-      "count": 1
-    },
-    {
-      "province": "安徽",
-      "count": 1
-    },
-    {
-      "province": "江西",
       "count": 1
     },
     {
@@ -118,41 +114,49 @@
     {
       "province": "新疆",
       "count": 1
+    },
+    {
+      "province": "安徽",
+      "count": 1
+    },
+    {
+      "province": "北京",
+      "count": 1
     }
   ],
   "tags": [
     {
       "tag": "形式主义",
-      "count": 35
+      "count": 44
     },
     {
       "tag": "考核泛滥",
-      "count": 27
+      "count": 33
     },
     {
       "tag": "资源浪费",
-      "count": 13
-    },
-    {
-      "tag": "脱离实际",
-      "count": 11
+      "count": 15
     },
     {
       "tag": "官僚主义",
-      "count": 11
+      "count": 15
+    },
+    {
+      "tag": "脱离实际",
+      "count": 12
+    },
+    {
+      "tag": "强制摊派",
+      "count": 10
     },
     {
       "tag": "层层加码",
       "count": 10
     },
     {
-      "tag": "强制摊派",
-      "count": 8
-    },
-    {
       "tag": "数据造假",
-      "count": 6
+      "count": 7
     }
   ],
-  "last_updated": "2026-06-02 11:19:34"
+  "last_updated": "2026-08-06 16:30:00"
 }
