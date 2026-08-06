@@ -48,6 +48,14 @@ body {
 }
 .gov-topbar a { color: rgba(255,255,255,0.8); text-decoration: none; }
 .gov-topbar a:hover { color: #fff; }
+.gov-topbar .admin-link {
+  background: rgba(255,255,255,0.15);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.gov-topbar .admin-link:hover { background: rgba(255,255,255,0.25); color: #fff; }
 /* Main header area */
 .gov-title-area {
   display: flex;
@@ -535,7 +543,7 @@ body {
   <div class="gov-header-inner">
     <div class="gov-topbar">
       <span>整治形式主义为基层减负信息公开平台</span>
-      <span><a href="report.html">📝 情况反映</a></span>
+      <span><a href="report.html">📝 情况反映</a> <a href="#" class="admin-link" onclick="openAdminModal();return false;">🔧 后台管理</a></span>
     </div>
     <div class="gov-title-area">
       <div class="gov-emblem">⚖️</div>
@@ -832,6 +840,219 @@ function esc(s) {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 init();
-</script>
+
+// Admin Modal Functions
+function openAdminModal() {
+  const perms = JSON.parse(localStorage.getItem('jianfu_perms') || '{}');
+  ['anon','captcha','intranet','encrypt','moderate','email','api'].forEach(key => {
+    const btn = document.querySelector(`.perm-toggle[onclick*="${key}"]`);
+    if (btn) btn.classList.toggle('active', !!perms[key]);
+  });
+  document.getElementById('adminModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  switchAdminTab('reports');
+}
+
+function closeAdminModal() {
+  document.getElementById('adminModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function togglePerm(btn, key) {
+  btn.classList.toggle('active');
+  const perms = JSON.parse(localStorage.getItem('jianfu_perms') || '{}');
+  perms[key] = btn.classList.contains('active');
+  localStorage.setItem('jianfu_perms', JSON.stringify(perms));
+  showToast(`${perms[key] ? '已开启' : '已关闭'}`, 'success');
+}
+
+function switchAdminTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+function changeReportStatus(id) {
+  const r = allReports.find(x => x.id === id);
+  if (!r) return;
+  if (r.status === 'pending') r.status = 'processing';
+  else if (r.status === 'processing') r.status = 'done';
+  else r.status = 'pending';
+  localStorage.setItem('jianfu_reports', JSON.stringify(allReports));
+  filteredReports = [...allReports];
+  renderReportsTable();
+  showToast('状态已更新', 'success');
+}
+
+function deleteReport(id) {
+  if (!confirm('确定删除这条反映？')) return;
+  allReports = allReports.filter(r => r.id !== id);
+  localStorage.setItem('jianfu_reports', JSON.stringify(allReports));
+  filteredReports = [...allReports];
+  renderReportsTable();
+  showToast('已删除', 'success');
+}
+
+function renderReportsTable() {
+  const tbody = document.getElementById('reportsBody');
+  const start = (currentReportsPage - 1) * REPORTS_PAGE_SIZE;
+  const pageData = filteredReports.slice(start, start + REPORTS_PAGE_SIZE);
+
+  if (!pageData.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">暂无数据</td></tr>';
+    renderReportsPagination();
+    return;
+  }
+
+  tbody.innerHTML = pageData.map((r, i) => `
+    <tr data-id="${r.id}">
+      <td>${start + i + 1}</td>
+      <td>${esc(r.time)}</td>
+      <td>${esc(r.city)}</td>
+      <td>${esc(r.district)}</td>
+      <td>${esc(r.unit)}</td>
+      <td class="analysis-cell">${esc(r.content)}</td>
+      <td>${esc(r.contact)}</td>
+      <td><span class="status-badge status-${r.status}">${r.status === 'pending' ? '待处理' : r.status === 'processing' ? '处理中' : '已办结'}</span></td>
+      <td class="actions">
+        <button class="action-btn edit" onclick="changeReportStatus(${r.id})">${r.status === 'done' ? '重开' : r.status === 'processing' ? '办结' : '处理'}</button>
+        <button class="action-btn delete" onclick="deleteReport(${r.id})">删除</button>
+      </td>
+    </tr>
+  `).join('');
+
+  renderReportsPagination();
+}
+
+function renderReportsPagination() {
+  const pages = Math.ceil(filteredReports.length / REPORTS_PAGE_SIZE);
+  const el = document.getElementById('reportsPagination');
+  if (pages <= 1) { el.innerHTML = ''; return; }
+
+  let html = `<button ${currentReportsPage<=1?'disabled':''} onclick="goReportsPage(${currentReportsPage-1})">‹</button>`;
+  for (let i = Math.max(1, currentReportsPage-2); i <= Math.min(pages, currentReportsPage+2); i++) {
+    html += `<button class="${i===currentReportsPage?'active':''}" onclick="goReportsPage(${i})">${i}</button>`;
+  }
+  html += `<button ${currentReportsPage>=pages?'disabled':''} onclick="goReportsPage(${currentReportsPage+1})">›</button>`;
+  el.innerHTML = html;
+}
+
+function goReportsPage(p) {
+  currentReportsPage = p;
+  renderReportsTable();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+let allReports = [];
+let filteredReports = [];
+let currentReportsPage = 1;
+const REPORTS_PAGE_SIZE = 10;
+
+function loadReports() {
+  const savedReports = localStorage.getItem('jianfu_reports');
+  if (savedReports) {
+    try { allReports = JSON.parse(savedReports); } catch { allReports = []; }
+  } else {
+    allReports = [];
+    localStorage.setItem('jianfu_reports', JSON.stringify(allReports));
+  }
+  filteredReports = [...allReports];
+  renderReportsTable();
+}
+
+loadReports();
+
+// Admin Modal HTML
+<div class="modal-overlay" id="adminModal" onclick="if(event.target===this)closeAdminModal()">
+  <div class="modal admin-modal">
+    <div class="modal-header">
+      <div class="modal-title">🔧 后台管理</div>
+      <button class="modal-close" onclick="closeAdminModal()">✕</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('reports')">📝 情况反映数据库</button>
+      <button class="admin-tab" onclick="switchAdminTab('perms')">🔐 权限设置</button>
+    </div>
+    <div class="admin-panel active" id="panel-reports">
+      <div class="reports-table-wrap">
+        <table class="reports-table" id="reportsTable">
+          <thead>
+            <tr>
+              <th style="width:50px;">序号</th>
+              <th style="width:120px;">提交时间</th>
+              <th style="width:100px;">所在市</th>
+              <th style="width:100px;">县/区</th>
+              <th style="width:180px;">反映单位</th>
+              <th class="analysis-cell" style="min-width:300px;">有关情况</th>
+              <th style="width:120px;">联系方式</th>
+              <th style="width:100px;">状态</th>
+              <th style="width:80px;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="reportsBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="reportsPagination"></div>
+    </div>
+    <div class="admin-panel" id="panel-perms">
+      <div style="padding: 8px 0;">
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">匿名提交</div>
+            <div class="perm-desc">允许未登录用户匿名提交情况反映</div>
+          </div>
+          <div class="perm-toggle active" onclick="togglePerm(this,'anon')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">需要验证码</div>
+            <div class="perm-desc">提交表单时要求输入验证码防刷</div>
+          </div>
+          <div class="perm-toggle" onclick="togglePerm(this,'captcha')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">仅内网访问</div>
+            <div class="perm-desc">限制仅允许内网IP访问前台页面</div>
+          </div>
+          <div class="perm-toggle" onclick="togglePerm(this,'intranet')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">数据加密存储</div>
+            <div class="perm-desc">情况反映内容加密存储到数据库</div>
+          </div>
+          <div class="perm-toggle active" onclick="togglePerm(this,'encrypt')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">审核模式</div>
+            <div class="perm-desc">新提交的反映需人工审核后入库</div>
+          </div>
+          <div class="perm-toggle" onclick="togglePerm(this,'moderate')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">邮件通知</div>
+            <div class="perm-desc">新反映提交时发送邮件通知管理员</div>
+          </div>
+          <div class="perm-toggle" onclick="togglePerm(this,'email')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">API 开放</div>
+            <div class="perm-desc">允许第三方通过 API 提交/查询数据</div>
+          </div>
+          <div class="perm-toggle" onclick="togglePerm(this,'api')"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeAdminModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -26,7 +26,7 @@ body {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2V6h4V4h-4zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   pointer-events: none;
 }
 .gov-header-inner {
@@ -47,6 +47,14 @@ body {
 }
 .gov-topbar a { color: rgba(255,255,255,0.8); text-decoration: none; }
 .gov-topbar a:hover { color: #fff; }
+.gov-topbar .admin-link {
+  background: rgba(255,255,255,0.15);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.gov-topbar .admin-link:hover { background: rgba(255,255,255,0.25); color: #fff; }
 .gov-title-area {
   display: flex;
   align-items: center;
@@ -216,7 +224,7 @@ body {
 .btn-primary:hover { background: #a01830; border-color: #a01830; color: #fff; }
 .btn-sm { padding: 6px 12px; font-size: 12px; }
 
-/* ========== Standard Table (认定标准) - Collapsible ========== */
+/* ========== Standard Table (认定标准) - Collapsible, Default Closed ========== */
 .standard-table-wrap {
   overflow-x: auto;
   padding: 16px 24px 24px;
@@ -254,14 +262,10 @@ body {
   font-size: 11px;
   font-weight: 500;
   margin: 2px 4px 2px 0;
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #c8e6c9;
   white-space: nowrap;
 }
-.standard-table .tag-chip.warning { background: #fff8e1; color: #e65100; border-color: #ffe0b2; }
-.standard-table .tag-chip.danger { background: #ffebee; color: #c62828; border-color: #ffcdd2; }
-.standard-table .tag-chip.info { background: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
+.standard-table .tag-chip.category { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.standard-table .tag-chip.subcategory { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
 .standard-table .case-link {
   color: #1976d2;
   text-decoration: none;
@@ -357,38 +361,11 @@ body {
   max-width: 350px;
   min-width: 200px;
 }
-.clues-table .content-preview {
-  display: inline-block;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  cursor: pointer;
-  vertical-align: middle;
-}
 .clues-table .content-full {
-  display: none;
   white-space: pre-wrap;
   word-break: break-word;
-  max-height: 200px;
-  overflow-y: auto;
-  padding: 8px;
-  background: #fafafa;
-  border-radius: 4px;
-  font-size: 12px;
-  line-height: 1.6;
-  border: 1px solid #eee;
-  margin-top: 4px;
-}
-.clues-table .expand-btn {
-  background: none;
-  border: none;
-  color: #1976d2;
-  cursor: pointer;
-  font-size: 12px;
-  padding: 0 4px;
-  margin-left: 4px;
-  vertical-align: middle;
+  font-size: 13px;
+  line-height: 1.7;
 }
 .clues-table .tag {
   display: inline-block;
@@ -401,7 +378,6 @@ body {
 }
 .clues-table .tag-category { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
 .clues-table .tag-subcategory { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
-.clues-table .tag-typical { background: #fff0f0; color: #c41e3a; border: 1px solid #ffcdd2; }
 .clues-table .tag-root { background: #f3e5f5; color: #7b1fa2; border: 1px solid #e1bee7; }
 .clues-table .confidence {
   display: inline-flex;
@@ -558,6 +534,73 @@ body {
 .gov-footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
 .update-time { color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 8px; }
 
+/* ========== Admin Modal ========== */
+.admin-modal {
+  max-width: 1100px;
+}
+.admin-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 20px;
+}
+.admin-tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.admin-tab:hover { color: #c41e3a; }
+.admin-tab.active { color: #c41e3a; border-bottom-color: #c41e3a; }
+.admin-panel { display: none; }
+.admin-panel.active { display: block; }
+.reports-table-wrap { overflow-x: auto; }
+.reports-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 900px;
+}
+.reports-table th, .reports-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  text-align: left;
+  vertical-align: top;
+}
+.reports-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #555;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.reports-table tr:hover { background: #fafafa; }
+.reports-table .status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.reports-table .status-pending { background: #fff8e1; color: #e65100; }
+.reports-table .status-processing { background: #e3f2fd; color: #1565c0; }
+.reports-table .status-done { background: #e8f5e9; color: #2e7d32; }
+.perm-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+.perm-item:last-child { border-bottom: none; }
+.perm-info { flex: 1; }
+.perm-name { font-weight: 500; color: #333; }
+.perm-desc { font-size: 12px; color: #999; margin-top: 2px; }
+.perm-toggle { position: relative; width: 50px; height: 26px; background: #ddd; border-radius: 13px; cursor: pointer; transition: background 0.2s; }
+.perm-toggle.active { background: #c41e3a; }
+.perm-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: left 0.2s; }
+.perm-toggle.active::after { left: 26px; }
+
 /* ========== Responsive ========== */
 @media (max-width: 1200px) {
   .gov-header-inner, .gov-nav-inner, .main-content { max-width: 100%; }
@@ -587,7 +630,10 @@ body {
   <div class="gov-header-inner">
     <div class="gov-topbar">
       <span>整治形式主义为基层减负信息公开平台</span>
-      <span><a href="index.html">📋 通报数据库</a> · <a href="report.html">📝 情况反映</a></span>
+      <span>
+        <a href="index.html">📋 通报数据库</a> · <a href="report.html">📝 情况反映</a> · <a href="clues.html">📌 线索库</a>
+        <a href="#" class="admin-link" onclick="openAdminModal();return false;">🔧 后台管理</a>
+      </span>
     </div>
     <div class="gov-title-area">
       <div class="gov-emblem">📌</div>
@@ -629,11 +675,11 @@ body {
 <!-- Main Content -->
 <div class="main-content">
 
-  <!-- Section 1: 认定标准表格 (Collapsible) -->
+  <!-- Section 1: 认定标准 (Default Closed, Renamed, Merged Category+Subcategory) -->
   <div class="section-card">
-    <div class="section-header" onclick="toggleSection(this)">
+    <div class="section-header collapsed" onclick="toggleSection(this)">
       <div class="section-title">
-        📋 认定标准对照表
+        📋 认定标准
         <span id="standardVersion" style="font-size:12px;font-weight:400;color:#999;margin-left:8px;"></span>
         <span class="collapse-icon">▼</span>
       </div>
@@ -651,9 +697,8 @@ body {
           <thead>
             <tr>
               <th style="width:50px;">序号</th>
-              <th style="width:160px;">一级分类</th>
-              <th style="width:220px;">二级细分</th>
-              <th style="width:280px;">关键词/特征 <span style="font-weight:400;font-size:11px;color:#999;">(用于AI自动分类匹配，多词用顿号/逗号分隔)</span></th>
+              <th style="width:280px;">分类/细分 <span style="font-weight:400;font-size:11px;color:#999;">(绿=一级分类，蓝=二级细分)</span></th>
+              <th style="width:380px;">关键词/特征 <span style="font-weight:400;font-size:11px;color:#999;">(用于AI自动分类匹配，多词用顿号/逗号分隔)</span></th>
               <th style="width:350px;">典型案例链接 <span style="font-weight:400;font-size:11px;color:#999;">(支持多条，含中央/省级通报链接或标题，用分号分隔)</span></th>
               <th style="width:60px;text-align:center;">启用</th>
               <th style="width:60px;">操作</th>
@@ -685,11 +730,6 @@ body {
         <select class="filter-select" id="filterSubcategory">
           <option value="">全部细分</option>
         </select>
-        <select class="filter-select" id="filterTypical">
-          <option value="">全部</option>
-          <option value="true">典型案例</option>
-          <option value="false">非典型</option>
-        </select>
         <select class="filter-select" id="filterRootCause">
           <option value="">全部根因</option>
         </select>
@@ -699,7 +739,6 @@ body {
           <option value="medium">中 (0.5-0.8)</option>
           <option value="low">低 (<0.5)</option>
         </select>
-        <!-- Time filter buttons -->
         <div style="display:flex;gap:4px;align-items:center;margin-left:8px;padding-left:8px;border-left:1px solid #ddd;">
           <span style="font-size:12px;color:#888;">时间:</span>
           <button class="date-filter-btn" data-range="year" onclick="setDateRange('year')">今年</button>
@@ -733,14 +772,13 @@ body {
             <th style="width:140px;">被诉单位</th>
             <th style="width:100px;">地市/县区</th>
             <th style="width:70px;">置信度</th>
-            <th style="width:50px;text-align:center;">典型</th>
             <th style="width:100px;">根因</th>
             <th style="width:150px;">标签</th>
             <th style="width:90px;">操作</th>
           </tr>
         </thead>
         <tbody id="cluesBody">
-          <tr><td colspan="15" class="loading">加载中...</td></tr>
+          <tr><td colspan="14" class="loading">加载中...</td></tr>
         </tbody>
       </table>
     </div>
@@ -836,14 +874,6 @@ body {
         </div>
       </div>
       <div class="modal-row">
-        <div class="modal-label">是否典型</div>
-        <div class="modal-value">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" id="editTypical"> 是
-          </label>
-        </div>
-      </div>
-      <div class="modal-row">
         <div class="modal-label">标签</div>
         <div class="modal-value"><input type="text" id="editTags" class="filter-select" style="width:100%" placeholder="逗号分隔，如：数据造假,统计造假,指令报数,漳州"></div>
       </div>
@@ -855,6 +885,97 @@ body {
     <div class="modal-footer">
       <button class="btn" onclick="closeEditModal()">取消</button>
       <button class="btn btn-primary" onclick="saveEditClue()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Modal -->
+<div class="modal-overlay" id="adminModal" onclick="if(event.target===this)closeAdminModal()">
+  <div class="modal admin-modal">
+    <div class="modal-header">
+      <div class="modal-title">🔧 后台管理</div>
+      <button class="modal-close" onclick="closeAdminModal()">✕</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('reports')">📝 情况反映数据库</button>
+      <button class="admin-tab" onclick="switchAdminTab('perms')">🔐 权限设置</button>
+    </div>
+    <div class="admin-panel active" id="panel-reports">
+      <div class="reports-table-wrap">
+        <table class="reports-table" id="reportsTable">
+          <thead>
+            <tr>
+              <th style="width:50px;">序号</th>
+              <th style="width:120px;">提交时间</th>
+              <th style="width:100px;">所在市</th>
+              <th style="width:100px;">县/区</th>
+              <th style="width:180px;">反映单位</th>
+              <th class="analysis-cell" style="min-width:300px;">有关情况</th>
+              <th style="width:120px;">联系方式</th>
+              <th style="width:100px;">状态</th>
+              <th style="width:80px;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="reportsBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="reportsPagination"></div>
+    </div>
+    <div class="admin-panel" id="panel-perms">
+      <div style="padding: 8px 0;">
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">匿名提交</div>
+            <div class="perm-desc">允许未登录用户匿名提交情况反映</div>
+          </div>
+          <div class="perm-toggle active" onclick="togglePerm(this,'anon')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">需要验证码</div>
+            <div class="perm-desc">提交表单时要求输入验证码防刷</div>
+          </div>
+          <div class="perm-toggle" onclick="togglePerm(this,'captcha')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">仅内网访问</div>
+            <div class="perm-desc">限制仅允许内网IP访问前台页面</div>
+          </div>
+          <div class="perm-toggle" onclick="togglePerm(this,'intranet')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">数据加密存储</div>
+            <div class="perm-desc">情况反映内容加密存储到数据库</div>
+          </div>
+          <div class="perm-toggle active" onclick="togglePerm(this,'encrypt')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">审核模式</div>
+            <div class="perm-desc">新提交的反映需人工审核后入库</div>
+          </div>
+          <div class="perm-toggle" onclick="togglePerm(this,'moderate')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">邮件通知</div>
+            <div class="perm-desc">新反映提交时发送邮件通知管理员</div>
+          </div>
+          <div class="perm-toggle" onclick="togglePerm(this,'email')"></div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-info">
+            <div class="perm-name">API 开放</div>
+            <div class="perm-desc">允许第三方通过 API 提交/查询数据</div>
+          </div>
+          <div class="perm-toggle" onclick="togglePerm(this,'api')"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeAdminModal()">关闭</button>
     </div>
   </div>
 </div>
@@ -871,6 +992,10 @@ let currentCluesPage = 1;
 const CLUES_PAGE_SIZE = 15;
 let currentEditId = null;
 let currentDateRange = { type: '', start: '', end: '' };
+let allReports = [];
+let filteredReports = [];
+let currentReportsPage = 1;
+const REPORTS_PAGE_SIZE = 10;
 
 // ========== 认定标准默认数据 (合并同类项，去除条款列，增加典型案例链接) ==========
 const DEFAULT_STANDARDS = [
@@ -908,7 +1033,7 @@ const SAMPLE_CLUES = [
     clue_category: "数据造假", clue_subcategory: "统计造假-指令报数/代填代报/虚假审批",
     task_num: "XM260804001", title: "反映某县统计局指令企业虚报工业产值",
     content: "群众反映：龙海区统计局向辖区规上工业企业下发“指导数”，要求企业按指定数值上报工业总产值，不达标不让报送。企业反映实际生产情况与上报数据严重不符，半停产企业被要求报送产值不能低于上年同期。多名企业财务人员表示被统计局代填代报数据。",
-    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》\n【问题类型】数据造假-统计造假-指令报数/代填代报\n【核心机制】统计部门“只考不核”，下达指令性指标，以排名通报倒逼企业造假；企业为应付检查配合虚报\n【典型性】符合中央通报“统计造假”典型特征(2026.07.15漳州/南平案例)，建议纳入典型案例库",
+    qualitative_analysis: "【问题类型】数据造假-统计造假-指令报数/代填代报\n【核心机制】统计部门“只考不核”，下达指令性指标，以排名通报倒逼企业造假；企业为应付检查配合虚报\n【典型性】符合中央通报“统计造假”典型特征(2026.07.15漳州/南平案例)，建议纳入典型案例库",
     evidence_suggestion: "调取该区2025-2026年规上工业企业统计台账与上报数据对比，核查是否存在“指令报数/代填代报”痕迹；调阅统计局下发的“指导数”文件或微信聊天记录。",
     publish_time: "2026-08-04 09:15:00",
     complained_unit: "漳州市龙海区统计局",
@@ -925,7 +1050,7 @@ const SAMPLE_CLUES = [
     clue_category: "指尖形式主义", clue_subcategory: "强制打卡/积分排名/在线时长/上传照片视频轨迹",
     task_num: "XM260804002", title: "基层干部反映某政务APP强制打卡签到、积分排名",
     content: "某县乡镇干部反映：上级要求全员使用“某政务APP”，设置每日打卡签到、学习时长积分、在线时长统计功能。每月通报积分排名，排名靠后被约谈、扣绩效。干部每天花费大量时间刷时长、凑积分，实际工作时间被严重挤占。APP还强制要求上传工作照片、视频、轨迹，不上传扣分。",
-    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》\n【问题类型】指尖形式主义-强制打卡/积分排名/在线时长\n【核心机制】以数字化考核代替实绩考核，将“指尖数据”作为工作实绩唯一标尺，倒逼基层刷数据\n【典型性】符合中央通报“指尖上的形式主义”典型特征(2025.08.21长春、2024.02.03松滋/定远案例)，建议纳入典型案例库",
+    qualitative_analysis: "【问题类型】指尖形式主义-强制打卡/积分排名/在线时长\n【核心机制】以数字化考核代替实绩考核，将“指尖数据”作为工作实绩唯一标尺，倒逼基层刷数据\n【典型性】符合中央通报“指尖上的形式主义”典型特征(2025.08.21长春、2024.02.03松滋/定远案例)，建议纳入典型案例库",
     evidence_suggestion: "登录该政务APP后台，截图保存“打卡签到/积分排名/在线时长/强制上传照片视频”功能配置页面；导出近3个月积分排名通报文件、约谈记录。",
     publish_time: "2026-08-03 14:20:00",
     complained_unit: "某市政务服务管理局",
@@ -942,7 +1067,7 @@ const SAMPLE_CLUES = [
     clue_category: "权责不清/甩锅", clue_subcategory: "清单外事项下放/签责任状转嫁/属地管理甩锅",
     task_num: "XM260804003", title: "街道反映区级部门清单外下放工作任务、签责任状",
     content: "某街道反映：区城管局、区环保局、区应急局等多个部门未经街道党工委同意，直接向社区下发“网格化管理”任务清单，要求社区网格员负责违建巡查、河道巡查、安全隐患排查等执法类工作。部门还要求街道、社区签订“责任状”、“承诺书”，一旦出问题由基层兜底。社区无执法权、无装备、无经费，只能干瞪眼。",
-    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》\n【问题类型】权责不清/甩锅-清单外事项下放/签责任状转嫁\n【核心机制】职能部门利用“属地管理”名义，将法定执法职责下放给无权无资源的基层，通过责任状实现“权责分离、甩锅兜底”\n【典型性】符合中央通报“权责不清/甩锅”典型特征(2025.08.07恭城文旅、2026.01.16会议提及)，建议纳入典型案例库",
+    qualitative_analysis: "【问题类型】权责不清/甩锅-清单外事项下放/签责任状转嫁\n【核心机制】职能部门利用“属地管理”名义，将法定执法职责下放给无权无资源的基层，通过责任状实现“权责分离、甩锅兜底”\n【典型性】符合中央通报“权责不清/甩锅”典型特征(2025.08.07恭城文旅、2026.01.16会议提及)，建议纳入典型案例库",
     evidence_suggestion: "收集区级部门下发给街道/社区的清单外任务文件、指标分解表、签署的“责任状/承诺书”；访谈街道、社区负责人制作笔录。",
     publish_time: "2026-08-02 11:30:00",
     complained_unit: "某区城管局、环保局、应急局",
@@ -959,7 +1084,7 @@ const SAMPLE_CLUES = [
     clue_category: "盲目决策/形象工程", clue_subcategory: "不顾实际上项目/盲目举债/挖山造田/有轨电车/农旅烂尾/违规占地",
     task_num: "XM260804004", title: "群众举报某县盲目建设“农旅融合”项目烂尾、资金浪费",
     content: "群众反映：某县引入社会资本建设“农旅融合综合体”，计划投资3亿元，分三期建设。一期投入1.2亿元建设广场、景观湖、仿古建筑群。因缺水、交通不便、缺乏产业支撑，项目建成后长期闲置，无游客、无收益。县政府为配合项目违规占用基本农田500余亩，挖湖造景破坏生态。社会资本方资金链断裂，二三期烂尾，财政投入打水漂。",
-    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》\n【问题类型】盲目决策/形象工程-不顾实际上项目/盲目举债\n【核心机制】政绩观偏差，不顾资源禀赋、市场规律，盲目上马“面子工程”，违规占用耕地、挖湖造景\n【典型性】符合中央通报“盲目决策/形象工程”典型特征(2024.04.08天水有轨电车、2025.02.20德江陶缘案例)，建议纳入典型案例库",
+    qualitative_analysis: "【问题类型】盲目决策/形象工程-不顾实际上项目/盲目举债\n【核心机制】政绩观偏差，不顾资源禀赋、市场规律，盲目上马“面子工程”，违规占用耕地、挖湖造景\n【典型性】符合中央通报“盲目决策/形象工程”典型特征(2024.04.08天水有轨电车、2025.02.20德江陶缘案例)，建议纳入典型案例库",
     evidence_suggestion: "现场核查该项目实际建设进度、运营状况、游客流量、收益数据；对比立项可行性报告、环评报告、用地审批文件；调取财政投入凭证、合同协议。",
     publish_time: "2026-08-01 16:45:00",
     complained_unit: "某县发改局、自然资源局、农业农村局",
@@ -976,7 +1101,7 @@ const SAMPLE_CLUES = [
     clue_category: "创建示范/达标", clue_subcategory: "变相收费/摊派费用/社会组织违规收费/绕道国企办展",
     task_num: "XM260804005", title: "某市通过社会组织举办论坛活动摊派费用至基层",
     content: "某市行业协会（社会组织）主办“全市基层治理创新论坛”，实际由市委政法委主导。论坛以“会费”、“赞助费”、“展位费”名义向各区县政法委、街道、社区、国企摊派费用共200余万元。各基层单位为完成摊派指标，挤占公用经费，甚至要求社区自筹。论坛内容多为包装材料，缺乏实质性经验交流。",
-    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》\n【问题类型】创建示范/达标-变相收费/摊派费用\n【核心机制】政府部门规避审批，以社会组织名义举办论坛，实为政府主导，通过“会费/赞助费”变相向基层摊派\n【典型性】符合中央通报“违规评比/论坛/节庆/变相收费”典型特征(2024.08.21扬中河豚节、2024.11.11相关案例)，建议纳入典型案例库",
+    qualitative_analysis: "【问题类型】创建示范/达标-变相收费/摊派费用\n【核心机制】政府部门规避审批，以社会组织名义举办论坛，实为政府主导，通过“会费/赞助费”变相向基层摊派\n【典型性】符合中央通报“违规评比/论坛/节庆/变相收费”典型特征(2024.08.21扬中河豚节、2024.11.11相关案例)，建议纳入典型案例库",
     evidence_suggestion: "获取该社会组织收费文件、银行流水、摊派对象名单、发票记录；收集市委政法委主导论坛的会议纪要、通知文件。",
     publish_time: "2026-07-31 10:00:00",
     complained_unit: "某市行业协会、市委政法委",
@@ -993,7 +1118,7 @@ const SAMPLE_CLUES = [
     clue_category: "督查检查考核", clue_subcategory: "考核指标繁杂/千分制/双千分制/三千分制/指标过细/月度季度排名",
     task_num: "XM260804006", title: "某县对乡镇实行“双千分制”考核、月度排名通报",
     content: "某县对乡镇、县直部门实行“党建+经济社会发展”双千分制综合考核，指标细化至300+项。实行月度排名、季度通报、年度兑现。乡镇主要负责人反映：为应付考核，大量精力用于准备台账、凑资料、迎检查，实际工作推进受阻。考核指标多为“留痕型”，如会议记录规范性、台账整理美观度、上墙制度完整性等。",
-    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》\n【问题类型】督查检查考核-考核指标繁杂/双千分制\n【核心机制】以极细指标、高频排名、重奖重罚倒逼基层“重留痕、轻实效”，形成“千分制”考核泛滥\n【典型性】符合中央通报“考核指标繁杂/千分制”典型特征(2024.02.20费县双千分制/三千分制案例)，建议纳入典型案例库",
+    qualitative_analysis: "【问题类型】督查检查考核-考核指标繁杂/双千分制\n【核心机制】以极细指标、高频排名、重奖重罚倒逼基层“重留痕、轻实效”，形成“千分制”考核泛滥\n【典型性】符合中央通报“考核指标繁杂/千分制”典型特征(2024.02.20费县双千分制/三千分制案例)，建议纳入典型案例库",
     evidence_suggestion: "获取该县考核方案、指标体系明细表、月度/季度排名通报文件、年度考核兑现文件；访谈乡镇负责人了解迎检准备实际耗时。",
     publish_time: "2026-07-30 09:00:00",
     complained_unit: "某县委组织部、县考核办",
@@ -1010,7 +1135,7 @@ const SAMPLE_CLUES = [
     clue_category: "精简会议", clue_subcategory: "会议数量过多/层层召开/文山会海/年底扎堆/未批准直达基层",
     task_num: "XM260804007", title: "某国企集团要求下属单位参加会议过多、层层陪会",
     content: "某国企集团总部2025年要求下属二三级单位参加会议600余次，平均每个工作日2.5次。总部部门会议未统筹，多头召开、时间冲突。下属单位主要负责人被要求全程陪会，中层干部分头陪会。会议多为“传达贯彻型”、“部署推进型”，内容高度重复。基层干部反映：“不是在开会，就是在开会的路上，真正干活的时间不足20%”。",
-    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》\n【问题类型】精简会议-会议数量过多/层层陪会\n【核心机制】总部部门缺乏统筹，多头召开、层层传导、层层陪会，以“开会代落实”、以“会议显态度”\n【典型性】符合中央通报“精简会议”典型特征(2024.08.21国家管网800余次会议案例)，建议纳入典型案例库",
+    qualitative_analysis: "【问题类型】精简会议-会议数量过多/层层陪会\n【核心机制】总部部门缺乏统筹，多头召开、层层传导、层层陪会，以“开会代落实”、以“会议显态度”\n【典型性】符合中央通报“精简会议”典型特征(2024.08.21国家管网800余次会议案例)，建议纳入典型案例库",
     evidence_suggestion: "统计集团总部2025年下发的会议通知、会议纪要、参会人员名单；对比各部门会议时间安排，统计重叠/冲突次数；访谈下属单位负责人。",
     publish_time: "2026-07-29 15:00:00",
     complained_unit: "某国企集团总部各部门",
@@ -1027,7 +1152,7 @@ const SAMPLE_CLUES = [
     clue_category: "指尖形式主义", clue_subcategory: "推广使用强制化/考核异化/学习强国积分/点赞转发",
     task_num: "XM260804008", title: "某县考核“学习强国”积分排名、通报约谈",
     content: "某县医保局、税务局等单位将“学习强国”日积分纳入绩效考核，要求人均日积分不低于30分。内部工作群每周通报积分排名前后十名，排名靠后人员被约谈、扣分。党员干部被迫刷时长、刷分数，引发强烈抵触。部分干部反映：“学习变成了任务，积分成了政绩，真正学进去的反而少了”。",
-    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》\n【问题类型】指尖形式主义-推广使用强制化/考核异化\n【核心机制】将学习平台积分量化为考核指标，以排名通报、约谈施压，异化为“指尖任务”\n【典型性】符合中央通报“指尖形式主义-积分排名”典型特征(2024.02.03定远医保局案例)，建议纳入典型案例库",
+    qualitative_analysis: "【问题类型】指尖形式主义-推广使用强制化/考核异化\n【核心机制】将学习平台积分量化为考核指标，以排名通报、约谈施压，异化为“指尖任务”\n【典型性】符合中央通报“指尖形式主义-积分排名”典型特征(2024.02.03定远医保局案例)，建议纳入典型案例库",
     evidence_suggestion: "获取相关单位“学习强国”考核方案、积分排名通报截图、约谈记录；访谈被约谈人员。",
     publish_time: "2026-07-28 11:00:00",
     complained_unit: "某县医保局、税务局",
@@ -1044,7 +1169,7 @@ const SAMPLE_CLUES = [
     clue_category: "数据造假", clue_subcategory: "虚报产值/投资/招商引资指标/经营主体充数",
     task_num: "XM260804009", title: "某县商务局虚报省外到位资金、招商引资指标",
     content: "群众举报：某县商务局为完成上级“招商引资考核”指标，指导企业编造虚假合同、虚假到账凭证、虚假项目进度。2025年全县上报“省外到位资金”50亿元，经核实实际到位不足10亿元。多个“亿元大项目”仅为PPT项目，现场无任何建设痕迹。县领导知情默许，甚至协调银行配合走账。",
-    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》\n【问题类型】数据造假-虚报招商引资指标\n【核心机制】上级考核指标“只考不核”，下级为完成指标全链条造假（合同/资金/进度/验收），上下级形成默契\n【典型性】符合中央通报“数据造假-虚报招商引资”典型特征(2026.01.19河南舞阳/柘城虚报省外资金案例)，建议纳入典型案例库",
+    qualitative_analysis: "【问题类型】数据造假-虚报招商引资指标\n【核心机制】上级考核指标“只考不核”，下级为完成指标全链条造假（合同/资金/进度/验收），上下级形成默契\n【典型性】符合中央通报“数据造假-虚报招商引资”典型特征(2026.01.19河南舞阳/柘城虚报省外资金案例)，建议纳入典型案例库",
     evidence_suggestion: "核对上报“省外到位资金”台账与银行实际到账流水；现场核查重点招商项目实际建设情况；调取企业合同、发票、验资报告原件。",
     publish_time: "2026-07-27 14:00:00",
     complained_unit: "某县商务局、县招商办",
@@ -1061,7 +1186,7 @@ const SAMPLE_CLUES = [
     clue_category: "权责不清/甩锅", clue_subcategory: "证明事项滥设/万能证明/社区盖章",
     task_num: "XM260804010", title: "群众办事被要求社区开具“无违建证明”、“无纠纷证明”等无法核实证明",
     content: "市民反映：办理房产证、营业执照、贷款等业务时，银行、不动产登记中心、公证处要求社区/村委会出具“无违建证明”、“无邻里纠纷证明”、“家庭成员关系证明”等。社区无执法权、无档案权限、无专业能力核实，只能凭群众自述盖章。一旦出问题，责任全推给社区。部门以“规避风险”为由拒不取消证明事项。",
-    qualitative_analysis: "【违反依据】《整治形式主义为基层减负若干规定》\n【问题类型】权责不清/甩锅-证明事项滥设\n【核心机制】职能部门为规避自身审批风险，将核实责任无限下放给无权无能的基层，形成“万能证明”泛滥\n【典型性】符合中央通报“证明事项滥设”典型特征(2025.08.07、2026.01.16会议提及)，建议纳入典型案例库",
+    qualitative_analysis: "【问题类型】权责不清/甩锅-证明事项滥设\n【核心机制】职能部门为规避自身审批风险，将核实责任无限下放给无权无能的基层，形成“万能证明”泛滥\n【典型性】符合中央通报“证明事项滥设”典型特征(2025.08.07、2026.01.16会议提及)，建议纳入典型案例库",
     evidence_suggestion: "收集要求社区开具证明的业务清单、证明文本模板、退回案例；访谈社区干部了解被迫盖章情况；查阅上级是否有清理证明事项文件。",
     publish_time: "2026-07-26 10:00:00",
     complained_unit: "某市不动产登记中心、各银行网点、公证处",
@@ -1073,6 +1198,13 @@ const SAMPLE_CLUES = [
     created_at: "2026-07-26 10:30:00",
     updated_at: "2026-07-26 10:30:00"
   }
+];
+
+// ========== 情况反映样本数据 ==========
+const SAMPLE_REPORTS = [
+  { id: 1, city: "福州市", district: "鼓楼区", unit: "某市行业协会", content: "某市行业协会（社会组织）主办“全市基层治理创新论坛”，实际由市委政法委主导。论坛以“会费”、“赞助费”、“展位费”名义向各区县政法委、街道、社区、国企摊派费用共200余万元。", contact: "138****5678", time: "2026-07-31 10:00:00", status: "pending" },
+  { id: 2, city: "泉州市", district: "惠安县", unit: "某市政务服务管理局", content: "上级要求全员使用“某政务APP”，设置每日打卡签到、学习时长积分、在线时长统计功能。每月通报积分排名，排名靠后被约谈、扣绩效。", contact: "139****1234", time: "2026-08-03 14:20:00", status: "processing" },
+  { id: 3, city: "厦门市", district: "思明区", unit: "某区城管局、环保局、应急局", content: "区城管局、区环保局、区应急局等多个部门未经街道党工委同意，直接向社区下发“网格化管理”任务清单，要求社区网格员负责违建巡查、河道巡查、安全隐患排查等执法类工作。", contact: "", time: "2026-08-02 11:30:00", status: "done" },
 ];
 
 // ========== 初始化 ==========
@@ -1100,6 +1232,17 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCluesStats();
   populateFilters();
 
+  // 加载情况反映数据
+  const savedReports = localStorage.getItem('jianfu_reports');
+  if (savedReports) {
+    try { allReports = JSON.parse(savedReports); } catch { allReports = SAMPLE_REPORTS; }
+  } else {
+    allReports = SAMPLE_REPORTS;
+    localStorage.setItem('jianfu_reports', JSON.stringify(allReports));
+  }
+  filteredReports = [...allReports];
+  renderReportsTable();
+
   // 更新时间
   document.getElementById('updateTime').textContent = `数据最后更新：${new Date().toLocaleDateString('zh-CN')}`;
 });
@@ -1115,8 +1258,10 @@ function renderStandards() {
   tbody.innerHTML = standards.map((s, i) => `
     <tr data-index="${i}">
       <td>${s.seq}</td>
-      <td><input type="text" class="cell-edit" value="${esc(s.category)}" onchange="updateStandard(${i}, 'category', this.value)"></td>
-      <td><input type="text" class="cell-edit" value="${esc(s.subcategory)}" onchange="updateStandard(${i}, 'subcategory', this.value)"></td>
+      <td>
+        ${s.category ? `<span class="tag-chip category">${esc(s.category)}</span>` : ''}
+        ${s.subcategory ? `<span class="tag-chip subcategory">${esc(s.subcategory)}</span>` : ''}
+      </td>
       <td><input type="text" class="cell-edit" value="${esc(s.keywords)}" onchange="updateStandard(${i}, 'keywords', this.value)" title="用于AI自动分类匹配，多词用顿号/逗号分隔"></td>
       <td><input type="text" class="cell-edit" value="${esc(s.caseLink)}" onchange="updateStandard(${i}, 'caseLink', this.value)" title="支持多条，含中央/省级通报链接或标题，用分号分隔"></td>
       <td style="text-align:center;">
@@ -1211,7 +1356,7 @@ function renderCluesTable() {
   const pageData = filteredClues.slice(start, start + CLUES_PAGE_SIZE);
 
   if (!pageData.length) {
-    tbody.innerHTML = '<tr><td colspan="15" class="empty">暂无匹配的线索</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="14" class="empty">暂无匹配的线索</td></tr>';
     renderCluesPagination();
     return;
   }
@@ -1219,10 +1364,9 @@ function renderCluesTable() {
   tbody.innerHTML = pageData.map(clue => {
     const tags = (clue.tags || []).map(t => `<span class="tag ${getTagClass(t)}">${esc(t)}</span>`).join(' ');
     const confClass = clue.confidence >= 0.8 ? 'confidence-high' : (clue.confidence >= 0.5 ? 'confidence-medium' : 'confidence-low');
-    const contentPreview = (clue.content || '').substring(0, 100);
     const contentFull = esc(clue.content || '');
     const evidenceEsc = esc(clue.evidence_suggestion || '');
-    const analysisEsc = esc(clue.qualitative_analysis || '');
+    const analysisEsc = esc(clue.qualitative_analysis || '').replace(/【违反依据】[\s\S]*?\n/, '');
     const rootEsc = esc(clue.root_cause || '');
 
     return `
@@ -1231,11 +1375,7 @@ function renderCluesTable() {
         <td><span class="tag tag-category">${esc(clue.clue_category)}</span></td>
         <td><span class="tag tag-subcategory">${esc(clue.clue_subcategory)}</span></td>
         <td>${esc(clue.task_num)}</td>
-        <td class="content-cell">
-          <span class="content-preview" onclick="toggleContent(this)">${esc(contentPreview)}...</span>
-          <button class="expand-btn" onclick="toggleContent(this.previousElementSibling)">展开</button>
-          <div class="content-full">${contentFull}</div>
-        </td>
+        <td class="content-cell">${contentFull}</td>
         <td class="analysis-cell">${analysisEsc}</td>
         <td class="evidence-cell">${evidenceEsc}</td>
         <td>${esc(clue.publish_time)}</td>
@@ -1247,7 +1387,6 @@ function renderCluesTable() {
             <span>${(clue.confidence*100).toFixed(0)}%</span>
           </div>
         </td>
-        <td style="text-align:center;">${clue.is_typical ? '<span class="tag tag-typical">✓</span>' : '—'}</td>
         <td><span class="tag tag-root">${rootEsc}</span></td>
         <td>${tags}</td>
         <td class="actions">
@@ -1260,18 +1399,6 @@ function renderCluesTable() {
   }).join('');
 
   renderCluesPagination();
-}
-
-function toggleContent(el) {
-  const full = el.nextElementSibling.nextElementSibling;
-  const btn = el.nextElementSibling;
-  if (full.style.display === 'block') {
-    full.style.display = 'none';
-    btn.textContent = '展开';
-  } else {
-    full.style.display = 'block';
-    btn.textContent = '收起';
-  }
 }
 
 function renderCluesPagination() {
@@ -1307,22 +1434,18 @@ function renderCluesStats() {
 }
 
 function populateFilters() {
-  // 分类
   const cats = [...new Set(allClues.map(c => c.clue_category))].sort();
   const catSel = document.getElementById('filterCategory');
   catSel.innerHTML = '<option value="">全部分类</option>' + cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
 
-  // 细分
   const subcats = [...new Set(allClues.map(c => c.clue_subcategory))].sort();
   const subSel = document.getElementById('filterSubcategory');
   subSel.innerHTML = '<option value="">全部细分</option>' + subcats.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
 
-  // 根因
   const roots = [...new Set(allClues.map(c => c.root_cause).filter(Boolean))].sort();
   const rootSel = document.getElementById('filterRootCause');
   rootSel.innerHTML = '<option value="">全部根因</option>' + roots.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join('');
 
-  // 认定标准下拉（编辑模态框用）
   const stdCats = [...new Set(standards.filter(s => s.enabled).map(s => s.category))].sort();
   const editCat = document.getElementById('editCategory');
   editCat.innerHTML = '<option value="">-- 请选择 --</option>' + stdCats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
@@ -1334,7 +1457,6 @@ function setDateRange(type) {
   const now = new Date();
   let start, end;
 
-  // 更新按钮状态
   document.querySelectorAll('.date-filter-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.range === type);
   });
@@ -1361,7 +1483,6 @@ function setDateRange(type) {
     start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
   } else {
-    // 清除日期筛选
     currentDateRange = { type: '', start: '', end: '' };
     document.getElementById('dateStart').value = '';
     document.getElementById('dateEnd').value = '';
@@ -1386,9 +1507,7 @@ function applyCustomDateRange() {
   currentDateRange.start = start;
   currentDateRange.end = end;
 
-  // 清除预设按钮状态
   document.querySelectorAll('.date-filter-btn').forEach(btn => btn.classList.remove('active'));
-
   applyCluesFilters();
 }
 
@@ -1396,7 +1515,6 @@ function applyCluesFilters() {
   const search = document.getElementById('cluesSearch').value.trim().toLowerCase();
   const cat = document.getElementById('filterCategory').value;
   const subcat = document.getElementById('filterSubcategory').value;
-  const typical = document.getElementById('filterTypical').value;
   const root = document.getElementById('filterRootCause').value;
   const conf = document.getElementById('filterConfidence').value;
 
@@ -1407,13 +1525,11 @@ function applyCluesFilters() {
     }
     if (cat && c.clue_category !== cat) return false;
     if (subcat && c.clue_subcategory !== subcat) return false;
-    if (typical && c.is_typical !== (typical === 'true')) return false;
     if (root && c.root_cause !== root) return false;
     if (conf === 'high' && c.confidence < 0.8) return false;
     if (conf === 'medium' && (c.confidence < 0.5 || c.confidence >= 0.8)) return false;
     if (conf === 'low' && c.confidence >= 0.5) return false;
 
-    // 日期范围筛选
     if (currentDateRange.start && currentDateRange.end) {
       const clueDate = c.publish_time.split(' ')[0];
       if (clueDate < currentDateRange.start || clueDate > currentDateRange.end) return false;
@@ -1432,7 +1548,6 @@ function resetCluesFilters() {
   document.getElementById('cluesSearch').value = '';
   document.getElementById('filterCategory').value = '';
   document.getElementById('filterSubcategory').value = '';
-  document.getElementById('filterTypical').value = '';
   document.getElementById('filterRootCause').value = '';
   document.getElementById('filterConfidence').value = '';
   document.getElementById('dateStart').value = '';
@@ -1461,7 +1576,6 @@ function exportClues() {
     地市: c.region_city,
     县区: c.region_district,
     置信度: c.confidence,
-    是否典型: c.is_typical ? '是' : '否',
     根因: c.root_cause,
     标签: (c.tags||[]).join(';')
   }));
@@ -1494,6 +1608,7 @@ function openDetail(id) {
 
   const tags = (clue.tags || []).map(t => `<span class="tag ${getTagClass(t)}">${esc(t)}</span>`).join(' ');
   const confClass = clue.confidence >= 0.8 ? 'confidence-high' : (clue.confidence >= 0.5 ? 'confidence-medium' : 'confidence-low');
+  const analysisClean = esc(clue.qualitative_analysis || '').replace(/【违反依据】[\s\S]*?\n/, '');
 
   document.getElementById('detailTitle').textContent = `线索详情 #${clue.seq_no} - ${esc(clue.task_num)}`;
   document.getElementById('detailContent').innerHTML = `
@@ -1519,7 +1634,7 @@ function openDetail(id) {
     </div>
     <div class="modal-row">
       <div class="modal-label">定性分析</div>
-      <div class="modal-value"><pre>${esc(clue.qualitative_analysis)}</pre></div>
+      <div class="modal-value"><pre>${analysisClean}</pre></div>
     </div>
     <div class="modal-row">
       <div class="modal-label">取证建议</div>
@@ -1545,10 +1660,6 @@ function openDetail(id) {
           <span>${(clue.confidence*100).toFixed(0)}%</span>
         </div>
       </div>
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">是否典型</div>
-      <div class="modal-value">${clue.is_typical ? '<span class="tag tag-typical">是</span>' : '否'}</div>
     </div>
     <div class="modal-row">
       <div class="modal-label">根因</div>
@@ -1633,7 +1744,6 @@ function saveEditClue() {
   clue.evidence_suggestion = document.getElementById('editEvidence').value;
   clue.qualitative_analysis = document.getElementById('editAnalysis').value;
   clue.root_cause = document.getElementById('editRootCause').value;
-  clue.is_typical = document.getElementById('editTypical').checked;
   clue.tags = document.getElementById('editTags').value.split(',').map(t => t.trim()).filter(Boolean);
   clue.confidence = parseFloat(document.getElementById('editConfidence').value) || 0;
   clue.updated_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
@@ -1655,6 +1765,111 @@ function deleteClue(id) {
   applyCluesFilters();
   renderCluesStats();
   showToast('已删除', 'success');
+}
+
+// ========== 情况反映后台 ==========
+function renderReportsTable() {
+  const tbody = document.getElementById('reportsBody');
+  const start = (currentReportsPage - 1) * REPORTS_PAGE_SIZE;
+  const pageData = filteredReports.slice(start, start + REPORTS_PAGE_SIZE);
+
+  if (!pageData.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">暂无数据</td></tr>';
+    renderReportsPagination();
+    return;
+  }
+
+  tbody.innerHTML = pageData.map((r, i) => `
+    <tr data-id="${r.id}">
+      <td>${start + i + 1}</td>
+      <td>${esc(r.time)}</td>
+      <td>${esc(r.city)}</td>
+      <td>${esc(r.district)}</td>
+      <td>${esc(r.unit)}</td>
+      <td class="analysis-cell">${esc(r.content)}</td>
+      <td>${esc(r.contact)}</td>
+      <td><span class="status-badge status-${r.status}">${r.status === 'pending' ? '待处理' : r.status === 'processing' ? '处理中' : '已办结'}</span></td>
+      <td class="actions">
+        <button class="action-btn edit" onclick="changeReportStatus(${r.id})">${r.status === 'done' ? '重开' : r.status === 'processing' ? '办结' : '处理'}</button>
+        <button class="action-btn delete" onclick="deleteReport(${r.id})">删除</button>
+      </td>
+    </tr>
+  `).join('');
+
+  renderReportsPagination();
+}
+
+function renderReportsPagination() {
+  const pages = Math.ceil(filteredReports.length / REPORTS_PAGE_SIZE);
+  const el = document.getElementById('reportsPagination');
+  if (pages <= 1) { el.innerHTML = ''; return; }
+
+  let html = `<button ${currentReportsPage<=1?'disabled':''} onclick="goReportsPage(${currentReportsPage-1})">‹</button>`;
+  for (let i = Math.max(1, currentReportsPage-2); i <= Math.min(pages, currentReportsPage+2); i++) {
+    html += `<button class="${i===currentReportsPage?'active':''}" onclick="goReportsPage(${i})">${i}</button>`;
+  }
+  html += `<button ${currentReportsPage>=pages?'disabled':''} onclick="goReportsPage(${currentReportsPage+1})">›</button>`;
+  el.innerHTML = html;
+}
+
+function goReportsPage(p) {
+  currentReportsPage = p;
+  renderReportsTable();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function changeReportStatus(id) {
+  const r = allReports.find(x => x.id === id);
+  if (!r) return;
+  if (r.status === 'pending') r.status = 'processing';
+  else if (r.status === 'processing') r.status = 'done';
+  else r.status = 'pending';
+  localStorage.setItem('jianfu_reports', JSON.stringify(allReports));
+  filteredReports = [...allReports];
+  renderReportsTable();
+  showToast('状态已更新', 'success');
+}
+
+function deleteReport(id) {
+  if (!confirm('确定删除这条反映？')) return;
+  allReports = allReports.filter(r => r.id !== id);
+  localStorage.setItem('jianfu_reports', JSON.stringify(allReports));
+  filteredReports = [...allReports];
+  renderReportsTable();
+  showToast('已删除', 'success');
+}
+
+// ========== 权限设置 ==========
+function togglePerm(btn, key) {
+  btn.classList.toggle('active');
+  const perms = JSON.parse(localStorage.getItem('jianfu_perms') || '{}');
+  perms[key] = btn.classList.contains('active');
+  localStorage.setItem('jianfu_perms', JSON.stringify(perms));
+  showToast(`${perms[key] ? '已开启' : '已关闭'}`, 'success');
+}
+
+function switchAdminTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+function openAdminModal() {
+  // Load perms
+  const perms = JSON.parse(localStorage.getItem('jianfu_perms') || '{}');
+  ['anon','captcha','intranet','encrypt','moderate','email','api'].forEach(key => {
+    const btn = document.querySelector(`.perm-toggle[onclick*="${key}"]`);
+    if (btn) btn.classList.toggle('active', !!perms[key]);
+  });
+  document.getElementById('adminModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  switchAdminTab('reports');
+}
+
+function closeAdminModal() {
+  document.getElementById('adminModal').classList.remove('show');
+  document.body.style.overflow = '';
 }
 
 // ========== 工具函数 ==========
@@ -1682,7 +1897,7 @@ function showToast(msg, type = 'info') {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetailModal(); closeEditModal(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDetailModal(); closeEditModal(); closeAdminModal(); } });
 </script>
 </body>
 </html>
