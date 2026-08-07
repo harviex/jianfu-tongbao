@@ -378,28 +378,6 @@ body {
 }
 .clues-table .tag-category { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
 .clues-table .tag-subcategory { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
-.clues-table .tag-root { background: #f3e5f5; color: #7b1fa2; border: 1px solid #e1bee7; }
-.clues-table .confidence {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-}
-.clues-table .confidence-bar {
-  width: 60px;
-  height: 6px;
-  background: #eee;
-  border-radius: 3px;
-  overflow: hidden;
-}
-.clues-table .confidence-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.3s;
-}
-.clues-table .confidence-high { background: #4caf50; }
-.clues-table .confidence-medium { background: #ff9800; }
-.clues-table .confidence-low { background: #f44336; }
 .clues-table .evidence-cell {
   min-width: 200px;
   max-width: 300px;
@@ -698,8 +676,8 @@ body {
         <span class="gov-stat-label">典型案例</span>
       </div>
       <div class="gov-stat">
-        <span class="gov-stat-num" id="statHighConf">-</span>
-        <span class="gov-stat-label">高置信度</span>
+        <span class="gov-stat-num" id="statCities">-</span>
+        <span class="gov-stat-label">覆盖地市</span>
       </div>
     </div>
   </div>
@@ -772,14 +750,11 @@ body {
         <select class="filter-select" id="filterSubcategory">
           <option value="">全部细分</option>
         </select>
-        <select class="filter-select" id="filterRootCause">
-          <option value="">全部根因</option>
+        <select class="filter-select" id="filterCity">
+          <option value="">全部地市</option>
         </select>
-        <select class="filter-select" id="filterConfidence">
-          <option value="">全部置信度</option>
-          <option value="high">高 (≥0.8)</option>
-          <option value="medium">中 (0.5-0.8)</option>
-          <option value="low">低 (<0.5)</option>
+        <select class="filter-select" id="filterDistrict">
+          <option value="">全部县区</option>
         </select>
         <div style="display:flex;gap:4px;align-items:center;margin-left:8px;padding-left:8px;border-left:1px solid #ddd;">
           <span style="font-size:12px;color:#888;">时间:</span>
@@ -813,14 +788,12 @@ body {
             <th style="width:130px;" data-sort="publish_time">诉求时间 <span class="sort-icon"></span></th>
             <th style="width:140px;" data-sort="complained_unit">被诉单位 <span class="sort-icon"></span></th>
             <th style="width:100px;" data-sort="region">地市/县区 <span class="sort-icon"></span></th>
-            <th style="width:70px;" data-sort="confidence">置信度 <span class="sort-icon"></span></th>
-            <th style="width:100px;" data-sort="root_cause">根因 <span class="sort-icon"></span></th>
             <th style="width:150px;" data-sort="tags">标签 <span class="sort-icon"></span></th>
             <th style="width:90px;">操作</th>
           </tr>
         </thead>
         <tbody id="cluesBody">
-          <tr><td colspan="14" class="loading">加载中...</td></tr>
+          <tr><td colspan="12" class="loading">加载中...</td></tr>
         </tbody>
       </table>
     </div>
@@ -902,26 +875,8 @@ body {
         </div>
       </div>
       <div class="modal-row">
-        <div class="modal-label">根因</div>
-        <div class="modal-value">
-          <select id="editRootCause" class="filter-select" style="width:100%">
-            <option value="">-- 请选择 --</option>
-            <option value="政绩观偏差">政绩观偏差</option>
-            <option value="制度缺失">制度缺失</option>
-            <option value="监管缺位">监管缺位</option>
-            <option value="考核异化">考核异化</option>
-            <option value="技术手段滥用">技术手段滥用</option>
-            <option value="其他">其他</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-row">
         <div class="modal-label">标签</div>
         <div class="modal-value"><input type="text" id="editTags" class="filter-select" style="width:100%" placeholder="逗号分隔，如：数据造假,统计造假,指令报数,漳州"></div>
-      </div>
-      <div class="modal-row">
-        <div class="modal-label">置信度</div>
-        <div class="modal-value"><input type="number" id="editConfidence" class="filter-select" style="width:100%" step="0.01" min="0" max="1" placeholder="0-1，AI自动生成"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -1252,18 +1207,16 @@ function renderCluesTable() {
   const pageData = filteredClues.slice(start, start + CLUES_PAGE_SIZE);
 
   if (!pageData.length) {
-    tbody.innerHTML = '<tr><td colspan="14" class="empty">暂无匹配的线索</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="12" class="empty">暂无匹配的线索</td></tr>';
     renderCluesPagination();
     return;
   }
 
   tbody.innerHTML = pageData.map(clue => {
     const tags = (clue.tags || []).map(t => `<span class="tag ${getTagClass(t)}">${esc(t)}</span>`).join(' ');
-    const confClass = clue.confidence >= 0.8 ? 'confidence-high' : (clue.confidence >= 0.5 ? 'confidence-medium' : 'confidence-low');
     const contentFull = esc(clue.content || '');
     const evidenceEsc = esc(clue.evidence_suggestion || '');
     const analysisEsc = esc(clue.qualitative_analysis || '').replace(/【违反依据】[\s\S]*?\n/, '');
-    const rootEsc = esc(clue.root_cause || '');
 
     return `
       <tr data-id="${clue.id}">
@@ -1277,13 +1230,6 @@ function renderCluesTable() {
         <td>${esc(clue.publish_time)}</td>
         <td>${esc(clue.complained_unit)}</td>
         <td>${esc(clue.region_city)}/${esc(clue.region_district)}</td>
-        <td>
-          <div class="confidence">
-            <span class="confidence-bar"><span class="confidence-fill ${confClass}" style="width:${(clue.confidence*100).toFixed(0)}%"></span></span>
-            <span>${(clue.confidence*100).toFixed(0)}%</span>
-          </div>
-        </td>
-        <td><span class="tag tag-root">${rootEsc}</span></td>
         <td>${tags}</td>
         <td class="actions">
           <button class="action-btn edit" onclick="openDetail(${clue.id})">详情</button>
@@ -1352,9 +1298,6 @@ function sortCluesTable(field) {
     if (field === 'publish_time') {
       valA = new Date(valA);
       valB = new Date(valB);
-    } else if (field === 'confidence') {
-      valA = parseFloat(valA);
-      valB = parseFloat(valB);
     } else if (field === 'seq_no') {
       valA = parseInt(valA);
       valB = parseInt(valB);
@@ -1390,12 +1333,12 @@ function renderCluesStats() {
   const total = allClues.length;
   const categories = new Set(allClues.map(c => c.clue_category)).size;
   const typical = allClues.filter(c => c.is_typical).length;
-  const highConf = allClues.filter(c => c.confidence >= 0.8).length;
+  const cities = new Set(allClues.map(c => c.region_city).filter(Boolean)).size;
 
   document.getElementById('statTotal').textContent = total;
   document.getElementById('statCategories').textContent = categories;
   document.getElementById('statTypical').textContent = typical;
-  document.getElementById('statHighConf').textContent = highConf;
+  document.getElementById('statCities').textContent = cities;
   document.getElementById('cluesCount').textContent = `共 ${filteredClues.length} 条 / 总计 ${total} 条`;
 }
 
@@ -1408,9 +1351,13 @@ function populateFilters() {
   const subSel = document.getElementById('filterSubcategory');
   subSel.innerHTML = '<option value="">全部细分</option>' + subcats.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
 
-  const roots = [...new Set(allClues.map(c => c.root_cause).filter(Boolean))].sort();
-  const rootSel = document.getElementById('filterRootCause');
-  rootSel.innerHTML = '<option value="">全部根因</option>' + roots.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join('');
+  const cities = [...new Set(allClues.map(c => c.region_city).filter(Boolean))].sort();
+  const citySel = document.getElementById('filterCity');
+  citySel.innerHTML = '<option value="">全部地市</option>' + cities.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+
+  const districts = [...new Set(allClues.map(c => c.region_district).filter(Boolean))].sort();
+  const districtSel = document.getElementById('filterDistrict');
+  districtSel.innerHTML = '<option value="">全部县区</option>' + districts.map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
 
   const stdCats = [...new Set(standards.filter(s => s.enabled).map(s => s.category))].sort();
   const editCat = document.getElementById('editCategory');
@@ -1481,8 +1428,8 @@ function applyCluesFilters() {
   const search = document.getElementById('cluesSearch').value.trim().toLowerCase();
   const cat = document.getElementById('filterCategory').value;
   const subcat = document.getElementById('filterSubcategory').value;
-  const root = document.getElementById('filterRootCause').value;
-  const conf = document.getElementById('filterConfidence').value;
+  const city = document.getElementById('filterCity').value;
+  const district = document.getElementById('filterDistrict').value;
 
   filteredClues = allClues.filter(c => {
     if (search && !c.content.toLowerCase().includes(search) && !c.task_num.toLowerCase().includes(search) &&
@@ -1491,10 +1438,8 @@ function applyCluesFilters() {
     }
     if (cat && c.clue_category !== cat) return false;
     if (subcat && c.clue_subcategory !== subcat) return false;
-    if (root && c.root_cause !== root) return false;
-    if (conf === 'high' && c.confidence < 0.8) return false;
-    if (conf === 'medium' && (c.confidence < 0.5 || c.confidence >= 0.8)) return false;
-    if (conf === 'low' && c.confidence >= 0.5) return false;
+    if (city && c.region_city !== city) return false;
+    if (district && c.region_district !== district) return false;
 
     if (currentDateRange.start && currentDateRange.end) {
       const clueDate = c.publish_time.split(' ')[0];
@@ -1514,8 +1459,8 @@ function resetCluesFilters() {
   document.getElementById('cluesSearch').value = '';
   document.getElementById('filterCategory').value = '';
   document.getElementById('filterSubcategory').value = '';
-  document.getElementById('filterRootCause').value = '';
-  document.getElementById('filterConfidence').value = '';
+  document.getElementById('filterCity').value = '';
+  document.getElementById('filterDistrict').value = '';
   document.getElementById('dateStart').value = '';
   document.getElementById('dateEnd').value = '';
   document.querySelectorAll('.date-filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -1541,8 +1486,6 @@ function exportClues() {
     被诉单位: c.complained_unit,
     地市: c.region_city,
     县区: c.region_district,
-    置信度: c.confidence,
-    根因: c.root_cause,
     标签: (c.tags||[]).join(';')
   }));
   const csv = arrayToCsv(exportData);
@@ -1573,8 +1516,6 @@ function openDetail(id) {
   currentEditId = id;
 
   const tags = (clue.tags || []).map(t => `<span class="tag ${getTagClass(t)}">${esc(t)}</span>`).join(' ');
-  const confClass = clue.confidence >= 0.8 ? 'confidence-high' : (clue.confidence >= 0.5 ? 'confidence-medium' : 'confidence-low');
-  const analysisClean = esc(clue.qualitative_analysis || '').replace(/【违反依据】[\s\S]*?\n/, '');
 
   document.getElementById('detailTitle').textContent = `线索详情 #${clue.seq_no} - ${esc(clue.task_num)}`;
   document.getElementById('detailContent').innerHTML = `
@@ -1600,7 +1541,7 @@ function openDetail(id) {
     </div>
     <div class="modal-row">
       <div class="modal-label">定性分析</div>
-      <div class="modal-value"><pre>${analysisClean}</pre></div>
+      <div class="modal-value"><pre>${esc(clue.qualitative_analysis)}</pre></div>
     </div>
     <div class="modal-row">
       <div class="modal-label">取证建议</div>
@@ -1617,19 +1558,6 @@ function openDetail(id) {
     <div class="modal-row">
       <div class="modal-label">地市/县区</div>
       <div class="modal-value">${esc(clue.region_city)}/${esc(clue.region_district)}</div>
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">置信度</div>
-      <div class="modal-value">
-        <div class="confidence">
-          <span class="confidence-bar"><span class="confidence-fill ${confClass}" style="width:${(clue.confidence*100).toFixed(0)}%"></span></span>
-          <span>${(clue.confidence*100).toFixed(0)}%</span>
-        </div>
-      </div>
-    </div>
-    <div class="modal-row">
-      <div class="modal-label">根因</div>
-      <div class="modal-value"><span class="tag tag-root">${esc(clue.root_cause)}</span></div>
     </div>
     <div class="modal-row">
       <div class="modal-label">标签</div>
@@ -1661,10 +1589,7 @@ function openEdit(id) {
   document.getElementById('editDistrict').value = clue.region_district;
   document.getElementById('editEvidence').value = clue.evidence_suggestion;
   document.getElementById('editAnalysis').value = clue.qualitative_analysis;
-  document.getElementById('editRootCause').value = clue.root_cause;
-  document.getElementById('editTypical').checked = clue.is_typical;
   document.getElementById('editTags').value = (clue.tags || []).join(',');
-  document.getElementById('editConfidence').value = clue.confidence;
 
   closeDetailModal();
   document.getElementById('editModal').classList.add('show');
@@ -1709,9 +1634,7 @@ function saveEditClue() {
   clue.region_district = document.getElementById('editDistrict').value;
   clue.evidence_suggestion = document.getElementById('editEvidence').value;
   clue.qualitative_analysis = document.getElementById('editAnalysis').value;
-  clue.root_cause = document.getElementById('editRootCause').value;
   clue.tags = document.getElementById('editTags').value.split(',').map(t => t.trim()).filter(Boolean);
-  clue.confidence = parseFloat(document.getElementById('editConfidence').value) || 0;
   clue.updated_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
 
   localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
