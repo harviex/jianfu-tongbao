@@ -62,11 +62,31 @@
 
   // 创建密码输入模态框
   function createAuthModal() {
-    // 给页面内容加毛玻璃遮罩
-    document.body.style.filter = 'blur(8px)';
-    document.body.style.pointerEvents = 'none';
-    document.body.style.userSelect = 'none';
+    // 1. 把现有页面内容包装在一个容器里，只对容器加模糊
+    let contentWrapper = document.getElementById('auth-content-wrapper');
+    if (!contentWrapper) {
+      contentWrapper = document.createElement('div');
+      contentWrapper.id = 'auth-content-wrapper';
+      // 把 body 里除 script 和 将来的 modal 外的所有节点移进 wrapper
+      const childrenToMove = [];
+      for (const child of document.body.childNodes) {
+        if (child.nodeType === Node.ELEMENT_NODE) {
+          if (child.tagName !== 'SCRIPT' && child.id !== 'auth-modal') {
+            childrenToMove.push(child);
+          }
+        } else if (child.nodeType === Node.TEXT_NODE && child.textContent.trim()) {
+          childrenToMove.push(child);
+        }
+      }
+      childrenToMove.forEach(child => contentWrapper.appendChild(child));
+      document.body.insertBefore(contentWrapper, document.body.firstChild);
+    }
+    // 对内容容器加毛玻璃
+    contentWrapper.style.filter = 'blur(8px)';
+    contentWrapper.style.pointerEvents = 'none';
+    contentWrapper.style.userSelect = 'none';
 
+    // 2. 创建模态框，作为 body 直接子元素（与 wrapper 同级），不受模糊影响
     const modal = document.createElement('div');
     modal.id = 'auth-modal';
     modal.style.cssText = `
@@ -126,9 +146,12 @@
           sessionStorage.setItem(AUTH_EXPIRY_KEY, String(Date.now() + SESSION_DURATION));
           document.body.removeChild(modal);
           // 恢复页面显示
-          document.body.style.filter = '';
-          document.body.style.pointerEvents = '';
-          document.body.style.userSelect = '';
+          const wrapper = document.getElementById('auth-content-wrapper');
+          if (wrapper) {
+            wrapper.style.filter = '';
+            wrapper.style.pointerEvents = '';
+            wrapper.style.userSelect = '';
+          }
           if (typeof window.onAuthSuccess === 'function') {
             window.onAuthSuccess();
           }
