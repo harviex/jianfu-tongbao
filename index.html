@@ -963,7 +963,14 @@ function loadReports() {
 
 loadReports();
 
-// Admin Modal HTML
+renderReportsTable();
+}
+
+loadReports();
+// ========== End of JavaScript ==========
+</script>
+
+<!-- Admin Modal HTML -->
 <div class="modal-overlay" id="adminModal" onclick="if(event.target===this)closeAdminModal()">
   <div class="modal admin-modal">
     <div class="modal-header">
@@ -1054,7 +1061,6 @@ loadReports();
   </div>
 </div>
 
-</script>
 <script>
 document.addEventListener('DOMContentLoaded', init);
 </script>
