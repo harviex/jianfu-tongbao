@@ -62,8 +62,6 @@
 
   // 创建密码输入模态框
   function createAuthModal() {
-    document.body.style.visibility = 'hidden';
-
     const modal = document.createElement('div');
     modal.id = 'auth-modal';
     modal.style.cssText = `
@@ -122,7 +120,6 @@
           sessionStorage.setItem(AUTH_KEY, hash);
           sessionStorage.setItem(AUTH_EXPIRY_KEY, String(Date.now() + SESSION_DURATION));
           document.body.removeChild(modal);
-          document.body.style.visibility = '';
           if (typeof window.onAuthSuccess === 'function') {
             window.onAuthSuccess();
           }
