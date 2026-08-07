@@ -62,6 +62,11 @@
 
   // 创建密码输入模态框
   function createAuthModal() {
+    // 给页面内容加毛玻璃遮罩
+    document.body.style.filter = 'blur(8px)';
+    document.body.style.pointerEvents = 'none';
+    document.body.style.userSelect = 'none';
+
     const modal = document.createElement('div');
     modal.id = 'auth-modal';
     modal.style.cssText = `
@@ -75,7 +80,7 @@
         width: 100%; max-width: 360px; text-align: center;
       ">
         <div style="font-size: 48px; margin-bottom: 16px;">🔐</div>
-        <h2 style="margin: 0 0 8px; color: #1a1a2e; font-size: 22px;">减负通报数据库</h2>
+        <h2 style="margin: 0 0 8px; color: #1a1a2e; font-size: 22px;">整治形式主义为基层减负信息平台</h2>
         <p style="margin: 0 0 24px; color: #666; font-size: 14px;">请输入访问密码</p>
         <input type="password" id="auth-password" placeholder="请输入密码" style="
           width: 100%; padding: 14px 16px; font-size: 16px; border: 1px solid #ddd;
@@ -120,6 +125,10 @@
           sessionStorage.setItem(AUTH_KEY, hash);
           sessionStorage.setItem(AUTH_EXPIRY_KEY, String(Date.now() + SESSION_DURATION));
           document.body.removeChild(modal);
+          // 恢复页面显示
+          document.body.style.filter = '';
+          document.body.style.pointerEvents = '';
+          document.body.style.userSelect = '';
           if (typeof window.onAuthSuccess === 'function') {
             window.onAuthSuccess();
           }
