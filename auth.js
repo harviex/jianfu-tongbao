@@ -62,6 +62,9 @@
 
   // 创建密码输入模态框
   function createAuthModal() {
+    // 防重：如果已有 modal，直接返回
+    if (document.getElementById('auth-modal')) return;
+
     // 1. 把现有页面内容包装在一个容器里，只对容器加模糊
     let contentWrapper = document.getElementById('auth-content-wrapper');
     if (!contentWrapper) {
