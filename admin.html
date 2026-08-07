@@ -194,6 +194,7 @@ tr:hover { background: #fafafa; }
   .admin-header-inner { flex-direction: column; gap: 8px; }
 }
 </style>
+<script src="auth.js"></script>
 </head>
 <body>
 
@@ -224,6 +225,18 @@ tr:hover { background: #fafafa; }
     </select>
     <input type="text" id="filterKeyword" placeholder="关键词搜索..." />
     <button onclick="loadReports()">🔍 筛选</button>
+  </div>
+
+  <!-- 修改密码区域 -->
+  <div style="background: #fff; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <h3 style="font-size: 16px; margin-bottom: 12px; color: #333;">🔐 修改访问密码</h3>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+      <input type="password" id="oldPwd" placeholder="当前密码" style="padding: 9px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; min-width: 140px;">
+      <input type="password" id="newPwd" placeholder="新密码" style="padding: 9px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; min-width: 140px;">
+      <input type="password" id="confirmPwd" placeholder="确认新密码" style="padding: 9px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; min-width: 140px;">
+      <button onclick="doChangePassword()" style="padding: 9px 18px; background: #c41e3a; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background 0.2s;">修改密码</button>
+      <span id="pwdMsg" style="font-size: 13px; min-width: 200px;"></span>
+    </div>
   </div>
 
   <div class="table-wrap">
@@ -388,6 +401,52 @@ async function delReport(id) {
   const res = await fetch('/api/reports/' + id, { method: 'DELETE' });
   if (res.ok) loadReports();
   else alert('删除失败');
+}
+
+// 修改访问密码
+async function doChangePassword() {
+  const oldPwd = document.getElementById('oldPwd').value;
+  const newPwd = document.getElementById('newPwd').value;
+  const confirmPwd = document.getElementById('confirmPwd').value;
+  const msgEl = document.getElementById('pwdMsg');
+
+  if (!oldPwd || !newPwd || !confirmPwd) {
+    msgEl.textContent = '请填写所有字段';
+    msgEl.style.color = '#c41e3a';
+    return;
+  }
+  if (newPwd !== confirmPwd) {
+    msgEl.textContent = '两次新密码不一致';
+    msgEl.style.color = '#c41e3a';
+    return;
+  }
+  if (newPwd.length < 6) {
+    msgEl.textContent = '新密码至少 6 位';
+    msgEl.style.color = '#c41e3a';
+    return;
+  }
+
+  msgEl.textContent = '修改中...';
+  msgEl.style.color = '#666';
+
+  try {
+    const ok = await window.changePassword(oldPwd, newPwd);
+    if (ok) {
+      msgEl.textContent = '✅ 修改成功，请重新登录';
+      msgEl.style.color = '#2e7d32';
+      document.getElementById('oldPwd').value = '';
+      document.getElementById('newPwd').value = '';
+      document.getElementById('confirmPwd').value = '';
+      // 当前页面会话失效，提示刷新
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      msgEl.textContent = '❌ 当前密码错误';
+      msgEl.style.color = '#c41e3a';
+    }
+  } catch (e) {
+    msgEl.textContent = '❌ 修改失败：' + e.message;
+    msgEl.style.color = '#c41e3a';
+  }
 }
 
 function esc(s) {
