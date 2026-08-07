@@ -129,6 +129,8 @@ def extract_content(html, parser_key):
     # 清理文本
     content = re.sub(r'\n{3,}', '\n\n', content)
     content = re.sub(r'[ \t]{2,}', ' ', content)
+    # Fix escaped newlines and other escape sequences
+    content = content.replace('\\n', '\n').replace('\\t', '\t').replace('\\r', '\r')
     
     return content
 
