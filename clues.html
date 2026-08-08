@@ -869,18 +869,21 @@ body {
       <table class="clues-table" id="cluesTable">
         <thead>
           <tr>
-            <th style="width:50px;" data-sort="seq_no">序号 <span class="sort-icon"></span></th>
-            <th style="width:120px;" data-sort="clue_category">分类 <span class="sort-icon"></span></th>
-            <th style="width:150px;" data-sort="clue_subcategory">细分 <span class="sort-icon"></span></th>
-            <th style="width:120px;" data-sort="task_num">诉求编号 <span class="sort-icon"></span></th>
-            <th class="content-cell" style="min-width:280px;" data-sort="content">诉求内容 <span class="sort-icon"></span></th>
-            <th class="analysis-cell" style="min-width:220px;" data-sort="qualitative_analysis">定性分析 <span class="sort-icon"></span></th>
-            <th class="evidence-cell" style="min-width:200px;" data-sort="evidence_suggestion">取证建议 <span class="sort-icon"></span></th>
-            <th style="width:130px;" data-sort="publish_time">诉求时间 <span class="sort-icon"></span></th>
-            <th style="width:140px;" data-sort="complained_unit">被诉单位 <span class="sort-icon"></span></th>
-            <th style="width:100px;" data-sort="region">地市/县区 <span class="sort-icon"></span></th>
-            <th style="width:150px;" data-sort="tags">标签 <span class="sort-icon"></span></th>
-            <th style="width:80px;" data-sort="is_typical">典型 <span class="sort-icon"></span></th>
+            <th style="width:40px;text-align:center;">
+              <input type="checkbox" id="selectAllClues" onchange="toggleSelectAll(this.checked)" title="全选/取消全选">
+            </th>
+            <th style="width:50px;">序号</th>
+            <th style="width:120px;">分类</th>
+            <th style="width:150px;">细分</th>
+            <th style="width:120px;">诉求编号</th>
+            <th class="content-cell resizable" style="min-width:280px;" data-sort="content">诉求内容 <span class="sort-icon"></span></th>
+            <th class="analysis-cell resizable" style="min-width:220px;" data-sort="qualitative_analysis">定性分析 <span class="sort-icon"></span></th>
+            <th class="evidence-cell resizable" style="min-width:200px;" data-sort="evidence_suggestion">取证建议 <span class="sort-icon"></span></th>
+            <th style="width:130px;">诉求时间</th>
+            <th style="width:140px;">被诉单位</th>
+            <th style="width:100px;">地市/县区</th>
+            <th class="resizable" style="width:150px;" data-sort="tags">标签 <span class="sort-icon"></span></th>
+            <th style="width:80px;">典型</th>
             <th style="width:120px;">操作</th>
           </tr>
         </thead>
@@ -1320,7 +1323,7 @@ function renderCluesTable() {
   const pageData = filteredClues.slice(start, start + CLUES_PAGE_SIZE);
 
   if (!pageData.length) {
-    tbody.innerHTML = '<tr><td colspan="12" class="empty">暂无匹配的线索</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="14" class="empty">暂无匹配的线索</td></tr>';
     renderCluesPagination();
     return;
   }
@@ -1332,9 +1335,13 @@ function renderCluesTable() {
     const analysisEsc = esc(clue.qualitative_analysis || '').replace(/【违反依据】[\s\S]*?\n/, '');
     const isTypical = clue.is_typical ? '是' : '否';
     const typicalClass = clue.is_typical ? 'typical-yes' : 'typical-no';
+    const isSelected = selectedClueIds.has(clue.id);
 
     return `
-      <tr data-id="${clue.id}" class="${clue.is_typical ? 'highlight-typical' : ''}">
+      <tr data-id="${clue.id}" class="${clue.is_typical ? 'highlight-typical' : ''} ${isSelected ? 'selected-row' : ''}">
+        <td style="width:40px;text-align:center;">
+          <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleClueSelection(${clue.id})" style="transform:scale(1.2);">
+        </td>
         <td>${clue.seq_no}</td>
         <td><span class="tag tag-category">${esc(clue.clue_category)}</span></td>
         <td><span class="tag tag-subcategory">${esc(clue.clue_subcategory)}</span></td>
@@ -1360,6 +1367,11 @@ function renderCluesTable() {
   }).join('');
 
   renderCluesPagination();
+  // 更新全选框状态
+  const selectAllCheckbox = document.getElementById('selectAllClues');
+  if (selectAllCheckbox) {
+    selectAllCheckbox.checked = pageData.length > 0 && pageData.every(c => selectedClueIds.has(c.id));
+  }
 }
 
 function renderCluesPagination() {
@@ -1504,13 +1516,14 @@ function setDateRange(type) {
     start = new Date(now.getFullYear(), now.getMonth(), 1);
     end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
   } else if (type === 'week') {
-    const day = now.getDay();
-    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+    // 本周：从周一(本周第一天)开始
+    const day = now.getDay(); // 0=周日, 1=周一...
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // 周日算作上周最后一天
     start = new Date(now.getFullYear(), now.getMonth(), diff);
-    start.setHours(0,0,0,0);
+    start.setHours(0, 0, 0, 0);
     end = new Date(start);
     end.setDate(start.getDate() + 6);
-    end.setHours(23,59,59,999);
+    end.setHours(23, 59, 59, 999);
   } else if (type === 'today') {
     start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
@@ -1929,20 +1942,22 @@ let resizeState = { th: null, startX: 0, startWidth: 0 };
 function initColumnResize() {
   const ths = document.querySelectorAll('#cluesTable th');
   ths.forEach(th => {
-    th.classList.add('resize-handle');
-    th.addEventListener('mousedown', (e) => {
-      // 只在右边缘6px内触发
-      const rect = th.getBoundingClientRect();
-      if (rect.right - e.clientX <= 6) {
-        resizeState.th = th;
-        resizeState.startX = e.clientX;
-        resizeState.startWidth = rect.width;
-        th.classList.add('resizing');
-        document.body.style.cursor = 'col-resize';
-        document.body.style.userSelect = 'none';
-        e.preventDefault();
-      }
-    });
+    // 只给允许拖拽的列添加 resize-handle
+    if (th.classList.contains('resizable')) {
+      th.classList.add('resize-handle');
+      th.addEventListener('mousedown', (e) => {
+        const rect = th.getBoundingClientRect();
+        if (rect.right - e.clientX <= 6) {
+          resizeState.th = th;
+          resizeState.startX = e.clientX;
+          resizeState.startWidth = rect.width;
+          th.classList.add('resizing');
+          document.body.style.cursor = 'col-resize';
+          document.body.style.userSelect = 'none';
+          e.preventDefault();
+        }
+      });
+    }
   });
 
   document.addEventListener('mousemove', (e) => {
@@ -1994,6 +2009,16 @@ function toggleClueSelection(id) {
   updateBatchActionsUI();
 }
 
+function toggleSelectAll(checked) {
+  if (checked) {
+    filteredClues.forEach(c => selectedClueIds.add(c.id));
+  } else {
+    selectedClueIds.clear();
+  }
+  updateBatchActionsUI();
+  renderCluesTable(); // 更新复选框状态
+}
+
 function updateBatchActionsUI() {
   const count = selectedClueIds.size;
   let btn = document.getElementById('batchActionsBtn');
@@ -2006,7 +2031,8 @@ function updateBatchActionsUI() {
       batchDiv.style.cssText = 'display:flex;gap:8px;align-items:center;margin-left:8px;padding-left:8px;border-left:1px solid #ddd;';
       batchDiv.innerHTML = `
         <span id="selectedCount" style="font-size:12px;color:#888;">已选 0 条</span>
-        <button class="btn btn-sm" onclick="batchToggleTypical()" title="批量标记/取消典型案例">⭐ 批量标记典型</button>
+        <button class="btn btn-sm" onclick="batchMarkTypical()" title="批量标记为典型案例">⭐ 标记典型</button>
+        <button class="btn btn-sm" onclick="batchRemoveTypical()" title="批量取消典型案例">⭐ 取消典型</button>
         <button class="btn btn-sm" onclick="batchArchive()" title="归档选中线索">📦 归档</button>
         <button class="btn btn-sm" style="border-color:#c62828;color:#c62828;" onclick="batchDelete()" title="删除选中线索">🗑️ 批量删除</button>
         <button class="btn btn-sm" onclick="clearSelection()">取消全选</button>
@@ -2045,6 +2071,38 @@ function batchToggleTypical() {
   applyCluesFilters();
   renderCluesStats();
   showToast(allTypical ? `已取消 ${clues.length} 条典型案例` : `已标记 ${clues.length} 条典型案例`, 'success');
+}
+
+function batchMarkTypical() {
+  const clues = getSelectedClues();
+  if (!clues.length) return;
+  
+  clues.forEach(c => {
+    c.is_typical = true;
+    c.updated_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  });
+  
+  localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
+  clearSelection();
+  applyCluesFilters();
+  renderCluesStats();
+  showToast(`已标记 ${clues.length} 条典型案例`, 'success');
+}
+
+function batchRemoveTypical() {
+  const clues = getSelectedClues();
+  if (!clues.length) return;
+  
+  clues.forEach(c => {
+    c.is_typical = false;
+    c.updated_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  });
+  
+  localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
+  clearSelection();
+  applyCluesFilters();
+  renderCluesStats();
+  showToast(`已取消 ${clues.length} 条典型案例`, 'success');
 }
 
 function batchArchive() {
