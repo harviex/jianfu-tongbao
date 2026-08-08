@@ -1965,11 +1965,21 @@ function initColumnResize() {
   });
 }
 
-// 表格渲染后初始化列宽拖拽
+// 表格渲染后初始化列宽拖拽 + 批量操作UI
 const originalRenderCluesTable = renderCluesTable;
 renderCluesTable = function() {
   originalRenderCluesTable.apply(this, arguments);
-  setTimeout(initColumnResize, 0);
+  setTimeout(() => {
+    initColumnResize();
+    updateBatchActionsUI();
+  }, 0);
+};
+
+// 重置筛选时清空选择
+const originalResetCluesFilters = resetCluesFilters;
+resetCluesFilters = function() {
+  clearSelection();
+  originalResetCluesFilters.apply(this, arguments);
 };
 
 // ========== 批量操作/归档功能 ==========
@@ -2079,70 +2089,6 @@ function batchDelete() {
   renderCluesStats();
   showToast(`已删除 ${clues.length} 条线索`, 'success');
 }
-
-// 扩展 renderCluesTable 添加复选框
-const originalRenderCluesTable2 = renderCluesTable;
-renderCluesTable = function() {
-  // 恢复原始渲染逻辑
-  const tbody = document.getElementById('cluesBody');
-  const start = (currentCluesPage - 1) * CLUES_PAGE_SIZE;
-  const pageData = filteredClues.slice(start, start + CLUES_PAGE_SIZE);
-
-  if (!pageData.length) {
-    tbody.innerHTML = '<tr><td colspan="13" class="empty">暂无匹配的线索</td></tr>';
-    renderCluesPagination();
-    return;
-  }
-
-  tbody.innerHTML = pageData.map(clue => {
-    const tags = (clue.tags || []).map(t => `<span class="tag ${getTagClass(t)}">${esc(t)}</span>`).join(' ');
-    const contentFull = esc(clue.content || '');
-    const evidenceEsc = esc(clue.evidence_suggestion || '');
-    const analysisEsc = esc(clue.qualitative_analysis || '').replace(/【违反依据】[\\s\\S]*?\\n/, '');
-    const isTypical = clue.is_typical ? '是' : '否';
-    const typicalClass = clue.is_typical ? 'typical-yes' : 'typical-no';
-    const isSelected = selectedClueIds.has(clue.id);
-
-    return `
-      <tr data-id="${clue.id}" class="${clue.is_typical ? 'highlight-typical : ''} ${isSelected ? 'selected-row' : ''}">
-        <td style="width:40px;text-align:center;">
-          <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleClueSelection(${clue.id})" style="transform:scale(1.2);">
-        </td>
-        <td>${clue.seq_no}</td>
-        <td><span class="tag tag-category">${esc(clue.clue_category)}</span></td>
-        <td><span class="tag tag-subcategory">${esc(clue.clue_subcategory)}</span></td>
-        <td>${esc(clue.task_num)}</td>
-        <td class="content-cell">${contentFull}</td>
-        <td class="analysis-cell">${analysisEsc}</td>
-        <td class="evidence-cell">${evidenceEsc}</td>
-        <td>${esc(clue.publish_time)}</td>
-        <td>${esc(clue.complained_unit)}</td>
-        <td>${esc(clue.region_city)}/${esc(clue.region_district)}</td>
-        <td>${tags}</td>
-        <td class="${typicalClass}">${isTypical}</td>
-        <td class="actions">
-          <button class="action-btn edit" onclick="openDetail(${clue.id})">详情</button>
-          <button class="action-btn edit" onclick="openEdit(${clue.id})">编辑</button>
-          <button class="action-btn ${clue.is_typical ? 'typical-btn' : ''}" onclick="toggleTypical(${clue.id})" title="${clue.is_typical ? '取消典型案例' : '标记为典型案例'}">
-            ${clue.is_typical ? '⭐ 典型' : '⭐ 标记典型'}
-          </button>
-          <button class="action-btn delete" onclick="deleteClue(${clue.id})">删除</button>
-        </td>
-      </tr>
-    `;
-  }).join('');
-
-  renderCluesPagination();
-  initColumnResize();
-  updateBatchActionsUI();
-};
-
-// 重置筛选时清空选择
-const originalResetCluesFilters = resetCluesFilters;
-resetCluesFilters = function() {
-  clearSelection();
-  originalResetCluesFilters.apply(this, arguments);
-};
 </script>
 </body>
 </html>
