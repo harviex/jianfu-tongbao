@@ -872,18 +872,18 @@ body {
             <th style="width:40px;text-align:center;">
               <input type="checkbox" id="selectAllClues" onchange="toggleSelectAll(this.checked)" title="全选/取消全选">
             </th>
-            <th style="width:50px;">序号</th>
-            <th style="width:120px;">分类</th>
-            <th style="width:150px;">细分</th>
-            <th style="width:120px;">诉求编号</th>
-            <th class="content-cell resizable" style="min-width:280px;" data-sort="content">诉求内容 <span class="sort-icon"></span></th>
-            <th class="analysis-cell resizable" style="min-width:220px;" data-sort="qualitative_analysis">定性分析 <span class="sort-icon"></span></th>
-            <th class="evidence-cell resizable" style="min-width:200px;" data-sort="evidence_suggestion">取证建议 <span class="sort-icon"></span></th>
-            <th style="width:130px;">诉求时间</th>
-            <th style="width:140px;">被诉单位</th>
-            <th style="width:100px;">地市/县区</th>
-            <th class="resizable" style="width:150px;" data-sort="tags">标签 <span class="sort-icon"></span></th>
-            <th style="width:80px;">典型</th>
+            <th style="width:50px;" data-sort="seq_no">序号 <span class="sort-icon"></span></th>
+            <th style="width:120px;" data-sort="clue_category">分类 <span class="sort-icon"></span></th>
+            <th style="width:150px;" data-sort="clue_subcategory">细分 <span class="sort-icon"></span></th>
+            <th style="width:120px;" data-sort="task_num">诉求编号 <span class="sort-icon"></span></th>
+            <th class="content-cell resizable" style="min-width:280px;">诉求内容</th>
+            <th class="analysis-cell resizable" style="min-width:220px;">定性分析</th>
+            <th class="evidence-cell resizable" style="min-width:200px;">取证建议</th>
+            <th style="width:130px;" data-sort="publish_time">诉求时间 <span class="sort-icon"></span></th>
+            <th style="width:140px;" data-sort="complained_unit">被诉单位 <span class="sort-icon"></span></th>
+            <th style="width:100px;" data-sort="region">地市/县区 <span class="sort-icon"></span></th>
+            <th class="resizable" style="width:150px;" data-sort="tags">标签</th>
+            <th style="width:80px;" data-sort="is_typical">典型 <span class="sort-icon"></span></th>
             <th style="width:120px;">操作</th>
           </tr>
         </thead>
@@ -1942,22 +1942,21 @@ let resizeState = { th: null, startX: 0, startWidth: 0 };
 function initColumnResize() {
   const ths = document.querySelectorAll('#cluesTable th');
   ths.forEach(th => {
-    // 只给允许拖拽的列添加 resize-handle
-    if (th.classList.contains('resizable')) {
-      th.classList.add('resize-handle');
-      th.addEventListener('mousedown', (e) => {
-        const rect = th.getBoundingClientRect();
-        if (rect.right - e.clientX <= 6) {
-          resizeState.th = th;
-          resizeState.startX = e.clientX;
-          resizeState.startWidth = rect.width;
-          th.classList.add('resizing');
-          document.body.style.cursor = 'col-resize';
-          document.body.style.userSelect = 'none';
-          e.preventDefault();
-        }
+    // 所有列都可拖拽调整宽度
+    th.classList.add('resize-handle');
+    th.addEventListener('mousedown', (e) => {
+      const rect = th.getBoundingClientRect();
+      if (rect.right - e.clientX <= 6) {
+        resizeState.th = th;
+        resizeState.startX = e.clientX;
+        resizeState.startWidth = rect.width;
+        th.classList.add('resizing');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
+        e.stopPropagation(); // 阻止冒泡，避免触发其他事件
       });
-    }
+    });
   });
 
   document.addEventListener('mousemove', (e) => {
@@ -2021,12 +2020,21 @@ function toggleSelectAll(checked) {
 
 function updateBatchActionsUI() {
   const count = selectedClueIds.size;
-  let btn = document.getElementById('batchActionsBtn');
-  if (!btn) {
-    // 创建批量操作按钮组
+  let batchDiv = document.getElementById('batchActions');
+  
+  if (count === 0) {
+    // 没有选中项，隐藏工具栏
+    if (batchDiv) {
+      batchDiv.style.display = 'none';
+    }
+    return;
+  }
+  
+  // 有选中项，显示或创建工具栏
+  if (!batchDiv) {
     const toolbar = document.querySelector('.clues-toolbar .filter-group');
     if (toolbar) {
-      const batchDiv = document.createElement('div');
+      batchDiv = document.createElement('div');
       batchDiv.id = 'batchActions';
       batchDiv.style.cssText = 'display:flex;gap:8px;align-items:center;margin-left:8px;padding-left:8px;border-left:1px solid #ddd;';
       batchDiv.innerHTML = `
@@ -2037,12 +2045,20 @@ function updateBatchActionsUI() {
         <button class="btn btn-sm" style="border-color:#c62828;color:#c62828;" onclick="batchDelete()" title="删除选中线索">🗑️ 批量删除</button>
         <button class="btn btn-sm" onclick="clearSelection()">取消全选</button>
       `;
-      toolbar.appendChild(batchDiv);
-      btn = document.getElementById('batchActionsBtn');
+      // 插入到筛选组之后
+      const filterGroup = document.querySelector('.clues-toolbar .filter-group');
+      if (filterGroup) {
+        filterGroup.insertAdjacentElement('afterend', batchDiv);
+      }
     }
   }
-  document.getElementById('selectedCount').textContent = `已选 ${count} 条`;
-  document.getElementById('batchActions').style.display = count > 0 ? 'flex' : 'none';
+  
+  // 更新显示
+  if (batchDiv) {
+    batchDiv.style.display = 'flex';
+    const countEl = document.getElementById('selectedCount');
+    if (countEl) countEl.textContent = `已选 ${selectedClueIds.size} 条`;
+  }
 }
 
 function clearSelection() {
