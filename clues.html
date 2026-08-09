@@ -379,31 +379,6 @@ body {
 .clues-table .tag-category { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
 .clues-table .tag-subcategory { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
 
-/* ========== Typical/Highlight Styles ========== */
-.clues-table .highlight-typical {
-  background: linear-gradient(90deg, #fffde7 0%, #fff8e1 100%);
-}
-.clues-table .highlight-typical:hover {
-  background: linear-gradient(90deg, #fff9c4 0%, #ffecb3 100%);
-}
-.clues-table .typical-yes {
-  background: #fff3e0;
-  color: #e65100;
-  font-weight: 600;
-}
-.clues-table .typical-no {
-  color: #999;
-}
-.clues-table .typical-btn {
-  background: #fff3e0;
-  border-color: #ffb74d;
-  color: #e65100;
-}
-.clues-table .typical-btn:hover {
-  background: #ffe0b2;
-  border-color: #ffa726;
-}
-
 /* ========== Column Resize ========== */
 .clues-table th.resize-handle {
   position: relative;
@@ -757,10 +732,6 @@ body {
         <span class="gov-stat-label">覆盖分类</span>
       </div>
       <div class="gov-stat">
-        <span class="gov-stat-num" id="statTypical">-</span>
-        <span class="gov-stat-label">典型案例</span>
-      </div>
-      <div class="gov-stat">
         <span class="gov-stat-num" id="statCities">-</span>
         <span class="gov-stat-label">覆盖地市</span>
       </div>
@@ -842,11 +813,6 @@ body {
         <select class="filter-select" id="filterDistrict">
           <option value="">全部县区</option>
         </select>
-        <select class="filter-select" id="filterTypical">
-          <option value="">典型案例筛选</option>
-          <option value="true">典型案例</option>
-          <option value="false">非典型案例</option>
-        </select>
         <div style="display:flex;gap:4px;align-items:center;margin-left:8px;padding-left:8px;border-left:1px solid #ddd;">
           <span style="font-size:12px;color:#888;">时间:</span>
           <button class="date-filter-btn" data-range="year" onclick="setDateRange('year')">今年</button>
@@ -883,7 +849,6 @@ body {
             <th style="width:140px;" data-sort="complained_unit">被诉单位 <span class="sort-icon"></span></th>
             <th style="width:100px;" data-sort="region">地市/县区 <span class="sort-icon"></span></th>
             <th class="resizable" style="width:150px;" data-sort="tags">标签</th>
-            <th style="width:80px;" data-sort="is_typical">典型 <span class="sort-icon"></span></th>
             <th style="width:120px;">操作</th>
           </tr>
         </thead>
@@ -1534,12 +1499,10 @@ function renderCluesTable() {
     const contentFull = esc(clue.content || '');
     const evidenceEsc = esc(clue.evidence_suggestion || '');
     const analysisEsc = esc(clue.qualitative_analysis || '').replace(/【违反依据】[\s\S]*?\n/, '');
-    const isTypical = clue.is_typical ? '是' : '否';
-    const typicalClass = clue.is_typical ? 'typical-yes' : 'typical-no';
     const isSelected = selectedClueIds.has(clue.id);
 
     return `
-      <tr data-id="${clue.id}" class="${clue.is_typical ? 'highlight-typical' : ''} ${isSelected ? 'selected-row' : ''}">
+      <tr data-id="${clue.id}" class="${isSelected ? 'selected-row' : ''}">
         <td style="width:40px;text-align:center;">
           <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleClueSelection(${clue.id})" style="transform:scale(1.2);">
         </td>
@@ -1554,13 +1517,9 @@ function renderCluesTable() {
         <td>${esc(clue.complained_unit)}</td>
         <td>${esc(clue.region_city)}/${esc(clue.region_district)}</td>
         <td>${tags}</td>
-        <td class="${typicalClass}">${isTypical}</td>
         <td class="actions">
           <button class="action-btn edit" onclick="openDetail(${clue.id})">详情</button>
           <button class="action-btn edit" onclick="openEdit(${clue.id})">编辑</button>
-          <button class="action-btn ${clue.is_typical ? 'typical-btn' : ''}" onclick="toggleTypical(${clue.id})" title="${clue.is_typical ? '取消典型案例' : '标记为典型案例'}">
-            ${clue.is_typical ? '⭐ 典型' : '⭐ 标记典型'}
-          </button>
           <button class="action-btn delete" onclick="deleteClue(${clue.id})">删除</button>
         </td>
       </tr>
@@ -1651,12 +1610,10 @@ function goCluesPage(p) {
 function renderCluesStats() {
   const total = allClues.length;
   const categories = new Set(allClues.map(c => c.clue_category)).size;
-  const typical = allClues.filter(c => c.is_typical).length;
   const cities = new Set(allClues.map(c => c.region_city).filter(Boolean)).size;
 
   document.getElementById('statTotal').textContent = total;
   document.getElementById('statCategories').textContent = categories;
-  document.getElementById('statTypical').textContent = typical;
   document.getElementById('statCities').textContent = cities;
   document.getElementById('cluesCount').textContent = `共 ${filteredClues.length} 条 / 总计 ${total} 条`;
 }
@@ -1750,7 +1707,6 @@ function applyCluesFilters() {
   const subcat = document.getElementById('filterSubcategory').value;
   const city = document.getElementById('filterCity').value;
   const district = document.getElementById('filterDistrict').value;
-  const typical = document.getElementById('filterTypical').value;
 
   filteredClues = allClues.filter(c => {
     if (search && !c.content.toLowerCase().includes(search) && !c.task_num.toLowerCase().includes(search) &&
@@ -1761,7 +1717,6 @@ function applyCluesFilters() {
     if (subcat && c.clue_subcategory !== subcat) return false;
     if (city && c.region_city !== city) return false;
     if (district && c.region_district !== district) return false;
-    if (typical !== '' && c.is_typical !== (typical === 'true')) return false;
 
     if (currentDateRange.start && currentDateRange.end) {
       const clueDate = c.publish_time.split(' ')[0];
@@ -1976,20 +1931,6 @@ function deleteClue(id) {
   applyCluesFilters();
   renderCluesStats();
   showToast('已删除', 'success');
-}
-
-function toggleTypical(id) {
-  const idx = allClues.findIndex(c => c.id === id);
-  if (idx === -1) return;
-  
-  allClues[idx].is_typical = !allClues[idx].is_typical;
-  allClues[idx].updated_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
-  
-  localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
-  filteredClues = [...allClues];
-  applyCluesFilters();
-  renderCluesStats();
-  showToast(allClues[idx].is_typical ? '已标记为典型案例' : '已取消典型案例', 'success');
 }
 
 // ========== 情况反映后台 ==========
@@ -2227,8 +2168,6 @@ function updateBatchActionsUI() {
       batchDiv.style.cssText = 'display:flex;gap:8px;align-items:center;margin-left:8px;padding-left:8px;border-left:1px solid #ddd;';
       batchDiv.innerHTML = `
         <span id="selectedCount" style="font-size:12px;color:#888;">已选 0 条</span>
-        <button class="btn btn-sm" onclick="batchMarkTypical()" title="批量标记为典型案例">⭐ 标记典型</button>
-        <button class="btn btn-sm" onclick="batchRemoveTypical()" title="批量取消典型案例">⭐ 取消典型</button>
         <button class="btn btn-sm" onclick="batchArchive()" title="归档选中线索">📦 归档</button>
         <button class="btn btn-sm" style="border-color:#c62828;color:#c62828;" onclick="batchDelete()" title="删除选中线索">🗑️ 批量删除</button>
         <button class="btn btn-sm" onclick="clearSelection()">取消全选</button>
@@ -2257,56 +2196,6 @@ function clearSelection() {
 
 function getSelectedClues() {
   return allClues.filter(c => selectedClueIds.has(c.id));
-}
-
-function batchToggleTypical() {
-  const clues = getSelectedClues();
-  if (!clues.length) return;
-  
-  // 如果有混合状态，全部设为典型；否则全部取消
-  const allTypical = clues.every(c => c.is_typical);
-  clues.forEach(c => {
-    c.is_typical = !allTypical;
-    c.updated_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
-  });
-  
-  localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
-  clearSelection();
-  applyCluesFilters();
-  renderCluesStats();
-  showToast(allTypical ? `已取消 ${clues.length} 条典型案例` : `已标记 ${clues.length} 条典型案例`, 'success');
-}
-
-function batchMarkTypical() {
-  const clues = getSelectedClues();
-  if (!clues.length) return;
-  
-  clues.forEach(c => {
-    c.is_typical = true;
-    c.updated_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
-  });
-  
-  localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
-  clearSelection();
-  applyCluesFilters();
-  renderCluesStats();
-  showToast(`已标记 ${clues.length} 条典型案例`, 'success');
-}
-
-function batchRemoveTypical() {
-  const clues = getSelectedClues();
-  if (!clues.length) return;
-  
-  clues.forEach(c => {
-    c.is_typical = false;
-    c.updated_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
-  });
-  
-  localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
-  clearSelection();
-  applyCluesFilters();
-  renderCluesStats();
-  showToast(`已取消 ${clues.length} 条典型案例`, 'success');
 }
 
 function batchArchive() {
