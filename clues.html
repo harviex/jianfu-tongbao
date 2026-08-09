@@ -1291,7 +1291,7 @@ const SAMPLE_REPORTS = [
 document.addEventListener('DOMContentLoaded', async () => {
   // 1. 加载认定标准：从 data/standards.json 获取
   try {
-    const resp = await fetch('data/standards.json');
+    const resp = await fetch(`${location.origin}/data/standards.json`);
     if (resp.ok) {
       standards = await resp.json();
     } else {
@@ -1311,7 +1311,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 2. 加载线索数据：优先从 data/clues_test.json 获取最新线索
   try {
-    const resp = await fetch('data/clues_test.json');
+    const resp = await fetch(`${location.origin}/data/clues_test.json`);
     if (resp.ok) {
       const remoteClues = await resp.json();
       if (remoteClues && remoteClues.length > 0) {
