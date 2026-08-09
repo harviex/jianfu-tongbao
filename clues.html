@@ -413,23 +413,6 @@ body {
   overflow-wrap: break-word;
 }
 
-/* ========== Selected Row ========== */
-.clues-table .selected-row {
-  background: #e3f2fd !important;
-}
-.clues-table .selected-row:hover {
-  background: #bbdefb !important;
-}
-
-/* ========== Batch Actions Toolbar ========== */
-#batchActions {
-  animation: slideIn 0.2s ease;
-}
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* ========== Archive Page Link ========== */
 .gov-nav a.archive-link {
   color: #1976d2;
@@ -835,9 +818,6 @@ body {
       <table class="clues-table" id="cluesTable">
         <thead>
           <tr>
-            <th style="width:40px;text-align:center;">
-              <input type="checkbox" id="selectAllClues" onchange="toggleSelectAll(this.checked)" title="全选/取消全选">
-            </th>
             <th style="width:50px;" data-sort="seq_no">序号 <span class="sort-icon"></span></th>
             <th style="width:120px;" data-sort="clue_category">分类 <span class="sort-icon"></span></th>
             <th style="width:150px;" data-sort="clue_subcategory">细分 <span class="sort-icon"></span></th>
@@ -849,7 +829,7 @@ body {
             <th style="width:140px;" data-sort="complained_unit">被诉单位 <span class="sort-icon"></span></th>
             <th style="width:100px;" data-sort="region">地市/县区 <span class="sort-icon"></span></th>
             <th class="resizable" style="width:150px;" data-sort="tags">标签</th>
-            <th style="width:120px;">操作</th>
+            <th style="width:100px;">操作</th>
           </tr>
         </thead>
         <tbody id="cluesBody">
@@ -1499,13 +1479,9 @@ function renderCluesTable() {
     const contentFull = esc(clue.content || '');
     const evidenceEsc = esc(clue.evidence_suggestion || '');
     const analysisEsc = esc(clue.qualitative_analysis || '').replace(/【违反依据】[\s\S]*?\n/, '');
-    const isSelected = selectedClueIds.has(clue.id);
 
     return `
-      <tr data-id="${clue.id}" class="${isSelected ? 'selected-row' : ''}">
-        <td style="width:40px;text-align:center;">
-          <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleClueSelection(${clue.id})" style="transform:scale(1.2);">
-        </td>
+      <tr data-id="${clue.id}">
         <td>${clue.seq_no}</td>
         <td><span class="tag tag-category">${esc(clue.clue_category)}</span></td>
         <td><span class="tag tag-subcategory">${esc(clue.clue_subcategory)}</span></td>
@@ -1527,11 +1503,6 @@ function renderCluesTable() {
   }).join('');
 
   renderCluesPagination();
-  // 更新全选框状态
-  const selectAllCheckbox = document.getElementById('selectAllClues');
-  if (selectAllCheckbox) {
-    selectAllCheckbox.checked = pageData.length > 0 && pageData.every(c => selectedClueIds.has(c.id));
-  }
 }
 
 function renderCluesPagination() {
@@ -2114,132 +2085,14 @@ renderCluesTable = function() {
   originalRenderCluesTable.apply(this, arguments);
   setTimeout(() => {
     initColumnResize();
-    updateBatchActionsUI();
   }, 0);
 };
 
 // 重置筛选时清空选择
 const originalResetCluesFilters = resetCluesFilters;
 resetCluesFilters = function() {
-  clearSelection();
   originalResetCluesFilters.apply(this, arguments);
 };
-
-// ========== 批量操作/归档功能 ==========
-let selectedClueIds = new Set();
-
-function toggleClueSelection(id) {
-  if (selectedClueIds.has(id)) {
-    selectedClueIds.delete(id);
-  } else {
-    selectedClueIds.add(id);
-  }
-  updateBatchActionsUI();
-}
-
-function toggleSelectAll(checked) {
-  if (checked) {
-    filteredClues.forEach(c => selectedClueIds.add(c.id));
-  } else {
-    selectedClueIds.clear();
-  }
-  updateBatchActionsUI();
-  renderCluesTable(); // 更新复选框状态
-}
-
-function updateBatchActionsUI() {
-  const count = selectedClueIds.size;
-  let batchDiv = document.getElementById('batchActions');
-  
-  if (count === 0) {
-    // 没有选中项，隐藏工具栏
-    if (batchDiv) {
-      batchDiv.style.display = 'none';
-    }
-    return;
-  }
-  
-  // 有选中项，显示或创建工具栏
-  if (!batchDiv) {
-    const toolbar = document.querySelector('.clues-toolbar .filter-group');
-    if (toolbar) {
-      batchDiv = document.createElement('div');
-      batchDiv.id = 'batchActions';
-      batchDiv.style.cssText = 'display:flex;gap:8px;align-items:center;margin-left:8px;padding-left:8px;border-left:1px solid #ddd;';
-      batchDiv.innerHTML = `
-        <span id="selectedCount" style="font-size:12px;color:#888;">已选 0 条</span>
-        <button class="btn btn-sm" onclick="batchArchive()" title="归档选中线索">📦 归档</button>
-        <button class="btn btn-sm" style="border-color:#c62828;color:#c62828;" onclick="batchDelete()" title="删除选中线索">🗑️ 批量删除</button>
-        <button class="btn btn-sm" onclick="clearSelection()">取消全选</button>
-      `;
-      // 插入到筛选组之后
-      const filterGroup = document.querySelector('.clues-toolbar .filter-group');
-      if (filterGroup) {
-        filterGroup.insertAdjacentElement('afterend', batchDiv);
-      }
-    }
-  }
-  
-  // 更新显示
-  if (batchDiv) {
-    batchDiv.style.display = 'flex';
-    const countEl = document.getElementById('selectedCount');
-    if (countEl) countEl.textContent = `已选 ${selectedClueIds.size} 条`;
-  }
-}
-
-function clearSelection() {
-  selectedClueIds.clear();
-  updateBatchActionsUI();
-  renderCluesTable(); // 重新渲染去掉选中状态
-}
-
-function getSelectedClues() {
-  return allClues.filter(c => selectedClueIds.has(c.id));
-}
-
-function batchArchive() {
-  const clues = getSelectedClues();
-  if (!clues.length) return;
-  
-  if (!confirm(`确定归档 ${clues.length} 条线索？归档后将从主列表移除，可在归档管理中查看。`)) return;
-  
-  const archiveKey = 'jianfu_clues_archive';
-  let archive = JSON.parse(localStorage.getItem(archiveKey) || '[]');
-  
-  clues.forEach(c => {
-    c.archived_at = new Date().toISOString().replace('T', ' ').substring(0, 19);
-    archive.push(c);
-    allClues = allClues.filter(x => x.id !== c.id);
-  });
-  
-  localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
-  localStorage.setItem(archiveKey, JSON.stringify(archive));
-  clearSelection();
-  applyCluesFilters();
-  renderCluesStats();
-  showToast(`已归档 ${clues.length} 条线索`, 'success');
-}
-
-function batchDelete() {
-  const clues = getSelectedClues();
-  if (!clues.length) return;
-  
-  if (!confirm(`确定删除 ${clues.length} 条线索？此操作不可恢复！`)) return;
-  
-  clues.forEach(c => {
-    allClues = allClues.filter(x => x.id !== c.id);
-  });
-  
-  allClues.sort((a, b) => a.seq_no - b.seq_no);
-  allClues.forEach((c, i) => c.seq_no = i + 1);
-  
-  localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
-  clearSelection();
-  applyCluesFilters();
-  renderCluesStats();
-  showToast(`已删除 ${clues.length} 条线索`, 'success');
-}
 </script>
 </body>
 </html>
