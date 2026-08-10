@@ -715,8 +715,8 @@ body {
         <span class="gov-stat-label">覆盖分类</span>
       </div>
       <div class="gov-stat">
-        <span class="gov-stat-num" id="statCities">-</span>
-        <span class="gov-stat-label">覆盖地市</span>
+        <span class="gov-stat-num" id="statUpdated">-</span>
+        <span class="gov-stat-label">最后更新</span>
       </div>
     </div>
   </div>
@@ -1605,11 +1605,18 @@ function goCluesPage(p) {
 function renderCluesStats() {
   const total = allClues.length;
   const categories = new Set(allClues.map(c => c.clue_category)).size;
-  const cities = new Set(allClues.map(c => c.region_city).filter(Boolean)).size;
+  
+  // 最后更新时间：取最新的 updated_at 或 created_at
+  const dates = allClues.map(c => c.updated_at || c.created_at).filter(Boolean);
+  let lastUpdated = '-';
+  if (dates.length) {
+    const latest = new Date(Math.max(...dates.map(d => new Date(d).getTime())));
+    lastUpdated = latest.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  }
 
   document.getElementById('statTotal').textContent = total;
   document.getElementById('statCategories').textContent = categories;
-  document.getElementById('statCities').textContent = cities;
+  document.getElementById('statUpdated').textContent = lastUpdated;
   document.getElementById('cluesCount').textContent = `共 ${filteredClues.length} 条 / 总计 ${total} 条`;
 }
 
