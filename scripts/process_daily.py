@@ -40,7 +40,7 @@ class DBConfig:
 @dataclass
 class OllamaConfig:
     base_url: str = "http://192.168.123.33:11434"
-    model: str = "qwen2.5vl:7b"
+    model: str = "qwen3.5:9b"
     concurrency: int = 2  # 并发2，16GB显存支持
     batch_size: int = 3   # 减小批次
     timeout: int = 300    # 增加到 5 分钟
@@ -522,6 +522,7 @@ class DailyProcessor:
                         "model": OLLAMA.model,
                         "prompt": prompt,
                         "stream": False,
+                        "format": "json",
                         "options": {"temperature": 0.1, "num_predict": 1024}
                     }
                 )
@@ -529,7 +530,9 @@ class DailyProcessor:
                 return resp.json()
         
         response = await call_ollama()
-        return self._parse_llm_response(response['response'], batch)
+        # qwen3.5 with format=json puts output in 'thinking' field
+        raw_text = response.get('thinking', '') or response.get('response', '')
+        return self._parse_llm_response(raw_text, batch)
 
     def _build_batch_prompt(self, batch: List[dict]) -> str:
         items = []
