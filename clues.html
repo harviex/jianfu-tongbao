@@ -821,7 +821,7 @@ body {
             <th style="width:120px;" data-sort="clue_category">分类 <span class="sort-icon"></span></th>
             <th style="width:150px;" data-sort="clue_subcategory">细分 <span class="sort-icon"></span></th>
             <th style="width:120px;" data-sort="task_num">诉求编号 <span class="sort-icon"></span></th>
-            <th class="content-cell resizable" style="min-width:280px;">诉求内容</th>
+            <th class="content-cell resizable" style="min-width:500px;">诉求内容</th>
             <th class="analysis-cell resizable" style="min-width:220px;">定性分析</th>
             <th class="evidence-cell resizable" style="min-width:200px;">取证建议</th>
             <th style="width:130px;" data-sort="publish_time">诉求时间 <span class="sort-icon"></span></th>
@@ -1032,6 +1032,31 @@ let allReports = [];
 let filteredReports = [];
 let currentReportsPage = 1;
 const REPORTS_PAGE_SIZE = 10;
+
+// 全局常量：福建省九市一区标准顺序
+const CITY_ORDER = [
+  '福州市', '厦门市', '漳州市', '泉州市', '三明市', 
+  '莆田市', '南平市', '龙岩市', '宁德市', '平潭综合实验区', '未知'
+];
+
+// 市 -> 区县映射（按 区 -> 县 -> 县级市 顺序）
+const CITY_DISTRICTS = {
+  '福州市': ['鼓楼区','台江区','仓山区','马尾区','晋安区','长乐区','福清市','闽侯县','连江县','罗源县','闽清县','永泰县','平潭县'],
+  '厦门市': ['思明区','海沧区','湖里区','集美区','同安区','翔安区'],
+  '漳州市': ['芗城区','龙文区','龙海区','长泰区','漳浦县','云霄县','诏安县','东山县','南靖县','平和县','华安县'],
+  '泉州市': ['鲤城区','丰泽区','洛江区','泉港区','石狮市','晋江市','南安市','惠安县','安溪县','永春县','德化县','金门县'],
+  '三明市': ['三元区','沙县区','永安市','明溪县','清流县','宁化县','大田县','尤溪县','将乐县','泰宁县','建宁县'],
+  '莆田市': ['城厢区','涵江区','荔城区','秀屿区','仙游县'],
+  '南平市': ['延平区','建阳区','邵武市','武夷山市','建瓯市','顺昌县','浦城县','光泽县','松溪县','政和县'],
+  '龙岩市': ['新罗区','永定区','漳平市','长汀县','上杭县','武平县','连城县'],
+  '宁德市': ['蕉城区','福安市','福鼎市','霞浦县','古田县','屏南县','寿宁县','周宁县','柘荣县'],
+  '平潭综合实验区': ['海坛片区','金井片区','君山片区','苏平片区'],
+  '未知': []
+};
+
+// 记录有数据的城市和区县（用于重置筛选时恢复完整列表）
+let orderedCities = [];
+let orderedDistricts = [];
 
 // ========== 认定标准默认数据 (合并同类项，去除条款列，增加典型案例链接) ==========
 // 标准库已移至 data/standards.json，初始化时异步加载
@@ -1597,13 +1622,37 @@ function populateFilters() {
   const subSel = document.getElementById('filterSubcategory');
   subSel.innerHTML = '<option value="">全部细分</option>' + subcats.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
 
-  const cities = [...new Set(allClues.map(c => c.region_city).filter(Boolean))].sort();
+  // 填充地市下拉框：按标准顺序，仅显示有数据的
+  const citiesWithData = [...new Set(allClues.map(c => c.region_city).filter(Boolean))];
+  orderedCities = CITY_ORDER.filter(c => citiesWithData.includes(c));
   const citySel = document.getElementById('filterCity');
-  citySel.innerHTML = '<option value="">全部地市</option>' + cities.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  citySel.innerHTML = '<option value="">全部地市</option>' + orderedCities.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
 
-  const districts = [...new Set(allClues.map(c => c.region_district).filter(Boolean))].sort();
+  // 填充县区下拉框：默认显示全部，按市层级展开
+  const allDistricts = [...new Set(allClues.map(c => c.region_district).filter(Boolean))];
+  orderedDistricts = [];
+  for (const city of orderedCities) {
+    const cityDistricts = CITY_DISTRICTS[city] || [];
+    for (const d of cityDistricts) {
+      if (allDistricts.includes(d)) orderedDistricts.push(d);
+    }
+  }
+  // 补充标准列表外的县区（按字母序）
+  const extraDistricts = allDistricts.filter(d => !orderedDistricts.includes(d)).sort();
+  orderedDistricts = [...orderedDistricts, ...extraDistricts];
+
   const districtSel = document.getElementById('filterDistrict');
-  districtSel.innerHTML = '<option value="">全部县区</option>' + districts.map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
+  districtSel.innerHTML = '<option value="">全部县区</option>' + orderedDistricts.map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
+
+  // 地市联动：选中地市时，县区只显示该市下级
+  citySel.addEventListener('change', () => {
+    const city = citySel.value;
+    let cityDistricts = [];
+    if (city && CITY_DISTRICTS[city]) {
+      cityDistricts = CITY_DISTRICTS[city].filter(d => allDistricts.includes(d));
+    }
+    districtSel.innerHTML = '<option value="">全部县区</option>' + cityDistricts.map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
+  });
 
   const stdCats = [...new Set(standards.filter(s => s.enabled).map(s => s.category))].sort();
   const editCat = document.getElementById('editCategory');
@@ -1707,7 +1756,11 @@ function resetCluesFilters() {
   document.getElementById('filterCategory').value = '';
   document.getElementById('filterSubcategory').value = '';
   document.getElementById('filterCity').value = '';
-  document.getElementById('filterDistrict').value = '';
+  
+  // 重置县区下拉框为全部（按市层级展开）
+  const districtSel = document.getElementById('filterDistrict');
+  districtSel.innerHTML = '<option value="">全部县区</option>' + orderedDistricts.map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
+  
   document.getElementById('dateStart').value = '';
   document.getElementById('dateEnd').value = '';
   document.querySelectorAll('.date-filter-btn').forEach(btn => btn.classList.remove('active'));

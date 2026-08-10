@@ -313,7 +313,7 @@ select.form-control { cursor: pointer; appearance: none; background-image: url("
 </div>
 
 <script>
-// 福建省九市一区 行政区划
+// 福建省九市一区 行政区划（按标准顺序：福州、厦门、漳州、泉州、三明、莆田、南平、龙岩、宁德、平潭）
 const FUJIAN = {
   '福州市': ['鼓楼区','台江区','仓山区','马尾区','晋安区','长乐区','福清市','闽侯县','连江县','罗源县','闽清县','永泰县','平潭县'],
   '厦门市': ['思明区','海沧区','湖里区','集美区','同安区','翔安区'],
@@ -327,10 +327,16 @@ const FUJIAN = {
   '平潭综合实验区': ['海坛片区','金井片区','君山片区','苏平片区']
 };
 
+const CITY_ORDER = [
+  '福州市', '厦门市', '漳州市', '泉州市', '三明市', 
+  '莆田市', '南平市', '龙岩市', '宁德市', '平潭综合实验区'
+];
+
 const citySelect = document.getElementById('city');
 const districtSelect = document.getElementById('district');
 
-Object.keys(FUJIAN).forEach(city => {
+// 填充地市下拉框：按标准顺序
+CITY_ORDER.forEach(city => {
   const opt = document.createElement('option');
   opt.value = city;
   opt.textContent = city;
