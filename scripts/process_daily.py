@@ -40,10 +40,11 @@ class DBConfig:
 @dataclass
 class OllamaConfig:
     base_url: str = "http://192.168.123.33:11434"
-    model: str = "qwen3.5:9b"
-    concurrency: int = 2  # 并发2，16GB显存支持
-    batch_size: int = 3   # 减小批次
+    model: str = "qooba/qwen3-coder-30b-a3b-instruct:q3_k_m"  # MoE 30B激活3B，原生无thinking，比9b快5x且稳定（2026-08-28切换验证）
+    concurrency: int = 1 # ca 单模型推理串行排队，并发不加速反而略慢；配合 num_predict=1024 提速
+    batch_size: int = 1   # qwen3.8 单条判读（批量输出只返回首条）
     timeout: int = 300    # 增加到 5 分钟
+    num_predict: int = 1024  # 答案 JSON 通常 76-200 token（llm_reason+subcategory），1024 留足余量不截断；2048 实测拖慢推理（25s→14s）且不减小截断风险
 
 @dataclass
 class PathConfig:
@@ -353,11 +354,18 @@ class DailyProcessor:
     def apply_routing(self) -> List[RouteResult]:
         """对 raw_appeals 应用黑白名单，生成 daily_candidates"""
         with self.conn.cursor() as cur:
-            cur.execute("""
+            # total_raw 以实际入库的 raw_appeals 行数为准（非 Excel 读取量，
+            # Excel 导出含重复/无效行，入库后会被清洗去重，两者口径不一致）。
+            # 直接查当日分区表，避免父表全分区扫描 + 边界比较问题。
+            partition = f"raw_appeals_{self.process_date.strftime('%Y%m%d')}"
+            cur.execute(f"SELECT COUNT(*) AS cnt FROM {partition}")
+            row = cur.fetchone()
+            self.stats['total_raw'] = row['cnt'] if row else 0
+
+            cur.execute(f"""
                 SELECT appeal_id, title, content, category_l1, category_l2, category_l3
-                FROM raw_appeals
-                WHERE register_time >= %s AND register_time < %s
-            """, (self.process_date, date.fromordinal(self.process_date.toordinal() + 1)))
+                FROM {partition}
+            """)
             rows = cur.fetchall()
         
         results = []
@@ -373,7 +381,8 @@ class DailyProcessor:
         self.stats['candidate_total'] = sum(1 for r in results if r.route != 'excluded')
         self.stats['candidate_high'] = sum(1 for r in results if r.priority == 'HIGH')
         self.stats['candidate_low'] = sum(1 for r in results if r.priority == 'LOW')
-        self.stats['candidate_none'] = sum(1 for r in results if r.priority == 'NONE')
+        # candidate_none 只数 route='skip'（真正的无信号词），不含 excluded（黑名单）
+        self.stats['candidate_none'] = sum(1 for r in results if r.route == 'skip')
         
         logger.info(f"路由完成: excluded={self.stats['blacklist_excluded']}, "
                     f"HIGH={self.stats['candidate_high']}, LOW={self.stats['candidate_low']}, "
@@ -439,13 +448,17 @@ class DailyProcessor:
         
         if grey_matched:
             import random
-            if random.random() < sample_rate:
+            # 灰度区 10% 采样送 LLM（skill 原始设计，提速且覆盖边界样本）。
+            # 注：10% 采样会漏部分边界线索（如 XM26042621589 文明创建摊派），
+            # 但 skill 第6条已定补判流程——主跑后捞漏的用 9b 单条补判，不靠全送。
+            # 全送（sample_rate=1.0）在各地全量数据下判读量暴涨（815条/天），太慢，不用。
+            if random.random() < 0.1:
                 return RouteResult(appeal_id, 'sample', 'LOW', grey_matched, [])
             return RouteResult(appeal_id, 'skip', 'NONE', grey_matched, [])
         
-        # 4. 无命中：低概率采样兜底
+        # 4. 无命中：低概率采样兜底（已关闭：实测 zero_keyword_relevant 长期为0，采样从不贡献线索，徒增~50次LLM调用拖慢速度）
         import random
-        if random.random() < 0.05:
+        if random.random() < 0.0:
             self.stats['zero_keyword_sampled'] += 1
             return RouteResult(appeal_id, 'sample', 'NONE', [], [])
         
@@ -480,7 +493,9 @@ class DailyProcessor:
                 JOIN raw_appeals ra ON ra.appeal_id = dc.appeal_id
                 WHERE dc.process_date = %s
                   AND dc.route IN ('full', 'sample')
-                  AND NOT EXISTS (SELECT 1 FROM clues c WHERE c.appeal_id = dc.appeal_id)
+                  -- 已判为相关的不重判（避免覆盖正确结果）；
+                  -- is_relevant=FALSE 或不存在的都重判（修复重跑时 NOT EXISTS 误跳过已写 False 的候选）。
+                  AND NOT EXISTS (SELECT 1 FROM clues c WHERE c.appeal_id = dc.appeal_id AND c.is_relevant = TRUE)
             """, (self.process_date,))
             candidates = cur.fetchall()
         
@@ -517,22 +532,37 @@ class DailyProcessor:
         async def call_ollama():
             async with httpx.AsyncClient(timeout=OLLAMA.timeout) as client:
                 resp = await client.post(
-                    f"{OLLAMA.base_url}/api/generate",
+                    f"{OLLAMA.base_url}/api/chat",
                     json={
                         "model": OLLAMA.model,
-                        "prompt": prompt,
+                        "messages": [{"role": "user", "content": prompt}],
                         "stream": False,
                         "format": "json",
-                        "options": {"temperature": 0.1, "num_predict": 1024}
+                        "options": {"temperature": 0.1, "num_predict": OLLAMA.num_predict}
                     }
                 )
                 resp.raise_for_status()
                 return resp.json()
         
         response = await call_ollama()
-        # qwen3.5 with format=json puts output in 'thinking' field
-        raw_text = response.get('thinking', '') or response.get('response', '')
-        return self._parse_llm_response(raw_text, batch)
+        raw_text = response.get('message', {}).get('content', '') or response.get('response', '')
+        if not raw_text:
+            logger.warning(f"LLM 返回空内容，完整响应: {json.dumps(response, ensure_ascii=False)[:1000]}")
+        # 解析失败（空/非JSON）时重试 LLM 调用（ca 的 qwen3.8 在严格长 prompt 下
+        # 偶发思考标签失效导致 content 空，重试大概率恢复）。
+        results = self._parse_llm_response(raw_text, batch)
+        if not results:
+            for attempt in range(2):
+                logger.warning(f"解析为空，第 {attempt+1} 次重试 LLM 调用")
+                try:
+                    response = await call_ollama()
+                    raw_text = response.get('message', {}).get('content', '') or response.get('response', '')
+                    results = self._parse_llm_response(raw_text, batch)
+                    if results:
+                        break
+                except Exception as e:
+                    logger.warning(f"重试调用异常: {e}")
+        return results
 
     def _build_batch_prompt(self, batch: List[dict]) -> str:
         items = []
@@ -541,24 +571,57 @@ class DailyProcessor:
             if item['category_l3']:
                 text += f"\n三级分类: {item['category_l3']}"
             items.append(f"=== 条目 {i+1} (ID: {item['appeal_id']}) ===\n{text}")
-        
-        return f"""你是"形式主义为基层减负"专项线索识别专家。请逐条判读以下 {len(batch)} 条 12345 诉求，识别是否属于形式主义为基层增加负担的线索。
 
-核心判断逻辑：**只要存在"为了应付上级检查/考核/指标而增加一线无谓负担"，即为相关。**
+        # 只留纯类名，控制 prompt 长度
+        names = []
+        for l in STANDARDS_PROMPT_TEXT.splitlines():
+            l = l.strip()
+            if not l.startswith('- '):
+                continue
+            name = l[2:].split('（大类')[0].split(' | 关键词')[0].strip()
+            names.append(name)
+        short_standards = "、".join(names)
 
-【必须从以下 46 个标准细分类中选择 subcategory，严禁自造分类】：
-{STANDARDS_PROMPT_TEXT}
+        # 关键：prompt 开头加 <think:6124c78e>\n</think:6124c78e> 强制关闭 Qwen3 思考模式。
+        # ca 的 Ollama 版本不支持 PARAMETER thinking，且 /api/chat 的
+        # enable_thinking 参数对长 prompt 失效——模型会强制思考吞掉输出（content 为空）。
+        # 用 Qwen3 原生 <think:6124c78e>...</think:6124c78e> 标签可稳定关思考。
+        # 判读口径：以 46 条全国通报标准本质逻辑为准（NOT 拟合网页平均值）。
+        return "<think:6124c78e>\n</think:6124c78e>" + f"""你是"形式主义为基层减负"专项线索识别专家。请逐条判读以下 {len(batch)} 条 12345 诉求，识别是否属于形式主义为基层增加负担的线索。
+
+## 核心判定逻辑（本质，非字面）
+相关 = 诉求反映的基层负担，其**直接动因是"上级为检查/考核/指标/创建/迎检"而向下摊派**，而非正常工作职责或服务供给不足。
+即：负担来自"对上负责的形式要求"，不是"对下服务的业务量"。
+
+## 【必须从以下 46 个标准细分类中选择 subcategory，严禁自造分类】
+{short_standards}
+
+## 明确纳入（典型相关）
+- 上级发文/考核指标驱动的：强制打卡积分、重复填表报数、多头系统填报、迎检台账留痕、周末突击活动(为迎检/文明创建)、强制开会陪会、清单外事项下放甩锅、借调干部、创建示范达标评比、督查检查考核过频过滥、数据造假(指令报数/代填)、盲目决策形象工程(运动式作秀)。
+- 关键信号：诉求出现"为迎检/为考核/为创建/为达标/上级要求/文明办/卫健局/城管局等发文部署/排名通报"等上级驱动词。
+
+## 明确排除（NOT 相关，判 false）
+- 正常工作安排导致的加班/忙碌：创城常态化保洁、网格员日常巡查、社区常规值班——若无"为应付特定检查考核"的硬性摊派证据，不算。
+- 家校责任边界：学校让家长带教具/填档案/志愿服务——属家校协同范畴，非上级对基层的形式主义摊派，不算。
+- 机关效能/服务态度：推诿扯皮、态度差、办事慢、流程繁、电话打不通——属作风效能问题，非"为考核指标增负"，不算（除非明确为迎检而弄虚作假）。
+- 劳动/工资/社保纠纷、物业/邻里/消费维权、医疗/交通/环境投诉、政策咨询——纯业务，不算。
+- 会议占用休息时间：仅当该会议是"为迎检/考核/创建"的硬性部署且违反减负规定才算；普通校会/业务会不算。
+
+## 边界裁决原则
+- 有"上级发文部署+为迎检考核"实证 → 纳入。
+- 仅有"基层忙/加班/负担重"但无上级考核驱动证据 → 排除。
+- 拿不准时，判 false（宁漏勿宽），因标准本质是对上形式摊派。
 
 施压方不限党政机关：高校部门、平台方、行业协会、学校、医院、国企、事业单位均计。
 受压方不限基层干部：村居社区、一线窗口、网格员、辅警、临时工、外包人员均计。
 
-输出格式（严格 JSON 数组，每个对象对应一条）:
+输出格式（严格 JSON 数组，每个对象对应一条）：
 [
   {{
     "appeal_id": "ID",
     "is_relevant": true/false,
     "category": "对应的大类（如: 数据造假、指尖形式主义、权责不清/甩锅、创建示范/达标、盲目决策/形象工程、精简文件、精简会议、督查检查考核、借调干部）",
-    "subcategory": "必须从上述 46 个标准细分类中精确选择一个，原文复制",
+    "subcategory": "必须从上述 46 个标准细分类中精确选择一个，原文复制；不相关则填'无'",
     "root_cause": "核心根因(如: 为了应付上级检查/考核/指标而增加一线无谓负担)",
     "confidence": 0.0-1.0,
     "tags": ["标签1", "标签2"],
@@ -569,22 +632,32 @@ class DailyProcessor:
   ...
 ]
 
-待判读条目:
+待判读条目：
 {chr(10).join(items)}"""
 
     def _parse_llm_response(self, response: str, batch: List[dict]) -> List[LLMResult]:
-        # 去除可能的 markdown 代码围栏
+        # 去除 markdown 代码围栏（含 ```json / ``` 变体）
         cleaned = response.strip()
+        # 情况1：整体被围栏包裹
         if cleaned.startswith('```'):
-            # 去除首行 ```json 或 ```
             lines = cleaned.split('\n')
             if lines[0].startswith('```'):
                 lines = lines[1:]
-            # 去除尾行 ```
             if lines and lines[-1].strip().startswith('```'):
                 lines = lines[:-1]
             cleaned = '\n'.join(lines).strip()
-        
+        # 情况2：模型在 JSON 前后夹了说明文字（如 "好的，结果是：\n```json\n...\n```"）
+        # 提取首个 [ 或 { 到末尾的匹配，优先找 JSON 数组
+        if not cleaned.startswith('[') and not cleaned.startswith('{'):
+            for marker in ('[', '{'):
+                idx = cleaned.find(marker)
+                if idx > 0:
+                    cleaned = cleaned[idx:].strip()
+                    # 去掉尾部可能残留的围栏/说明
+                    if cleaned.endswith('```'):
+                        cleaned = cleaned[:-3].strip()
+                    break
+
         try:
             data = json.loads(cleaned)
             if not isinstance(data, list):
@@ -598,11 +671,16 @@ class DailyProcessor:
             if i >= len(batch):
                 break
             try:
+                subcat = (item.get('subcategory') or '').strip()
+                # 兜底：模型常自相矛盾（subcategory填了相关类但is_relevant写false）。
+                # 若 subcategory 命中 46 标准白名单且非空，强制视为 relevant，避免漏判。
+                subcat_is_valid = subcat and subcat != '无' and subcat in STANDARDS_WHITELIST
+                is_rel = bool(item.get('is_relevant', False)) or subcat_is_valid
                 result = LLMResult(
                     appeal_id=batch[i]['appeal_id'],
-                    is_relevant=item.get('is_relevant', False),
+                    is_relevant=is_rel,
                     category=item.get('category', ''),
-                    subcategory=item.get('subcategory', ''),
+                    subcategory=subcat,
                     root_cause=item.get('root_cause', ''),
                     confidence=float(item.get('confidence', 0)),
                     tags=item.get('tags', []),
@@ -664,7 +742,16 @@ class DailyProcessor:
         """保存判读结果到 clues 表"""
         # 先验证并修正分类
         result = self._validate_and_fix_subcategory(result)
-        
+
+        # 关键：模型 is_relevant 字段在 ca/qwen3.8-clean 上不可靠（常自相矛盾——
+        # subcategory 填了相关类、confidence 0.95，但 is_relevant 写 false）。
+        # relevance 完全以 subcategory 是否命中 46 标准白名单为准，覆盖模型字段。
+        subcat_norm = (result.subcategory or '').strip()
+        if subcat_norm and subcat_norm != '无' and subcat_norm in STANDARDS_WHITELIST:
+            result.is_relevant = True
+        else:
+            result.is_relevant = False
+
         if not result.is_relevant:
             return
         
@@ -707,9 +794,46 @@ class DailyProcessor:
                 result.is_relevant, result.category, result.subcategory, result.root_cause,
                 result.confidence, result.tags, result.qualitative_analysis,
                 result.evidence_suggestion, result.llm_reason,
-                OLLAMA.model, 'full', 'HIGH', []  # matched_keywords 后续补全
+                OLLAMA.model[:32], 'full', 'HIGH', []  # matched_keywords 后续补全
             ))
         self.conn.commit()
+
+    # ----- 3.5 复核工序 -----
+    def review_filter(self):
+        """剔除 llm_reason 明确否定形式主义定性的误判线索"""
+        import re
+        NEGATIVE_PATTERNS = [
+            r'不构成形式主义', r'不符合形式主义', r'不构成形式主义增负',
+            r'不构成形式主义为基层减负', r'不构成形式主义摊派',
+            r'未体现上级为(?:迎检|考核|检查|指标|创建)而向下摊派',
+            r'未体现上级(?:发文|考核|检查)驱动',
+            r'无上级(?:考核|检查|迎检)驱动证据',
+            r'属于(?:技术|系统|平台)(?:问题|故障|缺陷|体验)',
+            r'仅属(?:于)?(?:个别|正常|技术|系统)',
+        ]
+        compiled = [re.compile(p) for p in NEGATIVE_PATTERNS]
+        
+        with self.conn.cursor() as cur:
+            cur.execute("""
+                SELECT appeal_id, subcategory, confidence, llm_reason
+                FROM clues
+                WHERE is_relevant = TRUE
+                  AND publish_time >= %s AND publish_time < %s::date + interval '1 day'
+            """, (self.date_str, self.date_str))
+            clues = cur.fetchall()
+            
+            to_remove = []
+            for clue in clues:
+                reason = clue['llm_reason'] or ''
+                if any(p.search(reason) for p in compiled):
+                    to_remove.append(clue['appeal_id'])
+            
+            if to_remove:
+                cur.execute("DELETE FROM clues WHERE appeal_id = ANY(%s)", (to_remove,))
+                self.conn.commit()
+                logger.info(f"复核剔除 {len(to_remove)} 条误判: {to_remove}")
+            else:
+                logger.info(f"复核通过：{len(clues)} 条线索均无矛盾")
 
     # ----- 4. 导出静态页数据 -----
     def export_static(self):
@@ -809,6 +933,9 @@ class DailyProcessor:
             
             # 3. LLM 判读
             asyncio.run(self.run_llm_classification())
+            
+            # 3.5 复核工序：剔除 llm_reason 明确否定的误判
+            self.review_filter()
             
             # 4. 导出静态页
             self.export_static()
