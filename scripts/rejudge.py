@@ -36,7 +36,7 @@ DB_CONFIG = {
 # 加载 standards
 def load_standards():
     """加载 46 类标准白名单"""
-    std_path = Path(__file__).parent.parent / "config" / "standards.json"
+    std_path = Path(__file__).parent.parent / "data" / "standards.json"
     if not std_path.exists():
         print(f"ERROR: {std_path} not found")
         sys.exit(1)
