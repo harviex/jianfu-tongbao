@@ -1569,8 +1569,8 @@ function sortCluesTable(field) {
 
     // 特殊字段处理
     if (field === 'publish_time') {
-      valA = new Date(valA);
-      valB = new Date(valB);
+      valA = valA ? new Date(valA).getTime() || 0 : 0;
+      valB = valB ? new Date(valB).getTime() || 0 : 0;
     } else if (field === 'seq_no') {
       valA = parseInt(valA);
       valB = parseInt(valB);
