@@ -1359,7 +1359,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   filteredClues = [...allClues];
   // 默认按诉求时间倒序
-  filteredClues.sort((a, b) => new Date(b.publish_time) - new Date(a.publish_time));
+  filteredClues.sort((a, b) => new Date(a.publish_time) - new Date(b.publish_time));
   renderCluesTable();
   renderCluesStats();
   populateFilters();
@@ -1543,7 +1543,7 @@ function renderCluesPagination() {
 }
 
 // ========== 表格排序功能 ==========
-let currentSort = { field: 'publish_time', direction: 'desc' };
+let currentSort = { field: 'publish_time', direction: 'asc' };
 
 function sortCluesTable(field) {
   // 切换排序方向
