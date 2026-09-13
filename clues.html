@@ -1339,7 +1339,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (resp.ok) {
       const remoteClues = await resp.json();
       if (remoteClues && remoteClues.length > 0) {
-        allClues = remoteClues;
+        // 统一数据格式：将 category→clue_category，string tags→array
+        allClues = remoteClues.map(clue => ({
+          ...clue,
+          clue_category: clue.clue_category || clue.category || '',
+          clue_subcategory: clue.clue_subcategory || clue.subcategory || '',
+          tags: Array.isArray(clue.tags) ? clue.tags : (typeof clue.tags === 'string' ? clue.tags.match(/[^'",\[\]\s]+/g) || [] : [])
+        }));
         localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
       } else {
         throw new Error('Remote clues empty');
