@@ -1,0 +1,15 @@
+{
+  "total_raw": 8684,
+  "blacklist_excluded": 5115,
+  "candidate_total": 3569,
+  "candidate_high": 79,
+  "candidate_low": 37,
+  "candidate_none": 3453,
+  "llm_called": 116,
+  "relevant_found": 0,
+  "high_confidence": 0,
+  "zero_keyword_sampled": 0,
+  "zero_keyword_relevant": 0,
+  "date": "20260517",
+  "export_time": "2026-09-12T11:31:46.621901"
+}
