@@ -3,13 +3,13 @@
   "blacklist_excluded": 6496,
   "candidate_total": 5865,
   "candidate_high": 187,
-  "candidate_low": 61,
-  "candidate_none": 5617,
-  "llm_called": 247,
-  "relevant_found": 1,
-  "high_confidence": 1,
+  "candidate_low": 65,
+  "candidate_none": 5613,
+  "llm_called": 252,
+  "relevant_found": 4,
+  "high_confidence": 4,
   "zero_keyword_sampled": 0,
   "zero_keyword_relevant": 0,
   "date": "20260910",
-  "export_time": "2026-09-20T19:51:48.043056"
+  "export_time": "2026-09-21T13:00:13.205982"
 }
