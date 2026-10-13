@@ -62,9 +62,13 @@ PATHS = PathConfig()
 for p in [PATHS.inbox_dir, PATHS.static_dir, PATHS.logs_dir]:
     p.mkdir(parents=True, exist_ok=True)
 
-# ==================== 标准库（46 个标准细分类） ====================
+# ==================== 标准库（49 个标准细分类） ====================
 def load_standards():
-    """加载 standards.json，返回标准细分类白名单和 prompt 用文本"""
+    """加载 standards.json，返回标准细分类白名单和 prompt 用文本
+
+    ⚠️ 标准细分类总数以 data/standards.json 实际条目为准，不要凭注释里的数字判断。
+    历史上注释写「46」但文件已有 48+，导致判读口径与实际标准长期不一致。
+    """
     standards_path = PATHS.config_dir / 'standards.json'
     if not standards_path.exists():
         # 回退到 data/standards.json
@@ -626,9 +630,10 @@ class DailyProcessor:
 如果诉求本身没有明确证据证明是上级摊派驱动，直接判 false——不要强行套模板。
 
 ## 边界裁决
-- 有具体证据（文件名称、会议通知、考核通报、部门发文等）→ 纳入
-- 仅有"基层忙/加班/负担重"但无上级驱动证据 → 排除
-- 拿不准时，判 false（宁漏勿宽）
+- 投诉内容本身能体现实质性的上级摊派/考核/指标驱动（如"教育局要求""学校强制""硬性下达指标"等具体行为描述）→ 纳入
+- 仅有泛泛"基层忙/加班/负担重"而无具体上级压力描述 → 排除
+- 投诉中提及"应付上级""为迎检""考核压力""指标摊派"等表述，即使未提供具体文件名称 → 纳入
+- 拿不准时，可判 true（放宽纳入标准）
 
 输出格式（严格 JSON 数组，每个对象对应一条）：
 [

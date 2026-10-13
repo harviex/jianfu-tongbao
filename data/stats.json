@@ -1,22 +1,43 @@
 {
-  "total": 46,
+  "total": 50,
+  "total_cases": 120,
   "byLevel": [
+    {
+      "level_1": "省级",
+      "count": 31
+    },
     {
       "level_1": "中央",
       "count": 18
     },
     {
-      "level_1": "省级",
-      "count": 28
+      "level_1": "市级",
+      "count": 1
     }
   ],
   "provinces": [
     {
+      "province": "中央",
+      "count": 34
+    },
+    {
       "province": "广东",
-      "count": 6
+      "count": 8
+    },
+    {
+      "province": "北京",
+      "count": 8
     },
     {
       "province": "上海",
+      "count": 6
+    },
+    {
+      "province": "云南",
+      "count": 6
+    },
+    {
+      "province": "湖南",
       "count": 5
     },
     {
@@ -24,11 +45,11 @@
       "count": 5
     },
     {
-      "province": "云南",
-      "count": 5
+      "province": "福建",
+      "count": 4
     },
     {
-      "province": "湖南",
+      "province": "重庆",
       "count": 4
     },
     {
@@ -40,16 +61,16 @@
       "count": 3
     },
     {
-      "province": "重庆",
-      "count": 3
-    },
-    {
-      "province": "福建",
-      "count": 3
-    },
-    {
       "province": "贵州",
-      "count": 2
+      "count": 3
+    },
+    {
+      "province": "辽宁",
+      "count": 3
+    },
+    {
+      "province": "山西",
+      "count": 3
     },
     {
       "province": "江苏",
@@ -57,10 +78,6 @@
     },
     {
       "province": "河北",
-      "count": 2
-    },
-    {
-      "province": "辽宁",
       "count": 2
     },
     {
@@ -72,15 +89,11 @@
       "count": 2
     },
     {
-      "province": "内蒙古",
-      "count": 2
-    },
-    {
       "province": "山东",
       "count": 2
     },
     {
-      "province": "山西",
+      "province": "内蒙古",
       "count": 2
     },
     {
@@ -118,10 +131,6 @@
     {
       "province": "安徽",
       "count": 1
-    },
-    {
-      "province": "北京",
-      "count": 1
     }
   ],
   "tags": [
@@ -130,33 +139,54 @@
       "count": 44
     },
     {
+      "tag": "权责不清",
+      "count": 43
+    },
+    {
+      "tag": "领导小组",
+      "count": 42
+    },
+    {
+      "tag": "工作机制",
+      "count": 42
+    },
+    {
+      "tag": "挂牌过多",
+      "count": 42
+    },
+    {
       "tag": "考核泛滥",
       "count": 33
     },
     {
-      "tag": "资源浪费",
-      "count": 15
+      "tag": "省级通报",
+      "count": 27
     },
     {
-      "tag": "官僚主义",
-      "count": 15
+      "tag": "督查检查考核",
+      "count": 21
     },
     {
-      "tag": "脱离实际",
-      "count": 12
+      "tag": "中央通报",
+      "count": 19
     },
     {
-      "tag": "强制摊派",
-      "count": 10
+      "tag": "指标繁杂",
+      "count": 17
     },
     {
-      "tag": "层层加码",
-      "count": 10
+      "tag": "千分制",
+      "count": 17
     },
     {
-      "tag": "数据造假",
-      "count": 7
+      "tag": "双千分制",
+      "count": 17
     }
   ],
-  "last_updated": "2026-08-06 16:30:00"
+  "date_range": {
+    "earliest": "2023-12-12",
+    "latest": "2026-09-23"
+  },
+  "standards_count": 49,
+  "last_updated": "2026-10-13 17:06:35"
 }
