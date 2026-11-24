@@ -1346,6 +1346,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           clue_subcategory: clue.clue_subcategory || clue.subcategory || '',
           tags: Array.isArray(clue.tags) ? clue.tags : (typeof clue.tags === 'string' ? clue.tags.match(/[^'",\[\]\s]+/g) || [] : [])
         }));
+        // 全局按诉求时间降序（最新在前），保证筛选/重置后顺序一致
+        allClues.sort((a, b) => new Date(b.publish_time) - new Date(a.publish_time));
         localStorage.setItem('jianfu_clues', JSON.stringify(allClues));
       } else {
         throw new Error('Remote clues empty');
@@ -1364,8 +1366,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
   filteredClues = [...allClues];
-  // 默认按诉求时间倒序
-  filteredClues.sort((a, b) => new Date(a.publish_time) - new Date(b.publish_time));
+  // 默认按诉求时间倒序（最新在前）
+  filteredClues.sort((a, b) => new Date(b.publish_time) - new Date(a.publish_time));
   renderCluesTable();
   renderCluesStats();
   populateFilters();
