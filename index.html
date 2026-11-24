@@ -659,6 +659,8 @@ async function init() {
     ]);
     stats = await statsRes.json();
     allNotices = await noticesRes.json();
+    // 按发布日期倒序：最新的通报排在最前（修复新通报 append 到末尾显示不出来的问题）
+    allNotices.sort((a, b) => (b.publish_date || '').localeCompare(a.publish_date || ''));
     filteredNotices = allNotices;
 
     renderStats();
